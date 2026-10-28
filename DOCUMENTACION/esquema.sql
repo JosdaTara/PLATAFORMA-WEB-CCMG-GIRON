@@ -5,7 +5,7 @@
 -- Dumped from database version 16.8
 -- Dumped by pg_dump version 16.8
 
--- Started on 2026-10-27 23:03:45
+-- Started on 2026-10-28 13:36:11
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -102,7 +102,7 @@ CREATE SEQUENCE public.actividad_id_actividad_seq
 ALTER SEQUENCE public.actividad_id_actividad_seq OWNER TO postgres;
 
 --
--- TOC entry 5096 (class 0 OID 0)
+-- TOC entry 5097 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: actividad_id_actividad_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -143,7 +143,7 @@ CREATE SEQUENCE public.area_id_area_seq
 ALTER SEQUENCE public.area_id_area_seq OWNER TO postgres;
 
 --
--- TOC entry 5097 (class 0 OID 0)
+-- TOC entry 5098 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: area_id_area_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -186,7 +186,7 @@ CREATE SEQUENCE public.asistencia_id_asistencia_seq
 ALTER SEQUENCE public.asistencia_id_asistencia_seq OWNER TO postgres;
 
 --
--- TOC entry 5098 (class 0 OID 0)
+-- TOC entry 5099 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: asistencia_id_asistencia_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -229,7 +229,7 @@ CREATE SEQUENCE public.auditoria_id_auditoria_seq
 ALTER SEQUENCE public.auditoria_id_auditoria_seq OWNER TO postgres;
 
 --
--- TOC entry 5099 (class 0 OID 0)
+-- TOC entry 5100 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: auditoria_id_auditoria_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -267,7 +267,7 @@ CREATE TABLE public.casa_vida_equipo (
     id_casa_vida integer NOT NULL,
     id_usuario integer NOT NULL,
     funcion character varying(20) NOT NULL,
-    activo boolean DEFAULT true,
+    activo boolean DEFAULT true NOT NULL,
     creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT chk_cve_funcion CHECK (((funcion)::text = ANY ((ARRAY['APRENDIZ'::character varying, 'ANFITRION'::character varying, 'MAESTRO_NINOS'::character varying])::text[])))
 );
@@ -292,7 +292,7 @@ CREATE SEQUENCE public.casa_vida_equipo_id_casa_vida_equipo_seq
 ALTER SEQUENCE public.casa_vida_equipo_id_casa_vida_equipo_seq OWNER TO postgres;
 
 --
--- TOC entry 5100 (class 0 OID 0)
+-- TOC entry 5101 (class 0 OID 0)
 -- Dependencies: 244
 -- Name: casa_vida_equipo_id_casa_vida_equipo_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -317,7 +317,7 @@ CREATE SEQUENCE public.casa_vida_id_casa_vida_seq
 ALTER SEQUENCE public.casa_vida_id_casa_vida_seq OWNER TO postgres;
 
 --
--- TOC entry 5101 (class 0 OID 0)
+-- TOC entry 5102 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: casa_vida_id_casa_vida_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -358,7 +358,7 @@ CREATE SEQUENCE public.casa_vida_miembro_id_casa_vida_miembro_seq
 ALTER SEQUENCE public.casa_vida_miembro_id_casa_vida_miembro_seq OWNER TO postgres;
 
 --
--- TOC entry 5102 (class 0 OID 0)
+-- TOC entry 5103 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: casa_vida_miembro_id_casa_vida_miembro_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -399,7 +399,7 @@ CREATE SEQUENCE public.inscripcion_formacion_id_inscripcion_seq
 ALTER SEQUENCE public.inscripcion_formacion_id_inscripcion_seq OWNER TO postgres;
 
 --
--- TOC entry 5103 (class 0 OID 0)
+-- TOC entry 5104 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: inscripcion_formacion_id_inscripcion_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -443,7 +443,7 @@ CREATE SEQUENCE public.ofrenda_id_ofrenda_seq
 ALTER SEQUENCE public.ofrenda_id_ofrenda_seq OWNER TO postgres;
 
 --
--- TOC entry 5104 (class 0 OID 0)
+-- TOC entry 5105 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: ofrenda_id_ofrenda_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -489,7 +489,7 @@ CREATE SEQUENCE public.participante_id_participante_seq
 ALTER SEQUENCE public.participante_id_participante_seq OWNER TO postgres;
 
 --
--- TOC entry 5105 (class 0 OID 0)
+-- TOC entry 5106 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: participante_id_participante_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -533,7 +533,7 @@ CREATE SEQUENCE public.proceso_formacion_id_proceso_formacion_seq
 ALTER SEQUENCE public.proceso_formacion_id_proceso_formacion_seq OWNER TO postgres;
 
 --
--- TOC entry 5106 (class 0 OID 0)
+-- TOC entry 5107 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: proceso_formacion_id_proceso_formacion_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -577,7 +577,7 @@ CREATE SEQUENCE public.reporte_id_reporte_seq
 ALTER SEQUENCE public.reporte_id_reporte_seq OWNER TO postgres;
 
 --
--- TOC entry 5107 (class 0 OID 0)
+-- TOC entry 5108 (class 0 OID 0)
 -- Dependencies: 241
 -- Name: reporte_id_reporte_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -619,7 +619,7 @@ CREATE SEQUENCE public.rol_id_rol_seq
 ALTER SEQUENCE public.rol_id_rol_seq OWNER TO postgres;
 
 --
--- TOC entry 5108 (class 0 OID 0)
+-- TOC entry 5109 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: rol_id_rol_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -662,7 +662,7 @@ CREATE SEQUENCE public.seguimiento_id_seguimiento_seq
 ALTER SEQUENCE public.seguimiento_id_seguimiento_seq OWNER TO postgres;
 
 --
--- TOC entry 5109 (class 0 OID 0)
+-- TOC entry 5110 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: seguimiento_id_seguimiento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -696,7 +696,7 @@ CREATE TABLE public.usuario (
 ALTER TABLE public.usuario OWNER TO postgres;
 
 --
--- TOC entry 5110 (class 0 OID 0)
+-- TOC entry 5111 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN usuario.creado_por; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -705,7 +705,7 @@ COMMENT ON COLUMN public.usuario.creado_por IS 'Usuario que creó el registro';
 
 
 --
--- TOC entry 5111 (class 0 OID 0)
+-- TOC entry 5112 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN usuario.modificado_por; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -730,7 +730,7 @@ CREATE SEQUENCE public.usuario_id_usuario_seq
 ALTER SEQUENCE public.usuario_id_usuario_seq OWNER TO postgres;
 
 --
--- TOC entry 5112 (class 0 OID 0)
+-- TOC entry 5113 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: usuario_id_usuario_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1130,6 +1130,14 @@ CREATE INDEX idx_usuario_rol ON public.usuario USING btree (id_rol);
 
 
 --
+-- TOC entry 4921 (class 1259 OID 25958)
+-- Name: uq_cve_usuario_activo; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX uq_cve_usuario_activo ON public.casa_vida_equipo USING btree (id_usuario) WHERE activo;
+
+
+--
 -- TOC entry 4872 (class 1259 OID 25424)
 -- Name: usuario_correo_lower_uk; Type: INDEX; Schema: public; Owner: postgres
 --
@@ -1146,7 +1154,7 @@ CREATE UNIQUE INDEX usuario_username_lower_uk ON public.usuario USING btree (low
 
 
 --
--- TOC entry 4934 (class 2606 OID 25314)
+-- TOC entry 4935 (class 2606 OID 25314)
 -- Name: actividad actividad_id_casa_vida_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1155,7 +1163,7 @@ ALTER TABLE ONLY public.actividad
 
 
 --
--- TOC entry 4935 (class 2606 OID 25319)
+-- TOC entry 4936 (class 2606 OID 25319)
 -- Name: actividad actividad_id_proceso_formacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1164,7 +1172,7 @@ ALTER TABLE ONLY public.actividad
 
 
 --
--- TOC entry 4936 (class 2606 OID 25324)
+-- TOC entry 4937 (class 2606 OID 25324)
 -- Name: actividad actividad_id_responsable_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1173,7 +1181,7 @@ ALTER TABLE ONLY public.actividad
 
 
 --
--- TOC entry 4925 (class 2606 OID 25197)
+-- TOC entry 4926 (class 2606 OID 25197)
 -- Name: area area_id_supervisor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1182,7 +1190,7 @@ ALTER TABLE ONLY public.area
 
 
 --
--- TOC entry 4937 (class 2606 OID 25340)
+-- TOC entry 4938 (class 2606 OID 25340)
 -- Name: asistencia asistencia_id_actividad_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1191,7 +1199,7 @@ ALTER TABLE ONLY public.asistencia
 
 
 --
--- TOC entry 4938 (class 2606 OID 25345)
+-- TOC entry 4939 (class 2606 OID 25345)
 -- Name: asistencia asistencia_id_participante_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1200,7 +1208,7 @@ ALTER TABLE ONLY public.asistencia
 
 
 --
--- TOC entry 4939 (class 2606 OID 25350)
+-- TOC entry 4940 (class 2606 OID 25350)
 -- Name: asistencia asistencia_registrado_por_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1209,7 +1217,7 @@ ALTER TABLE ONLY public.asistencia
 
 
 --
--- TOC entry 4924 (class 2606 OID 25183)
+-- TOC entry 4925 (class 2606 OID 25183)
 -- Name: auditoria auditoria_id_usuario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1218,7 +1226,7 @@ ALTER TABLE ONLY public.auditoria
 
 
 --
--- TOC entry 4926 (class 2606 OID 25229)
+-- TOC entry 4927 (class 2606 OID 25229)
 -- Name: casa_vida casa_vida_id_area_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1227,7 +1235,7 @@ ALTER TABLE ONLY public.casa_vida
 
 
 --
--- TOC entry 4927 (class 2606 OID 25234)
+-- TOC entry 4928 (class 2606 OID 25234)
 -- Name: casa_vida casa_vida_id_lider_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1236,7 +1244,7 @@ ALTER TABLE ONLY public.casa_vida
 
 
 --
--- TOC entry 4928 (class 2606 OID 25239)
+-- TOC entry 4929 (class 2606 OID 25239)
 -- Name: casa_vida casa_vida_id_supervisor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1245,7 +1253,7 @@ ALTER TABLE ONLY public.casa_vida
 
 
 --
--- TOC entry 4929 (class 2606 OID 25255)
+-- TOC entry 4930 (class 2606 OID 25255)
 -- Name: casa_vida_miembro casa_vida_miembro_id_casa_vida_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1254,7 +1262,7 @@ ALTER TABLE ONLY public.casa_vida_miembro
 
 
 --
--- TOC entry 4930 (class 2606 OID 25260)
+-- TOC entry 4931 (class 2606 OID 25260)
 -- Name: casa_vida_miembro casa_vida_miembro_id_participante_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1263,7 +1271,7 @@ ALTER TABLE ONLY public.casa_vida_miembro
 
 
 --
--- TOC entry 4946 (class 2606 OID 25944)
+-- TOC entry 4947 (class 2606 OID 25944)
 -- Name: casa_vida_equipo fk_cve_casa_vida; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1272,7 +1280,7 @@ ALTER TABLE ONLY public.casa_vida_equipo
 
 
 --
--- TOC entry 4947 (class 2606 OID 25949)
+-- TOC entry 4948 (class 2606 OID 25949)
 -- Name: casa_vida_equipo fk_cve_usuario; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1281,7 +1289,7 @@ ALTER TABLE ONLY public.casa_vida_equipo
 
 
 --
--- TOC entry 4932 (class 2606 OID 25293)
+-- TOC entry 4933 (class 2606 OID 25293)
 -- Name: inscripcion_formacion inscripcion_formacion_id_participante_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1290,7 +1298,7 @@ ALTER TABLE ONLY public.inscripcion_formacion
 
 
 --
--- TOC entry 4933 (class 2606 OID 25298)
+-- TOC entry 4934 (class 2606 OID 25298)
 -- Name: inscripcion_formacion inscripcion_formacion_id_proceso_formacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1299,7 +1307,7 @@ ALTER TABLE ONLY public.inscripcion_formacion
 
 
 --
--- TOC entry 4942 (class 2606 OID 25387)
+-- TOC entry 4943 (class 2606 OID 25387)
 -- Name: ofrenda ofrenda_id_casa_vida_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1308,7 +1316,7 @@ ALTER TABLE ONLY public.ofrenda
 
 
 --
--- TOC entry 4943 (class 2606 OID 25392)
+-- TOC entry 4944 (class 2606 OID 25392)
 -- Name: ofrenda ofrenda_id_usuario_registro_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1317,7 +1325,7 @@ ALTER TABLE ONLY public.ofrenda
 
 
 --
--- TOC entry 4931 (class 2606 OID 25277)
+-- TOC entry 4932 (class 2606 OID 25277)
 -- Name: proceso_formacion proceso_formacion_id_coordinador_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1326,7 +1334,7 @@ ALTER TABLE ONLY public.proceso_formacion
 
 
 --
--- TOC entry 4944 (class 2606 OID 25412)
+-- TOC entry 4945 (class 2606 OID 25412)
 -- Name: reporte reporte_id_usuario_destino_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1335,7 +1343,7 @@ ALTER TABLE ONLY public.reporte
 
 
 --
--- TOC entry 4945 (class 2606 OID 25407)
+-- TOC entry 4946 (class 2606 OID 25407)
 -- Name: reporte reporte_id_usuario_envia_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1344,7 +1352,7 @@ ALTER TABLE ONLY public.reporte
 
 
 --
--- TOC entry 4940 (class 2606 OID 25366)
+-- TOC entry 4941 (class 2606 OID 25366)
 -- Name: seguimiento seguimiento_id_participante_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1353,7 +1361,7 @@ ALTER TABLE ONLY public.seguimiento
 
 
 --
--- TOC entry 4941 (class 2606 OID 25371)
+-- TOC entry 4942 (class 2606 OID 25371)
 -- Name: seguimiento seguimiento_id_usuario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1362,7 +1370,7 @@ ALTER TABLE ONLY public.seguimiento
 
 
 --
--- TOC entry 4921 (class 2606 OID 25426)
+-- TOC entry 4922 (class 2606 OID 25426)
 -- Name: usuario usuario_creado_por_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1371,7 +1379,7 @@ ALTER TABLE ONLY public.usuario
 
 
 --
--- TOC entry 4922 (class 2606 OID 25170)
+-- TOC entry 4923 (class 2606 OID 25170)
 -- Name: usuario usuario_id_rol_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1380,7 +1388,7 @@ ALTER TABLE ONLY public.usuario
 
 
 --
--- TOC entry 4923 (class 2606 OID 25431)
+-- TOC entry 4924 (class 2606 OID 25431)
 -- Name: usuario usuario_modificado_por_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1388,7 +1396,7 @@ ALTER TABLE ONLY public.usuario
     ADD CONSTRAINT usuario_modificado_por_fkey FOREIGN KEY (modificado_por) REFERENCES public.usuario(id_usuario);
 
 
--- Completed on 2026-10-27 23:03:45
+-- Completed on 2026-10-28 13:36:11
 
 --
 -- PostgreSQL database dump complete

@@ -69,5 +69,12 @@ class CasaVidaScopeMixin:
             casas = CasaVida.objects.filter(id_lider=user)
             return qs.filter(id_casa_vida__in=casas)
 
-        # APOYO_CASA_VIDA: pendiente de tabla casa_vida_equipo
+        if codigo == "APOYO_CASA_VIDA":
+            # Filtrar por casa_vida_equipo activo
+            from pva.models import CasaVidaEquipo
+            equipos = CasaVidaEquipo.objects.filter(
+                id_usuario=user, activo=True
+            ).values_list("id_casa_vida", flat=True)
+            return qs.filter(id_casa_vida__in=equipos)
+
         return qs.none()
