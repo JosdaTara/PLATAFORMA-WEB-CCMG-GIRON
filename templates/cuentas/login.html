@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><title>Login</title></head>
+<body>
+  <form method="post" action="{% url 'cuentas:login' %}">
+    {% csrf_token %}
+    <input name="usuario" id="usuario">
+    <input name="clave" id="clave" type="password">
+    <button type="submit">Entrar</button>
+  </form>
+  {% if error %}<p>{{ error }}</p>{% endif %}
+</body>
+</html>
