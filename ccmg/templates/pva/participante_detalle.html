@@ -1,0 +1,73 @@
+{% extends "pva/base.html" %}
+{% block titulo %}{{ participante.nombres_apellidos }}{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <h3 class="m-0">{{ participante.nombres_apellidos }}</h3>
+    {% if participante.activo %}<span class="badge rounded-pill bg-success-subtle text-success-emphasis">Activo</span>{% else %}<span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Inactivo</span>{% endif %}
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'pva:participantes' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Volver</a>
+    {% if es_pastor %}
+      <a href="{% url 'pva:participante_editar' participante.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Editar</a>
+      {% url 'pva:participante_detalle' participante.pk as aqui %}
+      {% include "pva/_estado.html" with url_nombre="pva:participante_estado" obj=participante activo=participante.activo next=aqui %}
+    {% endif %}
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card p-3 border-0 shadow-sm h-100">
+      <h6 class="mb-3">Datos personales</h6>
+      <dl class="row mb-0 small">
+        <dt class="col-5">Documento</dt><dd class="col-7">{{ participante.documento_identidad }}</dd>
+        <dt class="col-5">Nacimiento</dt><dd class="col-7">{{ participante.fecha_nacimiento|date:"d/m/Y"|default:"—" }}</dd>
+        <dt class="col-5">Teléfono</dt><dd class="col-7">{{ participante.telefono|default:"—" }}</dd>
+        <dt class="col-5">Dirección</dt><dd class="col-7">{{ participante.direccion|default:"—" }}</dd>
+        <dt class="col-5">Tratamiento de datos</dt>
+        <dd class="col-7">{% if participante.autorizacion_datos %}Autorizado{% else %}<span class="text-warning-emphasis">Pendiente (RN25)</span>{% endif %}</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card p-3 border-0 shadow-sm h-100">
+      <h6 class="mb-3">Casas de Vida</h6>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Casa de Vida</th><th>Ingreso</th><th>Estado</th></tr></thead>
+        <tbody>
+          {% for m in historial_casas %}
+            <tr>
+              <td>{{ m.id_casa_vida.nombre }}</td>
+              <td>{{ m.fecha_ingreso|date:"d/m/Y"|default:"—" }}</td>
+              <td>{% if m.estado == "ACTIVO" %}Actual{% else %}<span class="text-muted">Anterior</span>{% endif %}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="3" class="text-center text-muted py-3">Sin Casa de Vida asignada.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card p-3 border-0 shadow-sm">
+      <h6 class="mb-3">Asistencia reciente</h6>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Fecha</th><th>Actividad</th><th>Casa de Vida</th><th>Asistió</th></tr></thead>
+        <tbody>
+          {% for a in asistencias %}
+            <tr>
+              <td>{{ a.id_actividad.fecha|date:"d/m/Y" }}</td>
+              <td><a href="{% url 'pva:asistencia_detalle' a.id_actividad.pk %}" class="text-decoration-none">{{ a.id_actividad.titulo }}</a></td>
+              <td>{{ a.id_actividad.id_casa_vida.nombre }}</td>
+              <td>{% if a.presente %}<i class="bi bi-check-circle-fill text-success" aria-label="Sí"></i>{% else %}<i class="bi bi-x-circle text-danger" aria-label="No"></i>{% endif %}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="text-center text-muted py-3">Sin registros de asistencia.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

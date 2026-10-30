@@ -1,0 +1,72 @@
+{% extends "pva/base.html" %}
+{% block titulo %}Participantes{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="m-0">Participantes</h3>
+  {% if es_pastor %}
+    <a href="{% url 'pva:participante_crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-plus-lg me-1"></i>Nuevo participante</a>
+  {% else %}
+    <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis"><i class="bi bi-eye me-1"></i>Solo lectura</span>
+  {% endif %}
+</div>
+
+<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-5">
+      <label class="form-label small mb-1" for="q">Buscar</label>
+      <input id="q" name="q" value="{{ filtros.q }}" class="form-control" placeholder="Nombre o documento">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1" for="casa">Casa de Vida</label>
+      <select id="casa" name="casa" class="form-select">
+        <option value="">Todas</option>
+        {% for c in casas_filtro %}<option value="{{ c.pk }}"{% if filtros.casa == c.pk|stringformat:"s" %} selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
+      </select>
+    </div>
+    {% if es_pastor %}
+    <div class="col-md-2">
+      <label class="form-label small mb-1" for="estado">Estado</label>
+      <select id="estado" name="estado" class="form-select">
+        <option value="">Todos</option>
+        <option value="ACTIVO"{% if filtros.estado == "ACTIVO" %} selected{% endif %}>Activos</option>
+        <option value="INACTIVO"{% if filtros.estado == "INACTIVO" %} selected{% endif %}>Inactivos</option>
+      </select>
+    </div>
+    {% endif %}
+    <div class="col-md-2 d-flex gap-2">
+      <button class="btn btn-ccmg flex-fill"><i class="bi bi-search"></i> Filtrar</button>
+      <a href="{% url 'pva:participantes' %}" class="btn btn-light" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Nombre</th><th>Documento</th><th>Teléfono</th><th>Casa de Vida</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+    <tbody>
+      {% for p in participantes %}
+      <tr>
+        <td><a href="{% url 'pva:participante_detalle' p.pk %}" class="fw-semibold text-decoration-none">{{ p.nombres_apellidos }}</a></td>
+        <td>{{ p.documento_identidad }}</td>
+        <td>{{ p.telefono|default:"—" }}</td>
+        <td>{% for m in p.membresias %}{{ m.id_casa_vida.nombre }}{% empty %}<span class="text-muted">Sin Casa de Vida</span>{% endfor %}</td>
+        <td>
+          {% if p.activo %}<span class="badge rounded-pill bg-success-subtle text-success-emphasis">Activo</span>{% else %}<span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Inactivo</span>{% endif %}
+          {% if not p.autorizacion_datos %}<span class="badge rounded-pill bg-warning-subtle text-warning-emphasis" title="RN25">Autorización pendiente</span>{% endif %}
+        </td>
+        <td class="text-end text-nowrap">
+          <a href="{% url 'pva:participante_detalle' p.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye me-1"></i>Ver</a>
+          {% if es_pastor %}
+            <a href="{% url 'pva:participante_editar' p.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
+            {% include "pva/_estado.html" with url_nombre="pva:participante_estado" obj=p activo=p.activo %}
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center text-muted py-4">No se encontraron participantes.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "pva/_paginacion.html" %}
+{% endblock %}

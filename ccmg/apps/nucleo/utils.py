@@ -33,3 +33,17 @@ def sesion_js(user):
         "rol": ROLES_JS.get(getattr(rol, "nombre", None), ""),
     }
 
+
+
+def registrar_auditoria(request, accion, obj):
+    """Deja constancia de quién creó, modificó o desactivó un registro (RNF18)."""
+    from nucleo.models import Auditoria
+
+    user = getattr(request, "user", None)
+    Auditoria.objects.create(
+        id_usuario=user if getattr(user, "is_authenticated", False) else None,
+        accion=accion,
+        entidad=obj._meta.db_table,
+        id_entidad=obj.pk,
+        ip=(request.META.get("REMOTE_ADDR") or "")[:45] or None,
+    )

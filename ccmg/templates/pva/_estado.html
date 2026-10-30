@@ -1,0 +1,14 @@
+{% comment %}
+Botón de baja lógica / reactivación (RF28). Recibe: url_nombre, obj, activo, next (opcional).
+{% endcomment %}
+{% if activo %}
+  <form method="post" action="{% url url_nombre obj.pk 'desactivar' %}" class="d-inline" onsubmit="return confirm('¿Desactivar «{{ obj|escapejs }}»? Se conservará su historial.');">
+    {% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-slash-circle me-1"></i>Desactivar</button>
+  </form>
+{% else %}
+  <form method="post" action="{% url url_nombre obj.pk 'activar' %}" class="d-inline">
+    {% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    <button class="btn btn-sm btn-outline-success"><i class="bi bi-arrow-counterclockwise me-1"></i>Reactivar</button>
+  </form>
+{% endif %}

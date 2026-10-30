@@ -1,0 +1,41 @@
+{% extends "pva/base.html" %}
+{% block titulo %}Casas de Vida{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="m-0">Casas de Vida</h3>
+  {% if es_pastor %}
+    <a href="{% url 'pva:casa_crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-plus-lg me-1"></i>Nueva Casa de Vida</a>
+  {% else %}
+    <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis"><i class="bi bi-eye me-1"></i>Solo lectura</span>
+  {% endif %}
+</div>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Casa de Vida</th><th>Área</th><th>Líder</th><th>Supervisor</th><th>Miembros</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+    <tbody>
+      {% for c in casas %}
+      <tr>
+        <td><a href="{% url 'pva:casa_detalle' c.pk %}" class="fw-semibold text-decoration-none">{{ c.nombre }}</a></td>
+        <td>{{ c.id_area.nombre|default:"—" }}</td>
+        <td>{{ c.id_lider.nombre_completo|default:"Sin asignar" }}</td>
+        <td>{{ c.id_supervisor.nombre_completo|default:"Sin asignar" }}</td>
+        <td>{{ c.miembros }}</td>
+        <td>{% if c.activa %}<span class="badge rounded-pill bg-success-subtle text-success-emphasis">Activa</span>{% else %}<span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Inactiva</span>{% endif %}</td>
+        <td class="text-end text-nowrap">
+          <a href="{% url 'pva:casa_detalle' c.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye me-1"></i>Ver</a>
+          {% if es_pastor %}
+            <a href="{% url 'pva:casa_editar' c.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
+            {% include "pva/_estado.html" with url_nombre="pva:casa_estado" obj=c activo=c.activa %}
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="text-center text-muted py-4">
+        {% if es_pastor %}No hay Casas de Vida registradas.{% else %}No tienes Casas de Vida asignadas.{% endif %}
+      </td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

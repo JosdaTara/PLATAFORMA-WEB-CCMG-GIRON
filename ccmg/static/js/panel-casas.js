@@ -17,6 +17,14 @@ const SEGUIMIENTOS = [];
 const OFRENDAS = [];
 const REPORTES = [];
 
+/* Resumen y rutas calculados en el servidor según el alcance del rol (pva.views.panel_casas) */
+function leerJSON(id, porDefecto) {
+  const el = document.getElementById(id);
+  try { return el ? JSON.parse(el.textContent) : porDefecto; } catch (e) { return porDefecto; }
+}
+const RESUMEN = leerJSON('pva-resumen', { participantes: 0, casas: 0, casasActivas: 0, asistenciaPromedio: 0, actividades: [] });
+const URLS_PVA = leerJSON('pva-urls', {});
+
 let siguienteId = 100;
 function nuevoId() { return ++siguienteId; }
 
@@ -43,43 +51,6 @@ function dinero(n) {
 }
 
 /* --------------------------- Acciones --------------------------- */
-function guardarParticipante(ev) {
-  ev.preventDefault();
-  const f = ev.target;
-  PARTICIPANTES.push({
-    id: nuevoId(),
-    nombre: f.nombre.value.trim(),
-    documento: f.documento.value.trim(),
-    nacimiento: f.nacimiento.value,
-    telefono: f.telefono.value.trim(),
-    casa: f.casa.value,
-    funcion: f.funcion.value,
-    estado: 'Activo'
-  });
-  avisar('Participante registrado correctamente.');
-  refrescar();
-  return false;
-}
-
-function guardarCasa(ev) {
-  ev.preventDefault();
-  const f = ev.target;
-  CASAS.push({
-    id: nuevoId(),
-    nombre: f.nombre.value.trim(),
-    area: f.area.value,
-    lider: f.lider.value.trim(),
-    supervisor: f.supervisor.value.trim(),
-    dia: f.dia.value,
-    hora: f.hora.value,
-    direccion: f.direccion.value.trim(),
-    estado: 'Activa'
-  });
-  avisar('Casa de Vida creada correctamente.');
-  refrescar();
-  return false;
-}
-
 function guardarSeguimiento(ev) {
   ev.preventDefault();
   const f = ev.target;
@@ -129,39 +100,27 @@ function enviarReporte(ev) {
   return false;
 }
 
-function registrarAsistencia(ev) {
-  ev.preventDefault();
-  const f = ev.target;
-  const marcados = f.querySelectorAll('input[type="checkbox"]:checked').length;
-  avisar('Asistencia registrada: ' + marcados + ' personas presentes.');
-  return false;
-}
-
 /* ----------------------------- Vistas ----------------------------- */
 const VISTAS_CASAS = {
 
   inicio: function (s) {
-    const activas = CASAS.filter(function (c) { return c.estado === 'Activa'; }).length;
-    const totalAsistentes = ACTIVIDADES.reduce(function (a, b) { return a + b.asistentes; }, 0);
-    const promedio = (ACTIVIDADES.length && PARTICIPANTES.length)
-      ? Math.round((totalAsistentes / ACTIVIDADES.length) / PARTICIPANTES.length * 100)
-      : 0;
     const pendientes = SEGUIMIENTOS.filter(function (x) { return x.estado !== 'Cerrado'; }).length;
 
     return titulo('Hola, ' + esc(s.nombre),
       '<span class="modulo-tag"><i class="bi bi-houses"></i> Módulo Casas de Vida</span>') +
       '<p class="text-muted">Resumen del módulo de Casas de Vida.</p>' +
       '<div class="row g-3">' +
-      stat('Participantes', PARTICIPANTES.length, 'people') +
-      stat('Casas de Vida', CASAS.length + ' <small class="text-muted fs-6">(' + activas + ' activas)</small>', 'houses') +
-      stat('Asistencia promedio', promedio + '%', 'graph-up') +
+      stat('Participantes', RESUMEN.participantes, 'people') +
+      stat('Casas de Vida', RESUMEN.casas + ' <small class="text-muted fs-6">(' + RESUMEN.casasActivas + ' activas)</small>', 'houses') +
+      stat('Asistencia promedio', RESUMEN.asistenciaPromedio + '%', 'graph-up') +
       stat('Seguimientos abiertos', pendientes, 'clipboard-check') +
       '</div>' +
       '<div class="row g-3 mt-1">' +
       '<div class="col-lg-7"><div class="card p-3 border-0 shadow-sm h-100">' +
-      '<h6 class="mb-3">Últimas actividades registradas</h6>' +
-      tabla(['Casa de Vida', 'Fecha', 'Actividad', 'Asistentes'], ACTIVIDADES.slice(0, 4).map(function (a) {
-        return [esc(a.casa), a.fecha, esc(a.tipo), a.asistentes];
+      '<div class="d-flex justify-content-between align-items-center mb-3"><h6 class="m-0">Últimas actividades registradas</h6>' +
+      (URLS_PVA.asistencia ? '<a class="small text-decoration-none" href="' + URLS_PVA.asistencia + '">Ver asistencia</a>' : '') + '</div>' +
+      tabla(['Casa de Vida', 'Fecha', 'Actividad', 'Asistentes'], RESUMEN.actividades.map(function (a) {
+        return [esc(a.casa), esc(a.fecha), esc(a.tipo), a.asistentes];
       })) +
       '</div></div>' +
       '<div class="col-lg-5"><div class="card p-3 border-0 shadow-sm h-100">' +
@@ -172,92 +131,6 @@ const VISTAS_CASAS = {
       })) +
       '</div></div>' +
       '</div>';
-  },
-
-  participantes: function () {
-    return titulo('Participantes',
-      '<button class="btn btn-ccmg btn-sm" onclick="return mostrarFormulario(\'formParticipante\')">' +
-      '<i class="bi bi-plus-lg me-1"></i>Nuevo participante</button>') +
-      '<div id="formParticipante" class="card p-3 border-0 shadow-sm mb-3 d-none">' +
-      '<form onsubmit="return guardarParticipante(event)">' +
-      '<div class="row g-3">' +
-      '<div class="col-md-6"><label class="form-label">Nombres y apellidos</label><input name="nombre" class="form-control" required></div>' +
-      '<div class="col-md-6"><label class="form-label">Documento de identidad</label><input name="documento" class="form-control" required></div>' +
-      '<div class="col-md-6"><label class="form-label">Fecha de nacimiento</label><input name="nacimiento" type="date" class="form-control" required></div>' +
-      '<div class="col-md-6"><label class="form-label">Teléfono</label><input name="telefono" type="tel" class="form-control" required></div>' +
-      '<div class="col-md-6"><label class="form-label">Casa de Vida</label><select name="casa" class="form-select">' + opcionesCasas() + '</select></div>' +
-      '<div class="col-md-6"><label class="form-label">Función en la Casa de Vida</label>' +
-      '<select name="funcion" class="form-select"><option>Miembro</option><option>Aprendiz</option><option>Anfitrión</option><option>Maestro de niños</option></select></div>' +
-      '</div>' +
-      '<div class="mt-3 d-flex gap-2">' +
-      '<button class="btn btn-ccmg">Guardar participante</button>' +
-      '<button type="button" class="btn btn-light" onclick="return mostrarFormulario(\'formParticipante\')">Cancelar</button>' +
-      '</div></form></div>' +
-      '<input id="buscarParticipante" class="form-control mb-3" placeholder="Buscar por nombre, documento o Casa de Vida...">' +
-      tabla(['Nombre', 'Documento', 'Teléfono', 'Casa de Vida', 'Función', 'Estado'], PARTICIPANTES.map(function (p) {
-        return [
-          esc(p.nombre), esc(p.documento), esc(p.telefono), esc(p.casa), esc(p.funcion),
-          badge(p.estado, p.estado === 'Activo' ? 'ok' : 'pendiente')
-        ];
-      }), { id: 'tParticipantes' });
-  },
-
-  casas: function (s) {
-    const puedeCrear = s.rol === 'pastor' || s.rol === 'supervisor';
-    return titulo('Casas de Vida',
-      puedeCrear
-        ? '<button class="btn btn-ccmg btn-sm" onclick="return mostrarFormulario(\'formCasa\')"><i class="bi bi-plus-lg me-1"></i>Nueva casa</button>'
-        : '') +
-      (puedeCrear
-        ? '<div id="formCasa" class="card p-3 border-0 shadow-sm mb-3 d-none">' +
-          '<form onsubmit="return guardarCasa(event)">' +
-          '<div class="row g-3">' +
-          '<div class="col-md-6"><label class="form-label">Nombre de la Casa de Vida</label><input name="nombre" class="form-control" required></div>' +
-          '<div class="col-md-6"><label class="form-label">Área</label><select name="area" class="form-select"><option>Norte</option><option>Centro</option><option>Sur</option></select></div>' +
-          '<div class="col-md-6"><label class="form-label">Líder</label><input name="lider" class="form-control" required></div>' +
-          '<div class="col-md-6"><label class="form-label">Supervisor</label><input name="supervisor" class="form-control" required></div>' +
-          '<div class="col-md-4"><label class="form-label">Día de reunión</label><select name="dia" class="form-select"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select></div>' +
-          '<div class="col-md-4"><label class="form-label">Hora</label><input name="hora" class="form-control" placeholder="7:00 p. m." required></div>' +
-          '<div class="col-md-4"><label class="form-label">Dirección</label><input name="direccion" class="form-control" required></div>' +
-          '</div>' +
-          '<div class="mt-3 d-flex gap-2"><button class="btn btn-ccmg">Guardar casa</button>' +
-          '<button type="button" class="btn btn-light" onclick="return mostrarFormulario(\'formCasa\')">Cancelar</button></div>' +
-          '</form></div>'
-        : '') +
-      tabla(['Casa de Vida', 'Área', 'Líder', 'Supervisor', 'Reunión', 'Miembros', 'Estado'], CASAS.map(function (c) {
-        const miembros = PARTICIPANTES.filter(function (p) { return p.casa === c.nombre; }).length;
-        return [
-          esc(c.nombre), esc(c.area), esc(c.lider), esc(c.supervisor),
-          esc(c.dia + ' · ' + c.hora), miembros,
-          badge(c.estado, c.estado === 'Activa' ? 'ok' : 'pendiente')
-        ];
-      }));
-  },
-
-  asistencia: function () {
-    return titulo('Registrar asistencia', '<span class="text-muted small">RF · Control de asistencia</span>') +
-      '<div class="card p-3 border-0 shadow-sm mb-3">' +
-      '<form onsubmit="return registrarAsistencia(event)">' +
-      '<div class="row g-3 mb-3">' +
-      '<div class="col-md-4"><label class="form-label">Casa de Vida</label><select class="form-select">' + opcionesCasas() + '</select></div>' +
-      '<div class="col-md-4"><label class="form-label">Tipo de actividad</label><select class="form-select"><option>Reunión semanal</option><option>Visita</option><option>Actividad especial</option></select></div>' +
-      '<div class="col-md-4"><label class="form-label">Fecha</label><input type="date" class="form-control" value="' + hoyISO() + '"></div>' +
-      '</div>' +
-      '<p class="small text-muted mb-2">Marca las personas presentes:</p>' +
-      '<div class="row g-2">' +
-      PARTICIPANTES.map(function (p, i) {
-        return '<div class="col-md-6"><div class="form-check">' +
-          '<input class="form-check-input" type="checkbox" id="as' + i + '" checked>' +
-          '<label class="form-check-label" for="as' + i + '">' + esc(p.nombre) +
-          ' <small class="text-muted">· ' + esc(p.casa) + '</small></label></div></div>';
-      }).join('') +
-      '</div>' +
-      '<button class="btn btn-ccmg mt-3">Guardar asistencia</button>' +
-      '</form></div>' +
-      '<h6 class="mb-2">Historial de actividades</h6>' +
-      tabla(['Casa de Vida', 'Fecha', 'Actividad', 'Asistentes', 'Invitados'], ACTIVIDADES.map(function (a) {
-        return [esc(a.casa), a.fecha, esc(a.tipo), a.asistentes, a.invitados];
-      }));
   },
 
   seguimiento: function (s) {
@@ -345,9 +218,10 @@ function guardarPerfil() {
 /* --------------------------- Menú del módulo --------------------------- */
 const MENU_CASAS = [
   { id: 'inicio', t: 'Inicio', i: 'speedometer2', r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
-  { id: 'participantes', t: 'Participantes', i: 'people', r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
-  { id: 'casas', t: 'Casas de Vida', i: 'houses', r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
-  { id: 'asistencia', t: 'Asistencia', i: 'check2-square', r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
+  { id: 'participantes', t: 'Participantes', i: 'people', url: URLS_PVA.participantes, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
+  { id: 'casas', t: 'Casas de Vida', i: 'houses', url: URLS_PVA.casas, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
+  { id: 'areas', t: 'Áreas', i: 'map', url: URLS_PVA.areas, r: ['pastor'] },
+  { id: 'asistencia', t: 'Asistencia', i: 'check2-square', url: URLS_PVA.asistencia, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'seguimiento', t: 'Seguimiento', i: 'clipboard-check', r: ['pastor', 'supervisor', 'lider'] },
   { id: 'ofrendas', t: 'Ofrendas', i: 'cash-coin', r: ['pastor'] },
   { id: 'reportes', t: 'Reportes', i: 'file-earmark-text', r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
@@ -360,9 +234,6 @@ document.addEventListener('DOMContentLoaded', function () {
     modulo: 'CASAS_VIDA',
     menu: MENU_CASAS,
     vistas: VISTAS_CASAS,
-    defaultId: 'inicio',
-    alMontar: function (id) {
-      if (id === 'participantes') activarBuscador('buscarParticipante', 'tParticipantes');
-    }
+    defaultId: 'inicio'
   });
 });

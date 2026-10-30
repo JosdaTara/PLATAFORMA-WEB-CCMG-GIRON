@@ -1,0 +1,82 @@
+{% extends "pva/base.html" %}
+{% block titulo %}{{ casa.nombre }}{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <h3 class="m-0">{{ casa.nombre }}</h3>
+    {% if casa.activa %}<span class="badge rounded-pill bg-success-subtle text-success-emphasis">Activa</span>{% else %}<span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Inactiva</span>{% endif %}
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'pva:casas' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Volver</a>
+    {% if es_pastor %}
+      <a href="{% url 'pva:casa_editar' casa.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Editar</a>
+      {% url 'pva:casa_detalle' casa.pk as aqui %}
+      {% include "pva/_estado.html" with url_nombre="pva:casa_estado" obj=casa activo=casa.activa next=aqui %}
+    {% endif %}
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card p-3 border-0 shadow-sm h-100">
+      <h6 class="mb-3">Información</h6>
+      <dl class="row mb-0 small">
+        <dt class="col-5">Área</dt><dd class="col-7">{{ casa.id_area.nombre|default:"—" }}</dd>
+        <dt class="col-5">Supervisor</dt><dd class="col-7">{{ casa.id_supervisor.nombre_completo|default:"Sin asignar" }}</dd>
+        <dt class="col-5">Líder</dt><dd class="col-7">{{ casa.id_lider.nombre_completo|default:"Sin asignar" }}</dd>
+        <dt class="col-5">Dirección</dt><dd class="col-7">{{ casa.direccion|default:"—" }}</dd>
+        <dt class="col-5">Equipo de apoyo</dt>
+        <dd class="col-7">
+          {% for e in equipo %}{{ e.id_usuario.nombre_completo }} <span class="text-muted">({{ e.get_funcion_display }})</span>{% if not forloop.last %}<br>{% endif %}{% empty %}Sin asignar{% endfor %}
+        </dd>
+      </dl>
+      {% if es_pastor %}<p class="small text-muted mt-3 mb-0">El equipo de apoyo se asigna desde la gestión de usuarios.</p>{% endif %}
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card p-3 border-0 shadow-sm h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="m-0">Participantes ({{ miembros|length }})</h6>
+        {% if es_pastor %}<a href="{% url 'pva:participante_crear' %}" class="btn btn-sm btn-ccmg"><i class="bi bi-plus-lg me-1"></i>Nuevo participante</a>{% endif %}
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead><tr><th>Nombre</th><th>Teléfono</th></tr></thead>
+          <tbody>
+            {% for p in miembros %}
+              <tr><td><a href="{% url 'pva:participante_detalle' p.pk %}" class="text-decoration-none">{{ p.nombres_apellidos }}</a></td><td>{{ p.telefono|default:"—" }}</td></tr>
+            {% empty %}
+              <tr><td colspan="2" class="text-center text-muted py-3">Sin participantes activos.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card p-3 border-0 shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="m-0">Últimas actividades</h6>
+        <a href="{% url 'pva:asistencia' %}?casa={{ casa.pk }}" class="small text-decoration-none">Ver toda la asistencia</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead><tr><th>Fecha</th><th>Actividad</th><th>Presentes</th><th>Registró</th></tr></thead>
+          <tbody>
+            {% for a in actividades %}
+              <tr>
+                <td>{{ a.fecha|date:"d/m/Y" }}</td>
+                <td><a href="{% url 'pva:asistencia_detalle' a.pk %}" class="text-decoration-none">{{ a.titulo }}</a></td>
+                <td>{{ a.presentes }} / {{ a.total }}</td>
+                <td>{{ a.id_responsable.nombre_completo|default:"—" }}</td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="4" class="text-center text-muted py-3">Aún no hay asistencia registrada.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -41,10 +41,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 {{ sesion_js|json_script:"ccmg-sesion" }}
+{{ resumen_pva|json_script:"pva-resumen" }}
+{{ urls_pva|json_script:"pva-urls" }}
 <script src="{% static 'js/auth.js' %}?v=3"></script>
 <script src="{% static 'js/loader.js' %}?v=3"></script>
-<script src="{% static 'js/panel-common.js' %}?v=3"></script>
-<script src="{% static 'js/panel-casas.js' %}?v=3"></script>
+<script src="{% static 'js/panel-common.js' %}?v=4"></script>
+<script src="{% static 'js/panel-casas.js' %}?v=4"></script>
 <script>setTimeout(function(){var l=document.getElementById('loader');if(l)l.classList.add('hidden');},100);</script>
 </body>
 </html>

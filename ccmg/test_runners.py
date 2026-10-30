@@ -1,4 +1,4 @@
-"""Test runner que gestiona las tablas usuario/rol durante los tests."""
+"""Test runner que crea las tablas del esquema (managed=False) durante los tests."""
 from django.test.runner import DiscoverRunner
 from django.apps import apps
 from django.db import connection
@@ -78,6 +78,67 @@ class CcmgTestRunner(DiscoverRunner):
                     activo boolean DEFAULT true NOT NULL,
                     creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE (id_casa_vida, id_usuario)
+                );
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.participante (
+                    id_participante serial PRIMARY KEY,
+                    nombres_apellidos varchar(150) NOT NULL,
+                    documento_identidad varchar(50) NOT NULL UNIQUE,
+                    fecha_nacimiento date,
+                    telefono varchar(20),
+                    direccion text,
+                    autorizacion_datos boolean DEFAULT false,
+                    estado varchar(10) DEFAULT 'ACTIVO',
+                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+                    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.casa_vida_miembro (
+                    id_casa_vida_miembro serial PRIMARY KEY,
+                    id_casa_vida integer NOT NULL REFERENCES public.casa_vida(id_casa_vida),
+                    id_participante integer NOT NULL REFERENCES public.participante(id_participante),
+                    fecha_ingreso date DEFAULT CURRENT_DATE,
+                    estado varchar(10) DEFAULT 'ACTIVO',
+                    UNIQUE (id_casa_vida, id_participante)
+                );
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.actividad (
+                    id_actividad serial PRIMARY KEY,
+                    tipo_modulo varchar(20) NOT NULL,
+                    id_casa_vida integer REFERENCES public.casa_vida(id_casa_vida),
+                    id_proceso_formacion integer,
+                    titulo varchar(150) NOT NULL,
+                    fecha date NOT NULL,
+                    hora time without time zone,
+                    descripcion text,
+                    id_responsable integer REFERENCES public.usuario(id_usuario),
+                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.asistencia (
+                    id_asistencia serial PRIMARY KEY,
+                    id_actividad integer NOT NULL REFERENCES public.actividad(id_actividad),
+                    id_participante integer NOT NULL REFERENCES public.participante(id_participante),
+                    presente boolean DEFAULT false,
+                    observacion varchar(255),
+                    registrado_por integer REFERENCES public.usuario(id_usuario),
+                    fecha_registro timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE (id_actividad, id_participante)
+                );
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.auditoria (
+                    id_auditoria serial PRIMARY KEY,
+                    id_usuario integer REFERENCES public.usuario(id_usuario),
+                    accion varchar(100) NOT NULL,
+                    entidad varchar(50) NOT NULL,
+                    id_entidad integer,
+                    ip varchar(45),
+                    fecha timestamp without time zone DEFAULT CURRENT_TIMESTAMP
                 );
             """)
             cursor.execute("""

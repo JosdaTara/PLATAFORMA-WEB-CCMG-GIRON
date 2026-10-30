@@ -137,11 +137,13 @@ function iniciarPanelModulo(cfg) {
   if (cambiar) cambiar.classList.toggle('d-none', sesion.rol !== 'pastor');
 
   /* Menú permitido según el rol (control de acceso) */
-  const permitidos = cfg.menu.filter(function (m) { return m.r.indexOf(sesion.rol) !== -1; });
+  let permitidos = cfg.menu.filter(function (m) { return m.r.indexOf(sesion.rol) !== -1; });
 
+  /* Las secciones con `url` son páginas de Django; el resto se pinta aquí */
   menu.innerHTML = permitidos.map(function (m) {
-    return '<a href="#' + m.id + '" data-id="' + m.id + '"><i class="bi bi-' + m.i + ' me-2"></i>' + m.t + '</a>';
+    return '<a href="' + (m.url || '#' + m.id) + '" data-id="' + m.id + '"><i class="bi bi-' + m.i + ' me-2"></i>' + m.t + '</a>';
   }).join('');
+  permitidos = permitidos.filter(function (m) { return !m.url; });
 
   const ir = function () {
     let id = (location.hash || '').slice(1);
