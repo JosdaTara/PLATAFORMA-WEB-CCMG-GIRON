@@ -78,7 +78,7 @@ CREATE TABLE public.actividad (
     hora time without time zone,
     descripcion text,
     id_responsable integer,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT chk_actividad_modulo CHECK ((((tipo_modulo = 'CASA_VIDA'::public.tipo_modulo) AND (id_casa_vida IS NOT NULL) AND (id_proceso_formacion IS NULL)) OR ((tipo_modulo = 'ESCUELAS_FORMACION'::public.tipo_modulo) AND (id_proceso_formacion IS NOT NULL) AND (id_casa_vida IS NULL))))
 );
 
@@ -120,7 +120,7 @@ CREATE TABLE public.area (
     nombre character varying(100) NOT NULL,
     id_supervisor integer,
     estado public.estado_general DEFAULT 'ACTIVO'::public.estado_general,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -163,7 +163,7 @@ CREATE TABLE public.asistencia (
     presente boolean DEFAULT false,
     observacion character varying(255),
     registrado_por integer,
-    fecha_registro timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    fecha_registro timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -206,7 +206,7 @@ CREATE TABLE public.auditoria (
     entidad character varying(50) NOT NULL,
     id_entidad integer,
     ip character varying(45),
-    fecha timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    fecha timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -337,8 +337,8 @@ CREATE TABLE public.casa_vida (
     id_supervisor integer,
     direccion text,
     estado public.estado_general DEFAULT 'ACTIVO'::public.estado_general,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -355,7 +355,7 @@ CREATE TABLE public.casa_vida_equipo (
     id_usuario integer NOT NULL,
     funcion character varying(20) NOT NULL,
     activo boolean DEFAULT true NOT NULL,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT chk_cve_funcion CHECK (((funcion)::text = ANY ((ARRAY['APRENDIZ'::character varying, 'ANFITRION'::character varying, 'MAESTRO_NINOS'::character varying])::text[])))
 );
 
@@ -580,7 +580,7 @@ CREATE TABLE public.ofrenda (
     id_casa_vida integer,
     id_usuario_registro integer,
     observacion text,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -625,8 +625,8 @@ CREATE TABLE public.participante (
     direccion text,
     autorizacion_datos boolean DEFAULT false,
     estado public.estado_general DEFAULT 'ACTIVO'::public.estado_general,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -669,8 +669,8 @@ CREATE TABLE public.proceso_formacion (
     id_coordinador integer NOT NULL,
     descripcion text,
     estado public.estado_general DEFAULT 'ACTIVO'::public.estado_general,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -714,7 +714,7 @@ CREATE TABLE public.reporte (
     periodo character varying(20) NOT NULL,
     observaciones text,
     ruta_archivo character varying(255),
-    enviado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    enviado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -756,7 +756,7 @@ CREATE TABLE public.rol (
     descripcion text,
     acceso_casas_vida boolean DEFAULT false,
     acceso_escuelas_formacion boolean DEFAULT false,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -799,7 +799,7 @@ CREATE TABLE public.seguimiento (
     fecha date DEFAULT CURRENT_DATE NOT NULL,
     observacion text NOT NULL,
     tipo_modulo public.tipo_modulo NOT NULL,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -844,10 +844,10 @@ CREATE TABLE public.usuario (
     id_rol integer NOT NULL,
     activo boolean DEFAULT true,
     intentos_fallidos integer DEFAULT 0,
-    bloqueado_hasta timestamp without time zone,
-    ultimo_acceso timestamp without time zone,
-    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    bloqueado_hasta timestamp with time zone,
+    ultimo_acceso timestamp with time zone,
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     creado_por integer,
     modificado_por integer,
     debe_cambiar_password boolean DEFAULT false NOT NULL

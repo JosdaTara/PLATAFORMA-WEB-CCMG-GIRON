@@ -26,7 +26,7 @@ class CcmgTestRunner(DiscoverRunner):
                     descripcion text,
                     acceso_casas_vida boolean DEFAULT false,
                     acceso_escuelas_formacion boolean DEFAULT false,
-                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
                 );
             """)
             cursor.execute("""
@@ -39,10 +39,10 @@ class CcmgTestRunner(DiscoverRunner):
                     id_rol integer NOT NULL REFERENCES public.rol(id_rol),
                     activo boolean DEFAULT true,
                     intentos_fallidos integer DEFAULT 0,
-                    bloqueado_hasta timestamp without time zone,
-                    ultimo_acceso timestamp without time zone,
-                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-                    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+                    bloqueado_hasta timestamp with time zone,
+                    ultimo_acceso timestamp with time zone,
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
                     creado_por integer REFERENCES public.usuario(id_usuario),
                     modificado_por integer REFERENCES public.usuario(id_usuario)
                 );
@@ -53,7 +53,7 @@ class CcmgTestRunner(DiscoverRunner):
                     nombre varchar(100) NOT NULL,
                     id_supervisor integer REFERENCES public.usuario(id_usuario),
                     estado varchar(10) DEFAULT 'ACTIVO',
-                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
                 );
             """)
             cursor.execute("""
@@ -65,8 +65,8 @@ class CcmgTestRunner(DiscoverRunner):
                     id_supervisor integer REFERENCES public.usuario(id_usuario),
                     direccion text,
                     estado varchar(10) DEFAULT 'ACTIVO',
-                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-                    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
                 );
             """)
             cursor.execute("""
@@ -76,7 +76,7 @@ class CcmgTestRunner(DiscoverRunner):
                     id_usuario integer NOT NULL REFERENCES public.usuario(id_usuario),
                     funcion varchar(20) NOT NULL CHECK (funcion IN ('APRENDIZ', 'ANFITRION', 'MAESTRO_NINOS')),
                     activo boolean DEFAULT true NOT NULL,
-                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE (id_casa_vida, id_usuario)
                 );
             """)
@@ -90,8 +90,8 @@ class CcmgTestRunner(DiscoverRunner):
                     direccion text,
                     autorizacion_datos boolean DEFAULT false,
                     estado varchar(10) DEFAULT 'ACTIVO',
-                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-                    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
                 );
             """)
             cursor.execute("""
@@ -115,7 +115,7 @@ class CcmgTestRunner(DiscoverRunner):
                     hora time without time zone,
                     descripcion text,
                     id_responsable integer REFERENCES public.usuario(id_usuario),
-                    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
                 );
             """)
             cursor.execute("""
@@ -126,7 +126,7 @@ class CcmgTestRunner(DiscoverRunner):
                     presente boolean DEFAULT false,
                     observacion varchar(255),
                     registrado_por integer REFERENCES public.usuario(id_usuario),
-                    fecha_registro timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+                    fecha_registro timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE (id_actividad, id_participante)
                 );
             """)
@@ -138,7 +138,7 @@ class CcmgTestRunner(DiscoverRunner):
                     entidad varchar(50) NOT NULL,
                     id_entidad integer,
                     ip varchar(45),
-                    fecha timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+                    fecha timestamp with time zone DEFAULT CURRENT_TIMESTAMP
                 );
             """)
             cursor.execute("""

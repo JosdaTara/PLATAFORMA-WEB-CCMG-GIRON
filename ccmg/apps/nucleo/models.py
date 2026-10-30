@@ -33,20 +33,3 @@ class Auditoria(models.Model):
         db_table = "auditoria"
         ordering = ["-fecha"]
 
-
-class ConservaCreadoEnModel(models.Model):
-    """Evita reescribir creado_en al actualizar.
-
-    Las columnas son timestamp sin zona horaria y USE_TZ está activo: volver a guardar
-    el valor leído lo desplazaría por la diferencia con UTC en cada edición.
-    """
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        if not self._state.adding and kwargs.get("update_fields") is None:
-            kwargs["update_fields"] = [
-                f.name for f in self._meta.concrete_fields if not f.primary_key and f.name != "creado_en"
-            ]
-        super().save(*args, **kwargs)

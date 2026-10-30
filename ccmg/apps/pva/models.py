@@ -2,8 +2,6 @@ import datetime
 
 from django.db import models
 
-from nucleo.models import ConservaCreadoEnModel
-
 # Valores del tipo enum estado_general de PostgreSQL (RN24: baja lógica).
 ACTIVO = "ACTIVO"
 INACTIVO = "INACTIVO"
@@ -28,7 +26,7 @@ class CasaVidaEquipo(models.Model):
         return f"{self.id_usuario} - {self.id_casa_vida} ({self.funcion})"
 
 
-class CasaVida(ConservaCreadoEnModel):
+class CasaVida(models.Model):
     id_casa_vida = models.AutoField(primary_key=True, db_column="id_casa_vida")
     nombre = models.CharField(max_length=100)
     id_area = models.ForeignKey("Area", models.DO_NOTHING, db_column="id_area", blank=True, null=True)
@@ -52,7 +50,7 @@ class CasaVida(ConservaCreadoEnModel):
         return self.estado != INACTIVO
 
 
-class Area(ConservaCreadoEnModel):
+class Area(models.Model):
     id_area = models.AutoField(primary_key=True, db_column="id_area")
     nombre = models.CharField(max_length=100)
     id_supervisor = models.ForeignKey("cuentas.Usuario", models.DO_NOTHING, db_column="id_supervisor", blank=True, null=True)
@@ -72,7 +70,7 @@ class Area(ConservaCreadoEnModel):
         return self.estado != INACTIVO
 
 
-class Participante(ConservaCreadoEnModel):
+class Participante(models.Model):
     id_participante = models.AutoField(primary_key=True, db_column="id_participante")
     nombres_apellidos = models.CharField(max_length=150)
     documento_identidad = models.CharField(max_length=50, unique=True)

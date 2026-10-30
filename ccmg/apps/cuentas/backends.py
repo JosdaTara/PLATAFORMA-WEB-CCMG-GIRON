@@ -30,12 +30,8 @@ class CcmgAuthBackend(BaseBackend):
             return None
 
         # Bloqueo (RNF20)
-        if user.bloqueado_hasta:
-            bloqueado = user.bloqueado_hasta
-            if timezone.is_naive(bloqueado):
-                bloqueado = timezone.make_aware(bloqueado, timezone.get_current_timezone())
-            if timezone.now() < bloqueado:
-                return None
+        if user.bloqueado_hasta and timezone.now() < user.bloqueado_hasta:
+            return None
 
         if user.check_password(password):
             # Resetear intentos y bloqueo
