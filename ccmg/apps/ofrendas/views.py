@@ -10,7 +10,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 
 from nucleo import exportar
 from nucleo.permissions import puede_gestionar_ofrendas
-from nucleo.utils import registrar_auditoria
+from nucleo.utils import registrar_auditoria, rol_real
 from pva.alcance import es_pastor, rol_de
 from pva.views import ROLES_NOMBRE, menu_casas
 
@@ -37,7 +37,7 @@ class OfrendasMixin(LoginRequiredMixin):
                 {"id": "ofrendas", "t": "Ofrendas", "icono": "cash-coin", "url": reverse("ofrendas:index"), "activo": True},
                 {"id": "panel", "t": "Mi panel", "icono": "arrow-left", "url": reverse("cuentas:panel_por_rol"), "activo": False},
             ]
-        ctx["rol_nombre"] = ROLES_NOMBRE.get(rol_de(user), "Responsable de ofrendas")
+        ctx["rol_nombre"] = ROLES_NOMBRE.get(rol_real(user), "Responsable de ofrendas")
         ctx["es_pastor"] = es_pastor(user)
         return ctx
 

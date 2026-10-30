@@ -135,7 +135,7 @@ function iniciarPanelModulo(cfg) {
   if (elNombre) elNombre.textContent = sesion.nombre;
   if (elRol) {
     const info = ROLES_INFO[sesion.rol];
-    elRol.textContent = info ? info.nombre : sesion.rol;
+    elRol.textContent = sesion.rolNombre || (info ? info.nombre : sesion.rol);
   }
 
   /* Solo el Pastor puede cambiar de módulo */
@@ -144,6 +144,13 @@ function iniciarPanelModulo(cfg) {
 
   /* Menú permitido según el rol (control de acceso) */
   let permitidos = cfg.menu.filter(function (m) { return m.r.indexOf(sesion.rol) !== -1; });
+
+  /* Bitácora de auditoría: solo el Super Administrador */
+  if (sesion.auditoria) {
+    const pos = permitidos.findIndex(function (m) { return m.id === 'perfil'; });
+    permitidos.splice(pos === -1 ? permitidos.length : pos, 0,
+      { id: 'auditoria', t: 'Auditoría', i: 'journal-text', url: sesion.auditoria, r: [sesion.rol] });
+  }
 
   /* Ofrendas: módulo aparte para el Pastor o el responsable que él autorice (RN14) */
   if (sesion.ofrendas) {

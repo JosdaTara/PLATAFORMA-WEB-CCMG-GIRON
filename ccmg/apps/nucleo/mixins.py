@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 
+from nucleo.utils import es_superadmin, rol_efectivo
+
 
 class RoleRequiredMixin(LoginRequiredMixin):
     allowed_roles = []
@@ -11,8 +13,7 @@ class RoleRequiredMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
-        rol = getattr(getattr(request.user, "rol", None), "nombre", None)
-        if rol not in self.allowed_roles:
+        if rol_efectivo(request.user) not in self.allowed_roles:
             raise PermissionDenied("No tienes permiso para acceder a esta vista.")
         return super().dispatch(request, *args, **kwargs)
 
@@ -21,9 +22,19 @@ class PastorRequiredMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
-        rol = getattr(getattr(request.user, "rol", None), "nombre", None)
-        if rol != "PASTOR":
+        if rol_efectivo(request.user) != "PASTOR":
             raise PermissionDenied("Solo el Pastor puede realizar esta acción.")
+        return super().dispatch(request, *args, **kwargs)
+
+
+class SuperAdminRequiredMixin(LoginRequiredMixin):
+    """Funciones reservadas al Super Administrador (desarrollador de la plataforma)."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if not es_superadmin(request.user):
+            raise PermissionDenied("Solo el Super Administrador puede realizar esta acción.")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -52,8 +63,7 @@ class CasaVidaScopeMixin:
     def get_queryset(self):
         qs = super().get_queryset()
         user = self.request.user
-        rol = getattr(user, "rol", None)
-        codigo = getattr(rol, "nombre", None) if rol else None
+        codigo = rol_efectivo(user)
 
         if codigo == "PASTOR":
             return qs

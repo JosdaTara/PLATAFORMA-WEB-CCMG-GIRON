@@ -46,6 +46,16 @@ class UsuarioForm(EstiloBootstrapMixin, forms.ModelForm):
             "responsable_ofrendas": "Puede registrar y consultar ofrendas (RN14). El Pastor siempre tiene este acceso.",
         }
 
+    def __init__(self, *args, editor=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        from nucleo.utils import ROLES_SUPERADMIN, es_superadmin
+
+        roles = Rol.objects.order_by("id_rol")
+        # Solo un Super Administrador puede asignar ese rol.
+        if not es_superadmin(editor):
+            roles = roles.exclude(nombre=ROLES_SUPERADMIN)
+        self.fields["rol"].queryset = roles
+
     def clean_correo(self):
         correo = self.cleaned_data.get("correo", "")
         correo = correo.strip().lower()

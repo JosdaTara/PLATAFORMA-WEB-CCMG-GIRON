@@ -3,13 +3,14 @@
 Toda consulta de Casas de Vida, participantes o asistencia debe pasar por estas
 funciones para que cada rol vea únicamente lo que le corresponde.
 """
-from nucleo.utils import ROLES_APOYO, ROLES_LIDER, ROLES_PASTOR, ROLES_SUPERVISOR
+from nucleo.utils import ROLES_APOYO, ROLES_LIDER, ROLES_PASTOR, ROLES_SUPERVISOR, rol_efectivo
 
 from .models import ACTIVO, Actividad, Area, CasaVida, CasaVidaEquipo, Participante, Reporte, Seguimiento
 
 
 def rol_de(user):
-    return getattr(getattr(user, "rol", None), "nombre", None)
+    """Rol efectivo: el Super Administrador ve y gestiona lo mismo que el Pastor."""
+    return rol_efectivo(user)
 
 
 def es_pastor(user):

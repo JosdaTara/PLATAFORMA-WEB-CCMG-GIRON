@@ -13,7 +13,7 @@ from django.views.generic import CreateView, DetailView, FormView, ListView, Tem
 from nucleo import exportar
 from nucleo.mixins import ModuleRequiredMixin
 from nucleo.permissions import module_required, puede_gestionar_ofrendas
-from nucleo.utils import ROLES_COORD, ROLES_ETIQUETA, ROLES_PASTOR, registrar_auditoria, sesion_js
+from nucleo.utils import ROLES_COORD, ROLES_ETIQUETA, ROLES_PASTOR, es_superadmin, registrar_auditoria, rol_real, sesion_js
 from pva import periodos
 from pva.alcance import es_pastor, rol_de
 from pva.forms import GenerarReporteForm
@@ -56,6 +56,8 @@ def menu_formacion(user, seccion):
         items.append(("ofrendas", "Ofrendas", "cash-coin", reverse("ofrendas:index")))
     if es_pastor(user):
         items.append(("usuarios", "Usuarios", "person-gear", reverse("cuentas:usuarios_list")))
+    if es_superadmin(user):
+        items.append(("auditoria", "Auditoría", "journal-text", reverse("cuentas:auditoria")))
     items.append(("perfil", "Mi perfil", "person-circle", panel + "#perfil"))
     return [{"id": i, "t": t, "icono": ic, "url": url, "activo": i == seccion} for i, t, ic, url in items]
 
@@ -75,7 +77,7 @@ class PanelFormacionMixin(ModuleRequiredMixin):
         ctx = super().get_context_data(**kwargs)
         user = self.request.user
         ctx["menu"] = menu_formacion(user, self.seccion)
-        ctx["rol_nombre"] = ROLES_NOMBRE.get(rol_de(user), "")
+        ctx["rol_nombre"] = ROLES_NOMBRE.get(rol_real(user), "")
         ctx["es_pastor"] = es_pastor(user)
         return ctx
 

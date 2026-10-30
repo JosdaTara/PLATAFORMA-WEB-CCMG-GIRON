@@ -1,0 +1,66 @@
+{% extends "pva/base.html" %}
+{% block titulo %}Bitácora de auditoría{% endblock %}
+{% block marca_sub %}Administración{% endblock %}
+{% block modulo_tag %}<i class="bi bi-journal-text"></i> Bitácora de auditoría{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <h3 class="m-0">Bitácora de auditoría</h3>
+    <span class="text-muted small">Quién creó, modificó, desactivó o importó información, y cuándo (RNF18).</span>
+  </div>
+  {% include "pva/_exportar.html" %}
+</div>
+
+<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label small mb-1" for="usuario">Usuario</label>
+      <select id="usuario" name="usuario" class="form-select">
+        <option value="">Todos</option>
+        {% for u in usuarios_filtro %}<option value="{{ u.pk }}"{% if filtros.usuario == u.pk|stringformat:"s" %} selected{% endif %}>{{ u.nombre_completo }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small mb-1" for="accion">Acción</label>
+      <select id="accion" name="accion" class="form-select">
+        <option value="">Todas</option>
+        {% for a in acciones %}<option value="{{ a }}"{% if filtros.accion == a %} selected{% endif %}>{{ a }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small mb-1" for="entidad">Entidad</label>
+      <select id="entidad" name="entidad" class="form-select">
+        <option value="">Todas</option>
+        {% for clave, nombre in entidades.items %}<option value="{{ clave }}"{% if filtros.entidad == clave %} selected{% endif %}>{{ nombre }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2"><label class="form-label small mb-1" for="desde">Desde</label><input id="desde" name="desde" type="date" value="{{ filtros.desde }}" class="form-control"></div>
+    <div class="col-md-2"><label class="form-label small mb-1" for="hasta">Hasta</label><input id="hasta" name="hasta" type="date" value="{{ filtros.hasta }}" class="form-control"></div>
+    <div class="col-md-1 d-flex gap-1">
+      <button class="btn btn-ccmg flex-fill" title="Filtrar"><i class="bi bi-search"></i><span class="visually-hidden">Filtrar</span></button>
+      <a href="{% url 'cuentas:auditoria' %}" class="btn btn-light" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+  <table class="table table-sm table-hover align-middle mb-0">
+    <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>Id</th><th>IP</th></tr></thead>
+    <tbody>
+      {% for r in registros %}
+        <tr>
+          <td class="text-nowrap">{{ r.fecha|date:"d/m/Y H:i:s" }}</td>
+          <td>{{ r.id_usuario.nombre_completo|default:"—" }}{% if r.id_usuario %} <span class="text-muted small">· {{ r.id_usuario.rol.etiqueta }}</span>{% endif %}</td>
+          <td><span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">{{ r.accion }}</span></td>
+          <td>{% for clave, nombre in entidades.items %}{% if clave == r.entidad %}{{ nombre }}{% endif %}{% endfor %}</td>
+          <td>{{ r.id_entidad|default:"—" }}</td>
+          <td class="small text-muted">{{ r.ip|default:"—" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">No hay registros con estos filtros.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "pva/_paginacion.html" %}
+{% endblock %}

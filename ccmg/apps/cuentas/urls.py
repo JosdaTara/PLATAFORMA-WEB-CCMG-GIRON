@@ -45,4 +45,5 @@ urlpatterns = [
     path("usuarios/<int:pk>/editar/", views.UsuarioUpdateView.as_view(), name="usuarios_editar"),
     path("usuarios/<int:pk>/desactivar/", views.UsuarioDesactivarView.as_view(), name="usuarios_desactivar"),
     path("usuarios/<int:pk>/reactivar/", views.UsuarioReactivarView.as_view(), name="usuarios_reactivar"),
+    path("auditoria/", views.AuditoriaListView.as_view(), name="auditoria"),
 ]

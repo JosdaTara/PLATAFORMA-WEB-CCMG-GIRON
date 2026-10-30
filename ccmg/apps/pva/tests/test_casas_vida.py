@@ -25,6 +25,7 @@ class BaseCasasVida(TestCase):
     @classmethod
     def setUpTestData(cls):
         roles = {
+            "SUPERADMIN": (True, True),
             "PASTOR": (True, True),
             "SUPERVISOR_AREA": (True, False),
             "LIDER_CASA_VIDA": (True, False),
@@ -41,6 +42,7 @@ class BaseCasasVida(TestCase):
                 correo=correo, nombre_completo=correo.split("@")[0].title(), rol=cls.rol[rol], password=CLAVE
             )
 
+        cls.superadmin = usuario("superadmin@ccmg.org", "SUPERADMIN")
         cls.pastor = usuario("pastor@ccmg.org", "PASTOR")
         cls.supervisor = usuario("supervisor@ccmg.org", "SUPERVISOR_AREA")
         cls.supervisor2 = usuario("supervisor2@ccmg.org", "SUPERVISOR_AREA")

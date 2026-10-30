@@ -4,6 +4,9 @@ ROLES_SUPERVISOR = "SUPERVISOR_AREA"
 ROLES_LIDER = "LIDER_CASA_VIDA"
 ROLES_APOYO = "APOYO_CASA_VIDA"
 ROLES_COORD = "COORDINADOR_FORMACION"
+# Desarrollador de la plataforma: tiene todo lo del Pastor, más la bitácora de auditoría
+# y la gestión de otros Super Administradores. El Pastor no lo ve ni lo modifica.
+ROLES_SUPERADMIN = "SUPERADMIN"
 
 MODULO_CASAS_VIDA = "CASAS_VIDA"
 MODULO_ESCUELAS_FORMACION = "ESCUELAS_FORMACION"
@@ -11,6 +14,7 @@ MODULO_AMBOS = "AMBOS"
 
 # Nombre visible de cada rol en la interfaz.
 ROLES_ETIQUETA = {
+    ROLES_SUPERADMIN: "Super Administrador",
     ROLES_PASTOR: "Pastor",
     ROLES_SUPERVISOR: "Supervisor de Área",
     ROLES_LIDER: "Líder de Casa de Vida",
@@ -20,12 +24,27 @@ ROLES_ETIQUETA = {
 
 # Códigos de rol que entiende el JavaScript del panel (auth.js / ROLES_INFO).
 ROLES_JS = {
+    ROLES_SUPERADMIN: "pastor",  # en los menús JS se comporta como el Pastor
     ROLES_PASTOR: "pastor",
     ROLES_SUPERVISOR: "supervisor",
     ROLES_LIDER: "lider",
     ROLES_APOYO: "apoyo",
     ROLES_COORD: "coord",
 }
+
+
+def rol_real(user):
+    return getattr(getattr(user, "rol", None), "nombre", None)
+
+
+def rol_efectivo(user):
+    """Rol con el que se evalúan permisos y alcance: el Super Administrador cuenta como Pastor."""
+    rol = rol_real(user)
+    return ROLES_PASTOR if rol == ROLES_SUPERADMIN else rol
+
+
+def es_superadmin(user):
+    return getattr(user, "is_authenticated", False) and rol_real(user) == ROLES_SUPERADMIN
 
 
 def sesion_js(user):
@@ -44,6 +63,9 @@ def sesion_js(user):
     return {
         "nombre": getattr(user, "nombre_completo", None) or getattr(user, "correo", ""),
         "rol": ROLES_JS.get(getattr(rol, "nombre", None), ""),
+        "rolNombre": ROLES_ETIQUETA.get(getattr(rol, "nombre", None), ""),
+        "superadmin": es_superadmin(user),
+        "auditoria": reverse("cuentas:auditoria") if es_superadmin(user) else None,
         # Enlace al módulo de ofrendas si el usuario está autorizado (RN14).
         "ofrendas": reverse("ofrendas:index") if puede_gestionar_ofrendas(user) else None,
     }

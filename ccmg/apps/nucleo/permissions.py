@@ -6,13 +6,13 @@ from django.urls import reverse
 
 
 def _rol_codigo(request):
+    """Rol efectivo del usuario (el Super Administrador cuenta como Pastor)."""
+    from nucleo.utils import rol_efectivo
+
     user = getattr(request, "user", None)
     if not user or not user.is_authenticated:
         return None
-    rol = getattr(user, "rol", None)
-    if rol is None:
-        return None
-    return getattr(rol, "nombre", None)
+    return rol_efectivo(user)
 
 
 def _acceso_casas_vida(request):
@@ -39,8 +39,9 @@ def puede_gestionar_ofrendas(user):
     """El Pastor o el usuario que él autorice como responsable de ofrendas (RF17, RN14)."""
     if not getattr(user, "is_authenticated", False):
         return False
-    rol = getattr(getattr(user, "rol", None), "nombre", None)
-    return rol == "PASTOR" or bool(getattr(user, "responsable_ofrendas", False))
+    from nucleo.utils import rol_efectivo
+
+    return rol_efectivo(user) == "PASTOR" or bool(getattr(user, "responsable_ofrendas", False))
 
 
 def role_required(*roles):

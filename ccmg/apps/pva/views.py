@@ -19,6 +19,8 @@ from nucleo.utils import (
     ROLES_PASTOR,
     ROLES_SUPERVISOR,
     registrar_auditoria,
+    es_superadmin,
+    rol_real,
     sesion_js,
 )
 
@@ -63,6 +65,7 @@ def menu_casas(user, seccion):
         ("ofrendas", "Ofrendas", "cash-coin", reverse("ofrendas:index"), todos if puede_gestionar_ofrendas(user) else []),
         ("reportes", "Reportes", "file-earmark-text", reverse("pva:reportes"), todos),
         ("usuarios", "Usuarios", "person-gear", reverse("cuentas:usuarios_list"), [ROLES_PASTOR]),
+        ("auditoria", "Auditoría", "journal-text", reverse("cuentas:auditoria"), todos if es_superadmin(user) else []),
         ("perfil", "Mi perfil", "person-circle", panel + "#perfil", todos),
     ]
     return [
@@ -82,7 +85,7 @@ class PanelCasasMixin(ModuleRequiredMixin):
         ctx = super().get_context_data(**kwargs)
         user = self.request.user
         ctx["menu"] = menu_casas(user, self.seccion)
-        ctx["rol_nombre"] = ROLES_NOMBRE.get(rol_de(user), "")
+        ctx["rol_nombre"] = ROLES_NOMBRE.get(rol_real(user), "")
         ctx["es_pastor"] = es_pastor(user)
         return ctx
 

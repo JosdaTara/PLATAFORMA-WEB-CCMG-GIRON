@@ -20,6 +20,7 @@ from pva.models import (
 CLAVE_DEMO = "DemoCCMG-Revision-2026"
 
 USUARIOS = [
+    ("superadmin@demo.test", "Super Admin Demo", "SUPERADMIN"),
     ("pastor@demo.test", "Pastor Demo", "PASTOR"),
     ("supervisor@demo.test", "Carlos Supervisor", "SUPERVISOR_AREA"),
     ("lider@demo.test", "María Líder", "LIDER_CASA_VIDA"),

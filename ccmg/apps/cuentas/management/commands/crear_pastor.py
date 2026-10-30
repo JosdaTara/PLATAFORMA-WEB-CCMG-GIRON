@@ -9,9 +9,12 @@ from cuentas.models import Rol, Usuario
 
 class Command(BaseCommand):
     help = "Crea la primera cuenta con rol Pastor. Pide la contraseña por terminal."
+    # crear_superadmin reutiliza este comando cambiando estos dos valores.
+    ROL = "PASTOR"
+    ETIQUETA = "Pastor"
 
     def handle(self, *args, **options):
-        self.stdout.write("=== Crear cuenta Pastor ===")
+        self.stdout.write(f"=== Crear cuenta {self.ETIQUETA} ===")
 
         correo = input("Correo: ").strip().lower()
         if not correo:
@@ -43,11 +46,10 @@ class Command(BaseCommand):
                 self.stderr.write(f"- {msg}")
             return
 
-        # Buscar rol PASTOR
         try:
-            rol_pastor = Rol.objects.get(nombre="PASTOR")
+            rol = Rol.objects.get(nombre=self.ROL)
         except Rol.DoesNotExist:
-            self.stderr.write("No existe el rol PASTOR en la tabla rol. Verifica la base de datos.")
+            self.stderr.write(f"No existe el rol {self.ROL} en la tabla rol. Ejecute datos_iniciales.sql.")
             return
 
         if Usuario.objects.filter(correo=correo).exists():
@@ -62,9 +64,9 @@ class Command(BaseCommand):
             correo=correo,
             username=username,
             nombre_completo=nombre,
-            rol=rol_pastor,
+            rol=rol,
             activo=True,
             password=password,
         )
 
-        self.stdout.write(self.style.SUCCESS(f"Cuenta Pastor creada: {user.correo} (id={user.id_usuario})"))
+        self.stdout.write(self.style.SUCCESS(f"Cuenta {self.ETIQUETA} creada: {user.correo} (id={user.id_usuario})"))

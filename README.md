@@ -8,7 +8,7 @@
 ![Django](https://img.shields.io/badge/Django-5.2-092E20?logo=django&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white)
-![Pruebas](https://img.shields.io/badge/pruebas-166%20pasando-00674F)
+![Pruebas](https://img.shields.io/badge/pruebas-179%20pasando-00674F)
 ![Requisitos](https://img.shields.io/badge/requisitos%20funcionales-28%2F28-CBB279)
 
 Proyecto de grado · Tecnología en Desarrollo de Sistemas Informáticos · Unidades Tecnológicas de Santander (UTS)
@@ -84,6 +84,7 @@ Están implementados los **28 requisitos funcionales** de la [Especificación de
 ## Roles y permisos
 | Rol | Alcance |
 |---|---|
+| **Super Administrador** (desarrollador) | Todo lo del Pastor en ambos módulos, más la bitácora de auditoría y la gestión de otros Super Administradores. El Pastor no ve ni modifica estas cuentas. |
 | **Pastor** (administrador) | Toda la información de ambos módulos. Gestiona usuarios, Áreas, Casas de Vida y ofrendas. Recibe los reportes generales y genera los consolidados. |
 | **Supervisor de Área** | Solo las Casas de Vida de su Área, en modo de consulta. Recibe los reportes semanales y envía el general al Pastor. |
 | **Líder de Casa de Vida** | Solo su Casa de Vida. Registra la asistencia y envía el reporte semanal. |
@@ -154,11 +155,13 @@ psql -U postgres -d CCMG_GIRON -f ../DOCUMENTACION/03_diseno/base_datos/datos_in
 ### 3. Configurar las variables de entorno
 Copie [`.env.example`](.env.example) como `.env` en la raíz del proyecto y complete los datos de conexión.
 
-### 4. Crear el primer Pastor e iniciar
+### 4. Crear las primeras cuentas e iniciar
 ```bash
-python manage.py crear_pastor     # pide correo, nombre y contraseña (mínimo 15 caracteres)
+python manage.py crear_superadmin   # cuenta del desarrollador: pide correo, nombre y contraseña
+python manage.py crear_pastor       # cuenta del Pastor (mínimo 15 caracteres en la contraseña)
 python manage.py runserver
 ```
+Para convertir una cuenta existente en Super Administrador, sin cambiar su contraseña: `python manage.py crear_superadmin --promover correo@dominio`.
 Abra http://127.0.0.1:8000. Desde la cuenta del Pastor se crean los demás usuarios, las Áreas y las Casas de Vida, o se importan desde Excel.
 
 ## Entorno de demostración
@@ -170,14 +173,14 @@ psql -U postgres -d CCMG_GIRON_demo -f ../DOCUMENTACION/03_diseno/base_datos/dat
 python manage.py sembrar_demo --settings=config.settings.demo
 python manage.py runserver --settings=config.settings.demo
 ```
-Los usuarios de demostración usan el dominio `demo.test` (`pastor@`, `supervisor@`, `lider@`, `apoyo@`, `coordinador@`). Su contraseña es la constante `CLAVE_DEMO` de [`sembrar_demo.py`](ccmg/apps/nucleo/management/commands/sembrar_demo.py). El comando se niega a ejecutarse sobre una base cuyo nombre no contenga «demo».
+Los usuarios de demostración usan el dominio `demo.test` (`superadmin@`, `pastor@`, `supervisor@`, `lider@`, `apoyo@`, `coordinador@`). Su contraseña es la constante `CLAVE_DEMO` de [`sembrar_demo.py`](ccmg/apps/nucleo/management/commands/sembrar_demo.py). El comando se niega a ejecutarse sobre una base cuyo nombre no contenga «demo».
 
 ## Pruebas
 ```bash
 cd ccmg
 python manage.py test --noinput
 ```
-Son **166 pruebas automatizadas** sobre PostgreSQL. Cubren:
+Son **179 pruebas automatizadas** sobre PostgreSQL. Cubren:
 - los permisos y el alcance de cada rol;
 - las reglas de negocio del ERS;
 - los flujos de reportes;
@@ -198,7 +201,7 @@ Son **166 pruebas automatizadas** sobre PostgreSQL. Cubren:
   - bloqueo tras 5 intentos fallidos;
   - cambio obligatorio de la contraseña temporal (RNF05, RNF19, RNF20).
 - **Control de acceso** por rol y por alcance, siempre en el servidor (RNF04, RNF06).
-- **Auditoría:** quién creó, modificó, desactivó o importó cada registro, y cuándo (RNF18).
+- **Auditoría:** quién inició sesión, creó, modificó, desactivó o importó cada registro, y cuándo, consultable y exportable por el Super Administrador (RNF18).
 - **Ley 1581 de 2012:**
   - autorización de tratamiento de datos para cada participante;
   - aviso de confidencialidad en los reportes exportados (RN23, RNF16).

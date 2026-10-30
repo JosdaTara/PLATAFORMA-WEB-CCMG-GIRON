@@ -10,7 +10,8 @@ INSERT INTO public.rol (id_rol, nombre, descripcion, acceso_casas_vida, acceso_e
     (2, 'SUPERVISOR_AREA',       'Supervisor de Área',                       true,  false),
     (3, 'LIDER_CASA_VIDA',       'Líder de Casa de Vida',                    true,  false),
     (4, 'APOYO_CASA_VIDA',       'Aprendiz / Anfitrión / Maestro de Niños',  true,  false),
-    (5, 'COORDINADOR_FORMACION', 'Coordinador de Formación',                 false, true)
+    (5, 'COORDINADOR_FORMACION', 'Coordinador de Formación',                 false, true),
+    (6, 'SUPERADMIN',            'Super Administrador (desarrollador)',      true,  true)
 ON CONFLICT (id_rol) DO NOTHING;
 
 SELECT setval(pg_get_serial_sequence('public.rol', 'id_rol'), (SELECT MAX(id_rol) FROM public.rol));

@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -10,9 +12,11 @@ from django.db import transaction
 import secrets
 import string
 
-from nucleo.mixins import PastorRequiredMixin
+from nucleo import exportar
+from nucleo.exportar import ExportableMixin
+from nucleo.mixins import PastorRequiredMixin, SuperAdminRequiredMixin
 from nucleo.permissions import pastor_required
-from nucleo.utils import sesion_js
+from nucleo.utils import ROLES_SUPERADMIN, es_superadmin, registrar_auditoria, rol_efectivo, sesion_js
 
 from .forms import CcmgPasswordChangeForm, LoginForm, UsuarioForm, UsuarioAsignacionForm
 from .models import Usuario, Rol
@@ -47,6 +51,7 @@ def login_view(request):
             user = authenticate(request, username=u, password=c)
             if user is not None:
                 login(request, user)
+                registrar_auditoria(request, "INICIAR_SESION", user)
                 return redirect("cuentas:panel_por_rol")
             error = "Usuario o contraseña incorrectos."
     else:
@@ -63,8 +68,7 @@ def logout_view(request):
 def panel_por_rol(request):
     user = request.user
     rol = getattr(user, "rol", None)
-    codigo = getattr(rol, "nombre", None)
-    if codigo == "PASTOR":
+    if rol_efectivo(user) == "PASTOR":
         return redirect("cuentas:selector_modulo")
     if getattr(rol, "acceso_casas_vida", False):
         return redirect("pva:panel")
@@ -89,12 +93,20 @@ class AdminUsuariosMixin:
         from pva.views import ROLES_NOMBRE, menu_casas
 
         ctx = super().get_context_data(**kwargs)
-        ctx["menu"] = menu_casas(self.request.user, "usuarios")
+        ctx["menu"] = menu_casas(self.request.user, getattr(self, "seccion", "usuarios"))
         ctx["rol_nombre"] = ROLES_NOMBRE.get(self.request.user.rol.nombre, "")
         ctx["es_pastor"] = True
         # Para mostrar solo los campos de asignación que aplican al rol elegido.
         ctx["roles_codigos"] = dict(Rol.objects.values_list("id_rol", "nombre"))
         return ctx
+
+
+def usuarios_gestionables(editor):
+    """Usuarios que el editor puede ver y modificar: el Pastor no ve a los Super Administradores."""
+    qs = Usuario.objects.all()
+    if not es_superadmin(editor):
+        qs = qs.exclude(rol__nombre=ROLES_SUPERADMIN)
+    return qs
 
 
 def asignacion_actual(user):
@@ -118,7 +130,7 @@ class UsuarioListView(AdminUsuariosMixin, PastorRequiredMixin, ListView):
     context_object_name = "usuarios"
 
     def get_queryset(self):
-        return Usuario.objects.all().select_related("rol").order_by("-activo", "rol__id_rol", "nombre_completo")
+        return usuarios_gestionables(self.request.user).select_related("rol").order_by("-activo", "rol__id_rol", "nombre_completo")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -134,6 +146,11 @@ class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
     template_name = "cuentas/usuarios/formulario.html"
     success_url = reverse_lazy("cuentas:usuarios_list")
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["editor"] = self.request.user
+        return kwargs
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["form_asig"] = UsuarioAsignacionForm(self.request.POST or None)
@@ -141,7 +158,8 @@ class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
         return ctx
 
     def post(self, request, *args, **kwargs):
-        form = UsuarioForm(request.POST)
+        self.object = None  # CreateView lo necesita para volver a mostrar el formulario con errores
+        form = UsuarioForm(request.POST, editor=request.user)
         form_asig = UsuarioAsignacionForm(request.POST)
         if form.is_valid() and form_asig.is_valid():
             try:
@@ -197,6 +215,7 @@ class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
 
                     request.session["password_generada"] = pwd
                     request.session["usuario_creado"] = user.correo
+                    registrar_auditoria(request, "CREAR", user)
                     messages.success(request, "Usuario creado correctamente.")
                     return redirect(self.success_url)
             except Exception as e:
@@ -212,6 +231,14 @@ class UsuarioUpdateView(AdminUsuariosMixin, PastorRequiredMixin, UpdateView):
     template_name = "cuentas/usuarios/formulario.html"
     success_url = reverse_lazy("cuentas:usuarios_list")
 
+    def get_queryset(self):
+        return usuarios_gestionables(self.request.user)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["editor"] = self.request.user
+        return kwargs
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["form_asig"] = UsuarioAsignacionForm(self.request.POST or None, initial=asignacion_actual(self.object))
@@ -220,7 +247,7 @@ class UsuarioUpdateView(AdminUsuariosMixin, PastorRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = UsuarioForm(request.POST, instance=self.object)
+        form = UsuarioForm(request.POST, instance=self.object, editor=request.user)
         form_asig = UsuarioAsignacionForm(request.POST)
         if form.is_valid() and form_asig.is_valid():
             try:
@@ -282,6 +309,7 @@ class UsuarioUpdateView(AdminUsuariosMixin, PastorRequiredMixin, UpdateView):
                         CasaVidaEquipo.objects.filter(id_usuario=user, activo=True).update(activo=False)
                         CasaVidaEquipo.objects.create(id_casa_vida=casa, id_usuario=user, funcion=funcion, activo=True)
 
+                    registrar_auditoria(request, "ACTUALIZAR", user)
                     messages.success(request, "Usuario actualizado correctamente.")
                     return redirect(self.success_url)
             except Exception:
@@ -292,10 +320,14 @@ class UsuarioUpdateView(AdminUsuariosMixin, PastorRequiredMixin, UpdateView):
 
 class UsuarioDesactivarView(PastorRequiredMixin, View):
     def post(self, request, pk):
-        user = get_object_or_404(Usuario, pk=pk)
+        user = get_object_or_404(usuarios_gestionables(request.user), pk=pk)
         if user == request.user:
             messages.error(request, "No puedes desactivarte a ti mismo.")
             return redirect("cuentas:usuarios_list")
+        if getattr(user.rol, "nombre", None) == ROLES_SUPERADMIN:
+            if Usuario.objects.filter(rol__nombre=ROLES_SUPERADMIN, activo=True).count() <= 1:
+                messages.error(request, "No puedes dejar el sistema sin ningún Super Administrador activo.")
+                return redirect("cuentas:usuarios_list")
         if getattr(user.rol, "nombre", None) == "PASTOR":
             activos = Usuario.objects.filter(rol__nombre="PASTOR", activo=True).count()
             if activos <= 1:
@@ -319,15 +351,96 @@ class UsuarioDesactivarView(PastorRequiredMixin, View):
             data = s.get_decoded()
             if data.get("_auth_user_id") == str(user.pk):
                 s.delete()
+        registrar_auditoria(request, "DESACTIVAR", user)
         messages.success(request, "Usuario desactivado correctamente.")
         return redirect("cuentas:usuarios_list")
 
 
 class UsuarioReactivarView(PastorRequiredMixin, View):
     def post(self, request, pk):
-        user = get_object_or_404(Usuario, pk=pk)
+        user = get_object_or_404(usuarios_gestionables(request.user), pk=pk)
         user.activo = True
         user.modificado_por = request.user
         user.save(update_fields=["activo", "modificado_por"])
+        registrar_auditoria(request, "REACTIVAR", user)
         messages.success(request, "Usuario reactivado correctamente.")
         return redirect("cuentas:usuarios_list")
+
+
+# ----------------------------------------------------------------- Bitácora de auditoría
+
+ENTIDADES_AUDITORIA = {
+    "usuario": "Usuario",
+    "area": "Área",
+    "casa_vida": "Casa de Vida",
+    "participante": "Participante",
+    "actividad": "Actividad y asistencia",
+    "seguimiento": "Seguimiento",
+    "reporte": "Reporte",
+    "ofrenda": "Ofrenda",
+    "proceso_formacion": "Proceso de formación",
+    "inscripcion_formacion": "Inscripción de formación",
+}
+
+
+class AuditoriaListView(AdminUsuariosMixin, SuperAdminRequiredMixin, ExportableMixin, ListView):
+    """Quién hizo qué y cuándo en la plataforma (RNF18). Solo para el Super Administrador."""
+
+    template_name = "cuentas/auditoria.html"
+    context_object_name = "registros"
+    seccion = "auditoria"
+    paginate_by = 50
+
+    def get_queryset(self):
+        from nucleo.models import Auditoria
+
+        qs = Auditoria.objects.select_related("id_usuario", "id_usuario__rol")
+        g = self.request.GET
+        if g.get("usuario", "").isdigit():
+            qs = qs.filter(id_usuario=g["usuario"])
+        if g.get("accion"):
+            qs = qs.filter(accion=g["accion"])
+        if g.get("entidad"):
+            qs = qs.filter(entidad=g["entidad"])
+        for campo, lookup in (("desde", "fecha__date__gte"), ("hasta", "fecha__date__lte")):
+            try:
+                qs = qs.filter(**{lookup: datetime.date.fromisoformat(g.get(campo, ""))})
+            except ValueError:
+                pass
+        return qs.order_by("-fecha", "-id_auditoria")
+
+    def get_context_data(self, **kwargs):
+        from nucleo.models import Auditoria
+
+        ctx = super().get_context_data(**kwargs)
+        ctx["usuarios_filtro"] = Usuario.objects.filter(
+            pk__in=Auditoria.objects.values("id_usuario")
+        ).order_by("nombre_completo")
+        ctx["acciones"] = Auditoria.objects.order_by("accion").values_list("accion", flat=True).distinct()
+        ctx["entidades"] = ENTIDADES_AUDITORIA
+        ctx["filtros"] = self.request.GET
+        params = self.request.GET.copy()
+        params.pop("page", None)
+        params.pop("formato", None)
+        ctx["query_sin_pagina"] = params.urlencode()
+        return ctx
+
+    def documento_exportable(self, ctx):
+        g = self.request.GET
+        desde, hasta = g.get("desde") or "el inicio", g.get("hasta") or "hoy"
+        return exportar.Documento(
+            titulo="Bitácora de auditoría",
+            periodo=f"Desde {desde} hasta {hasta}",
+            datos=[("Acción", g.get("accion") or "Todas"),
+                   ("Entidad", ENTIDADES_AUDITORIA.get(g.get("entidad"), "Todas")),
+                   ("Registros", self.object_list.count())],
+            tablas=[exportar.Tabla(
+                "Registros",
+                [("Fecha", exportar.TEXTO), ("Usuario", exportar.TEXTO), ("Acción", exportar.TEXTO),
+                 ("Entidad", exportar.TEXTO), ("Id", exportar.ENTERO), ("IP", exportar.TEXTO)],
+                [[r.fecha, r.id_usuario.nombre_completo if r.id_usuario_id else "—", r.accion,
+                  ENTIDADES_AUDITORIA.get(r.entidad, r.entidad), r.id_entidad, r.ip or ""]
+                 for r in self.object_list[:5000]],
+            )],
+            nombre_archivo="bitacora_auditoria",
+        )
