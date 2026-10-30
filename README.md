@@ -171,8 +171,9 @@ createdb -U postgres CCMG_GIRON_demo
 psql -U postgres -d CCMG_GIRON_demo -f ../DOCUMENTACION/03_diseno/base_datos/esquema.sql
 psql -U postgres -d CCMG_GIRON_demo -f ../DOCUMENTACION/03_diseno/base_datos/datos_iniciales.sql
 python manage.py sembrar_demo --settings=config.settings.demo
-python manage.py runserver --settings=config.settings.demo
+python manage.py runserver 8001 --settings=config.settings.demo
 ```
+La demo corre en http://127.0.0.1:8001, aparte de la plataforma real (puerto 8000): **cada una usa su propia base de datos**, así que las cuentas de una no sirven en la otra.
 Los usuarios de demostración usan el dominio `demo.test` (`superadmin@`, `pastor@`, `supervisor@`, `lider@`, `apoyo@`, `coordinador@`). Su contraseña es la constante `CLAVE_DEMO` de [`sembrar_demo.py`](ccmg/apps/nucleo/management/commands/sembrar_demo.py). El comando se niega a ejecutarse sobre una base cuyo nombre no contenga «demo».
 
 ## Pruebas
