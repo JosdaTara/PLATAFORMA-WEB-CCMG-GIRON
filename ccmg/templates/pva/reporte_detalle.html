@@ -6,7 +6,10 @@
     <h3 class="m-0">{% if reporte.es_general %}Reporte general · {{ reporte.id_area.nombre }}{% else %}Reporte semanal · {{ reporte.id_casa_vida.nombre }}{% endif %}</h3>
     <span class="text-muted">{{ reporte.fecha_inicio|date:"d/m/Y" }} al {{ reporte.fecha_fin|date:"d/m/Y" }}</span>
   </div>
-  <a href="{% url 'pva:reportes' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Volver</a>
+  <div class="d-flex gap-2">
+    {% include "pva/_exportar.html" %}
+    <a href="{% url 'pva:reportes' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Volver</a>
+  </div>
 </div>
 
 <div class="card p-3 border-0 shadow-sm mb-3">

@@ -1,0 +1,7 @@
+{% comment %}Botones de exportación (RF27): repiten la consulta actual con ?formato=pdf|xlsx.{% endcomment %}
+{% with q=request.GET.urlencode %}
+<div class="btn-group btn-group-sm" role="group" aria-label="Exportar reporte">
+  <a class="btn btn-outline-secondary" href="?{% if q %}{{ q }}&amp;{% endif %}formato=pdf"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</a>
+  <a class="btn btn-outline-secondary" href="?{% if q %}{{ q }}&amp;{% endif %}formato=xlsx"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
+</div>
+{% endwith %}

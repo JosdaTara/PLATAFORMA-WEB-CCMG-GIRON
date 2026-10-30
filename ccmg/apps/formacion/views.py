@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, UpdateView, View
 
+from nucleo import exportar
 from nucleo.mixins import ModuleRequiredMixin
 from nucleo.permissions import module_required, puede_gestionar_ofrendas
 from nucleo.utils import ROLES_COORD, ROLES_PASTOR, registrar_auditoria, sesion_js
@@ -594,7 +595,7 @@ class SeguimientoUpdateView(SeguimientoFormMixin, UpdateView):
 # ----------------------------------------------------------------- Reportes
 
 
-class ReporteFormacionView(PanelFormacionMixin, TemplateView):
+class ReporteFormacionView(exportar.ExportableMixin, PanelFormacionMixin, TemplateView):
     """Reporte por periodo de los procesos del usuario (RF15, RF16, HU-27, HU-30, HU-33)."""
 
     template_name = "formacion/reporte.html"
@@ -668,3 +669,26 @@ class ReporteFormacionView(PanelFormacionMixin, TemplateView):
             hay_datos=any(f["actividades"] or f["nuevos"] or f["seguimientos"] for f in filas),
         )
         return ctx
+
+    def documento_exportable(self, ctx):
+        if "periodo" not in ctx:
+            return None
+        g = self.request.GET
+        tipo = dict(ProcesoFormacion.TIPOS).get(g.get("tipo_proceso"), "Todas")
+        proceso = ctx["procesos_filtro"].filter(pk=g["proceso"]).first() if g.get("proceso", "").isdigit() else None
+        return exportar.Documento(
+            titulo="Reporte de Escuelas de Formación",
+            periodo=f"{ctx['periodo'].nombre} ({ctx['periodo'].inicio:%d/%m/%Y} al {ctx['periodo'].fin:%d/%m/%Y})",
+            datos=[("Escuela", tipo), ("Proceso", proceso or "Todos")],
+            tablas=[exportar.Tabla(
+                "Procesos de formación",
+                [("Escuela", exportar.TEXTO), ("Proceso", exportar.TEXTO), ("Actividades", exportar.ENTERO),
+                 ("Presentes", exportar.ENTERO), ("Registros", exportar.ENTERO), ("Asistencia", exportar.PORCENTAJE),
+                 ("Inscritos", exportar.ENTERO), ("Nuevos", exportar.ENTERO), ("Seguimientos", exportar.ENTERO)],
+                [[f["proceso"].get_tipo_proceso_display(), f["proceso"].nombre, f["actividades"], f["presentes"],
+                  f["registros"], f["porcentaje"], f["inscritos"], f["nuevos"], f["seguimientos"]] for f in ctx["filas"]],
+                total=["Total", "", *[ctx["total"][k] for k in ("actividades", "presentes", "registros", "porcentaje",
+                                                                "inscritos", "nuevos", "seguimientos")]],
+            )],
+            nombre_archivo=f"reporte_formacion_{ctx['periodo'].etiqueta}",
+        )

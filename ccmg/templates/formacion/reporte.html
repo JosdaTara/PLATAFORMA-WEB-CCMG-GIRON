@@ -34,7 +34,10 @@
 </form>
 
 {% if periodo %}
-  <h5 class="mb-1">{{ periodo.nombre }}</h5>
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <h5 class="mb-1">{{ periodo.nombre }}</h5>
+    {% include "pva/_exportar.html" %}
+  </div>
   <p class="text-muted small">Del {{ periodo.inicio|date:"d/m/Y" }} al {{ periodo.fin|date:"d/m/Y" }}</p>
   {% if not hay_datos %}<div class="alert alert-info">No hay información registrada en este periodo con los filtros elegidos.</div>{% endif %}
 
@@ -69,6 +72,5 @@
       {% endif %}
     </table>
   </div>
-  <p class="small text-muted mt-3 mb-0">La exportación a PDF o Excel corresponde a RF27.</p>
 {% endif %}
 {% endblock %}

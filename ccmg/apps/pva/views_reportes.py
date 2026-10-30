@@ -14,6 +14,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import DetailView, FormView, TemplateView
 
+from nucleo import exportar
 from nucleo.utils import ROLES_APOYO, ROLES_LIDER, ROLES_PASTOR, ROLES_SUPERVISOR, registrar_auditoria
 
 from . import periodos
@@ -45,6 +46,18 @@ def resumen_actividades(casa, inicio, fin):
         "registros": registros,
         "porcentaje": round(presentes * 100 / registros) if registros else 0,
     }
+
+
+def _tabla_actividades(ctx):
+    return exportar.Tabla(
+        "Actividades y asistencia",
+        [("Fecha", exportar.FECHA), ("Actividad", exportar.TEXTO), ("Presentes", exportar.ENTERO),
+         ("Registros", exportar.ENTERO), ("Registró", exportar.TEXTO)],
+        [[a.fecha, a.titulo, a.presentes, a.total, a.id_responsable.nombre_completo if a.id_responsable else ""]
+         for a in ctx["actividades"]],
+        total=["Total", f"Asistencia {ctx['porcentaje']}%", ctx["presentes"], ctx["registros"], ""] if ctx["actividades"] else None,
+        vacio="No hay asistencia registrada en esta semana.",
+    )
 
 
 def solo_roles(*roles):
@@ -94,7 +107,7 @@ class ReporteListView(PanelCasasMixin, TemplateView):
         return ctx
 
 
-class ReporteDetailView(PanelCasasMixin, DetailView):
+class ReporteDetailView(exportar.ExportableMixin, PanelCasasMixin, DetailView):
     template_name = "pva/reporte_detalle.html"
     context_object_name = "reporte"
     seccion = "reportes"
@@ -124,6 +137,38 @@ class ReporteDetailView(PanelCasasMixin, DetailView):
         else:
             ctx.update(resumen_actividades(r.id_casa_vida, r.fecha_inicio, r.fecha_fin))
         return ctx
+
+    def documento_exportable(self, ctx):
+        r = self.object
+        if r.es_general:
+            return exportar.Documento(
+                titulo=f"Reporte general · Área {r.id_area.nombre}",
+                periodo=f"{r.fecha_inicio:%d/%m/%Y} al {r.fecha_fin:%d/%m/%Y} ({r.periodo})",
+                datos=[("Supervisor", r.id_usuario_envia.nombre_completo), ("Enviado", r.enviado_en),
+                       ("Observaciones", r.observaciones or "—")],
+                tablas=[exportar.Tabla(
+                    "Reportes de las Casas de Vida",
+                    [("Casa de Vida", exportar.TEXTO), ("Semana", exportar.TEXTO), ("Actividades", exportar.ENTERO),
+                     ("Presentes", exportar.ENTERO), ("Registros", exportar.ENTERO), ("Asistencia", exportar.PORCENTAJE),
+                     ("Observaciones del equipo", exportar.TEXTO)],
+                    [[f["reporte"].id_casa_vida.nombre, f"{f['reporte'].fecha_inicio:%d/%m} – {f['reporte'].fecha_fin:%d/%m}",
+                      len(f["actividades"]), f["presentes"], f["registros"], f["porcentaje"], f["reporte"].observaciones or ""]
+                     for f in ctx["filas"]],
+                    total=["Total", "", sum(len(f["actividades"]) for f in ctx["filas"]), ctx["total"]["presentes"],
+                           ctx["total"]["registros"], ctx["total"]["porcentaje"], ""],
+                )],
+                nombre_archivo=f"reporte_general_{r.id_area.nombre}_{r.periodo}",
+            )
+        return exportar.Documento(
+            titulo=f"Reporte semanal · {r.id_casa_vida.nombre}",
+            periodo=f"{r.fecha_inicio:%d/%m/%Y} al {r.fecha_fin:%d/%m/%Y} ({r.periodo})",
+            datos=[("Área", r.id_casa_vida.id_area.nombre if r.id_casa_vida.id_area_id else "—"),
+                   ("Enviado por", r.id_usuario_envia.nombre_completo),
+                   ("Enviado a", r.id_usuario_destino.nombre_completo if r.id_usuario_destino else "Supervisor de Área"),
+                   ("Enviado", r.enviado_en), ("Observaciones", r.observaciones or "—")],
+            tablas=[_tabla_actividades(ctx)],
+            nombre_archivo=f"reporte_{r.id_casa_vida.nombre}_{r.periodo}",
+        )
 
 
 class EnviarReporteCasaView(solo_roles(ROLES_LIDER, ROLES_APOYO), PanelCasasMixin, FormView):
@@ -260,7 +305,7 @@ class EnviarReporteGeneralView(solo_roles(ROLES_SUPERVISOR), PanelCasasMixin, Fo
         return redirect("pva:reporte_detalle", pk=reporte.pk)
 
 
-class GenerarReporteView(solo_roles(ROLES_PASTOR), PanelCasasMixin, TemplateView):
+class GenerarReporteView(exportar.ExportableMixin, solo_roles(ROLES_PASTOR), PanelCasasMixin, TemplateView):
     """Reporte consolidado semanal, mensual o anual del Pastor (RF16, CU04). No se guarda ni se envía."""
 
     template_name = "pva/reporte_generar.html"
@@ -349,3 +394,36 @@ class GenerarReporteView(solo_roles(ROLES_PASTOR), PanelCasasMixin, TemplateView
             "generales": generales,
             "hay_datos": any(f["actividades"] or f["reportes"] or f["seguimientos"] or f["nuevos"] for f in filas),
         }
+
+    def documento_exportable(self, ctx):
+        if "periodo" not in ctx:
+            return None
+        form = ctx["form"]
+        filtros = [("Área", form.cleaned_data["area"] or "Todas"), ("Casa de Vida", form.cleaned_data["casa"] or "Todas"),
+                   ("Reportes semanales esperados por casa", ctx["semanas_esperadas"])]
+        return exportar.Documento(
+            titulo="Reporte consolidado de Casas de Vida",
+            periodo=f"{ctx['periodo'].nombre} ({ctx['periodo'].inicio:%d/%m/%Y} al {ctx['periodo'].fin:%d/%m/%Y})",
+            datos=filtros,
+            tablas=[
+                exportar.Tabla(
+                    "Casas de Vida",
+                    [("Área", exportar.TEXTO), ("Casa de Vida", exportar.TEXTO), ("Actividades", exportar.ENTERO),
+                     ("Presentes", exportar.ENTERO), ("Registros", exportar.ENTERO), ("Asistencia", exportar.PORCENTAJE),
+                     ("Participantes", exportar.ENTERO), ("Nuevos", exportar.ENTERO), ("Seguimientos", exportar.ENTERO),
+                     ("Reportes enviados", exportar.ENTERO)],
+                    [[f["casa"].id_area.nombre if f["casa"].id_area_id else "", f["casa"].nombre, f["actividades"], f["presentes"],
+                      f["registros"], f["porcentaje"], f["participantes"], f["nuevos"], f["seguimientos"], f["reportes"]]
+                     for f in ctx["filas"]],
+                    total=["Total", "", *[ctx["total"][k] for k in ("actividades", "presentes", "registros", "porcentaje",
+                                                                    "participantes", "nuevos", "seguimientos", "reportes")]],
+                ),
+                exportar.Tabla(
+                    "Reportes generales de los Supervisores",
+                    [("Mes", exportar.TEXTO), ("Área", exportar.TEXTO), ("Supervisor", exportar.TEXTO), ("Observaciones", exportar.TEXTO)],
+                    [[r.periodo, r.id_area.nombre, r.id_usuario_envia.nombre_completo, r.observaciones or ""] for r in ctx["generales"]],
+                    vacio="Ningún Supervisor ha enviado reportes generales en este periodo.",
+                ),
+            ],
+            nombre_archivo=f"reporte_casas_de_vida_{ctx['periodo'].etiqueta}",
+        )

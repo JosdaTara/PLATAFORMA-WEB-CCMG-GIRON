@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
 
+from nucleo import exportar
 from nucleo.permissions import puede_gestionar_ofrendas
 from nucleo.utils import registrar_auditoria
 from pva.alcance import es_pastor, rol_de
@@ -41,7 +42,7 @@ class OfrendasMixin(LoginRequiredMixin):
         return ctx
 
 
-class OfrendaListView(OfrendasMixin, ListView):
+class OfrendaListView(exportar.ExportableMixin, OfrendasMixin, ListView):
     template_name = "ofrendas/lista.html"
     context_object_name = "ofrendas"
     paginate_by = 25
@@ -71,6 +72,32 @@ class OfrendaListView(OfrendasMixin, ListView):
         params.pop("page", None)
         ctx["query_sin_pagina"] = params.urlencode()
         return ctx
+
+    def documento_exportable(self, ctx):
+        d = self.filtro.cleaned_data if self.filtro.is_bound and self.filtro.is_valid() else {}
+        desde, hasta = d.get("desde"), d.get("hasta")
+        if desde or hasta:
+            periodo = f"{desde:%d/%m/%Y}" if desde else "Desde el inicio"
+            periodo += f" al {hasta:%d/%m/%Y}" if hasta else " a la fecha"
+        else:
+            periodo = "Todas las fechas"
+        ofrendas = self.object_list  # todas las filas filtradas, no solo la página visible
+        return exportar.Documento(
+            titulo="Ofrendas",
+            periodo=periodo,
+            datos=[("Casa de Vida", d.get("casa") or "Todas"), ("Concepto", d.get("q") or "Todos"),
+                   ("Registros", ctx["cantidad"])],
+            tablas=[exportar.Tabla(
+                "Ofrendas registradas",
+                [("Fecha", exportar.FECHA), ("Concepto", exportar.TEXTO), ("Casa de Vida", exportar.TEXTO),
+                 ("Valor", exportar.PESOS), ("Registró", exportar.TEXTO), ("Observaciones", exportar.TEXTO)],
+                [[o.fecha, o.concepto, o.id_casa_vida.nombre if o.id_casa_vida_id else "General", o.valor,
+                  o.id_usuario_registro.nombre_completo if o.id_usuario_registro_id else "", o.observacion or ""]
+                 for o in ofrendas],
+                total=["Total", "", "", ctx["total"], "", ""],
+            )],
+            nombre_archivo="ofrendas",
+        )
 
 
 class OfrendaFormMixin(OfrendasMixin):

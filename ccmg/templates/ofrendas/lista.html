@@ -6,7 +6,10 @@
 {% block contenido %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <h3 class="m-0">Ofrendas</h3>
-  <a href="{% url 'ofrendas:crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-plus-lg me-1"></i>Registrar ofrenda</a>
+  <div class="d-flex gap-2">
+    {% include "pva/_exportar.html" %}
+    <a href="{% url 'ofrendas:crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-plus-lg me-1"></i>Registrar ofrenda</a>
+  </div>
 </div>
 
 <form method="get" class="card p-3 border-0 shadow-sm mb-3" novalidate>
