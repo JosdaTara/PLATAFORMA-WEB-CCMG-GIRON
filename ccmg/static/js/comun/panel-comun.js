@@ -1,6 +1,6 @@
 /* =====================================================================
    CCMG PVA · Utilidades compartidas de los paneles de módulo
-   Requiere: js/auth.js cargado antes (usa requiereSesion y ROLES_INFO)
+   Requiere: js/cuentas/auth.js cargado antes (usa requiereSesion y ROLES_INFO)
    ===================================================================== */
 
 /* Escapa texto para insertarlo como HTML */

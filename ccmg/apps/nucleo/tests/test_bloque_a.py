@@ -42,19 +42,15 @@ class BloqueATests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_no_sessionstorage_in_templates(self):
-        base = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "templates")
-        if os.path.exists(base):
+        from django.conf import settings
+
+        revisados = 0
+        for base, extension in ((settings.BASE_DIR / "templates", ".html"), (settings.BASE_DIR / "static" / "js", ".js")):
             for root, dirs, files in os.walk(base):
                 for fn in files:
-                    if fn.endswith('.html'):
+                    if fn.endswith(extension):
                         p = os.path.join(root, fn)
                         s = open(p, encoding='utf-8').read()
                         self.assertNotIn('sessionStorage', s, f'sessionStorage found in {p}')
-        jsbase = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "static", "js")
-        if os.path.exists(jsbase):
-            for fn in os.listdir(jsbase):
-                if fn.endswith('.js'):
-                    p = os.path.join(jsbase, fn)
-                    s = open(p, encoding='utf-8').read()
-                    self.assertNotIn('sessionStorage', s, f'sessionStorage found in {p}')
-        self.assertTrue(True)
+                        revisados += 1
+        self.assertGreater(revisados, 0)

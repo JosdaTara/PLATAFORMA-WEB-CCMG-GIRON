@@ -50,7 +50,7 @@ def login_view(request):
             error = "Usuario o contraseña incorrectos."
     else:
         form = LoginForm()
-    return render(request, "login.html", {"form": form, "error": error})
+    return render(request, "cuentas/login.html", {"form": form, "error": error})
 
 
 def logout_view(request):
@@ -76,22 +76,14 @@ def panel_por_rol(request):
 def selector_modulo(request):
     return render(
         request,
-        "selector-modulo.html",
+        "cuentas/selector_modulo.html",
         {"user": request.user, "sesion_js": sesion_js(request.user)},
     )
 
 
-def panel_casas_view(request):
-    return render(request, "panel.html", {"user": request.user})
-
-
-def panel_escuelas_view(request):
-    return render(request, "panel.html", {"user": request.user})
-
-
 class UsuarioListView(PastorRequiredMixin, ListView):
     model = Usuario
-    template_name = "usuarios/lista.html"
+    template_name = "cuentas/usuarios/lista.html"
     context_object_name = "usuarios"
 
     def get_queryset(self):
@@ -101,7 +93,7 @@ class UsuarioListView(PastorRequiredMixin, ListView):
 class UsuarioCreateView(PastorRequiredMixin, CreateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = "usuarios/formulario.html"
+    template_name = "cuentas/usuarios/formulario.html"
     success_url = reverse_lazy("cuentas:usuarios_list")
 
     def get_context_data(self, **kwargs):
@@ -179,7 +171,7 @@ class UsuarioCreateView(PastorRequiredMixin, CreateView):
 class UsuarioUpdateView(PastorRequiredMixin, UpdateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = "usuarios/formulario.html"
+    template_name = "cuentas/usuarios/formulario.html"
     success_url = reverse_lazy("cuentas:usuarios_list")
 
     def get_context_data(self, **kwargs):

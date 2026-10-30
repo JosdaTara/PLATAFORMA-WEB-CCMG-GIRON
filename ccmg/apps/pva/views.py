@@ -153,7 +153,7 @@ def panel_casas(request):
     }
     return render(
         request,
-        "panel-casas-vida.html",
+        "pva/panel.html",
         {
             "user": user,
             "sesion_js": sesion_js(user),
