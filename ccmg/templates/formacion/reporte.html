@@ -1,0 +1,74 @@
+{% extends "formacion/base.html" %}
+{% block titulo %}Reportes de formación{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="m-0">Reportes de formación</h3>
+</div>
+
+<form method="get" class="card p-3 border-0 shadow-sm mb-3" novalidate>
+  <div class="row g-2 align-items-end">
+    <div class="col-md-2">
+      <label class="form-label small mb-1" for="{{ form.tipo.id_for_label }}">{{ form.tipo.label }}</label>{{ form.tipo }}
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1" for="{{ form.fecha.id_for_label }}">{{ form.fecha.label }}</label>{{ form.fecha }}
+      {% for e in form.fecha.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small mb-1" for="tipo_proceso">Escuela</label>
+      <select id="tipo_proceso" name="tipo_proceso" class="form-select">
+        <option value="">Todas</option>
+        {% for v, t in tipos %}<option value="{{ v }}"{% if filtros.tipo_proceso == v %} selected{% endif %}>{{ t }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1" for="proceso">Proceso</label>
+      <select id="proceso" name="proceso" class="form-select">
+        <option value="">Todos</option>
+        {% for p in procesos_filtro %}<option value="{{ p.pk }}"{% if filtros.proceso == p.pk|stringformat:"s" %} selected{% endif %}>{{ p.nombre }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2"><button class="btn btn-ccmg w-100"><i class="bi bi-bar-chart me-1"></i>Generar</button></div>
+  </div>
+  <p class="small text-muted mb-0 mt-2">{{ form.fecha.help_text }}</p>
+</form>
+
+{% if periodo %}
+  <h5 class="mb-1">{{ periodo.nombre }}</h5>
+  <p class="text-muted small">Del {{ periodo.inicio|date:"d/m/Y" }} al {{ periodo.fin|date:"d/m/Y" }}</p>
+  {% if not hay_datos %}<div class="alert alert-info">No hay información registrada en este periodo con los filtros elegidos.</div>{% endif %}
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Actividades</small><div class="num">{{ total.actividades }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Asistencia</small><div class="num">{% if total.porcentaje is not None %}{{ total.porcentaje }}%{% else %}—{% endif %}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Inscritos activos</small><div class="num">{{ total.inscritos }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Nuevas inscripciones</small><div class="num">{{ total.nuevos }}</div></div></div>
+  </div>
+
+  <div class="table-responsive bg-white rounded shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Escuela</th><th>Proceso</th><th>Actividades</th><th>Presentes</th><th>Asistencia</th><th>Inscritos</th><th>Nuevos</th><th>Seguimientos</th></tr></thead>
+      <tbody>
+        {% for f in filas %}
+          <tr>
+            <td>{{ f.proceso.get_tipo_proceso_display }}</td>
+            <td><a href="{% url 'formacion:proceso_detalle' f.proceso.pk %}" class="text-decoration-none">{{ f.proceso.nombre }}</a></td>
+            <td>{{ f.actividades }}</td>
+            <td>{{ f.presentes }} / {{ f.registros }}</td>
+            <td>{% if f.porcentaje is not None %}{{ f.porcentaje }}%{% else %}—{% endif %}</td>
+            <td>{{ f.inscritos }}</td>
+            <td>{{ f.nuevos }}</td>
+            <td>{{ f.seguimientos }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8" class="text-center text-muted py-4">No hay procesos con estos filtros.</td></tr>
+        {% endfor %}
+      </tbody>
+      {% if filas %}
+      <tfoot><tr class="fw-semibold"><td colspan="2">Total</td><td>{{ total.actividades }}</td><td>{{ total.presentes }} / {{ total.registros }}</td><td>{% if total.porcentaje is not None %}{{ total.porcentaje }}%{% else %}—{% endif %}</td><td>{{ total.inscritos }}</td><td>{{ total.nuevos }}</td><td>{{ total.seguimientos }}</td></tr></tfoot>
+      {% endif %}
+    </table>
+  </div>
+  <p class="small text-muted mt-3 mb-0">La exportación a PDF o Excel corresponde a RF27.</p>
+{% endif %}
+{% endblock %}

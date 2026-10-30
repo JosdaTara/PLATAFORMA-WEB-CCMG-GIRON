@@ -1,0 +1,93 @@
+{% extends "formacion/base.html" %}
+{% block titulo %}{{ participante.nombres_apellidos }}{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <h3 class="m-0">{{ participante.nombres_apellidos }}</h3>
+    {% if not participante.activo %}<span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Desactivado</span>{% endif %}
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'formacion:participantes' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Volver</a>
+    <a href="{% url 'formacion:participante_editar' participante.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Editar</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card p-3 border-0 shadow-sm h-100">
+      <h6 class="mb-3">Datos personales</h6>
+      <dl class="row mb-0 small">
+        <dt class="col-5">Documento</dt><dd class="col-7">{{ participante.documento_identidad }}</dd>
+        <dt class="col-5">Nacimiento</dt><dd class="col-7">{{ participante.fecha_nacimiento|date:"d/m/Y"|default:"—" }}</dd>
+        <dt class="col-5">Teléfono</dt><dd class="col-7">{{ participante.telefono|default:"—" }}</dd>
+        <dt class="col-5">Dirección</dt><dd class="col-7">{{ participante.direccion|default:"—" }}</dd>
+        <dt class="col-5">Tratamiento de datos</dt><dd class="col-7">{% if participante.autorizacion_datos %}Autorizado{% else %}<span class="text-warning-emphasis">Pendiente</span>{% endif %}</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card p-3 border-0 shadow-sm h-100">
+      <h6 class="mb-3">Procesos de formación</h6>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Proceso</th><th>Escuela</th><th>Inscripción</th><th>Estado</th></tr></thead>
+        <tbody>
+          {% for i in inscripciones %}
+            <tr>
+              <td><a href="{% url 'formacion:proceso_detalle' i.id_proceso_formacion_id %}" class="text-decoration-none">{{ i.id_proceso_formacion.nombre }}</a></td>
+              <td>{{ i.id_proceso_formacion.get_tipo_proceso_display }}</td>
+              <td>{{ i.fecha_inscripcion|date:"d/m/Y" }}</td>
+              <td>{% if i.estado == "ACTIVO" %}Inscrito{% else %}<span class="text-muted">Retirado</span>{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card p-3 border-0 shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="m-0">Historial de seguimiento</h6>
+        <a href="{% url 'formacion:seguimiento_crear' %}?participante={{ participante.pk }}" class="btn btn-sm btn-ccmg"><i class="bi bi-plus-lg me-1"></i>Nuevo seguimiento</a>
+      </div>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Fecha</th><th>Proceso</th><th>Tipo</th><th>Observaciones</th><th>Responsable</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          {% for s in seguimientos %}
+            <tr>
+              <td class="text-nowrap">{{ s.fecha|date:"d/m/Y" }}</td>
+              <td>{{ s.id_proceso_formacion.nombre }}</td>
+              <td>{{ s.get_tipo_display }}</td>
+              <td>{{ s.observacion|linebreaksbr }}</td>
+              <td>{{ s.id_usuario.nombre_completo }}</td>
+              <td>{% include "pva/_estado_seguimiento.html" %}</td>
+              <td class="text-end"><a href="{% url 'formacion:seguimiento_editar' s.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i><span class="visually-hidden">Editar</span></a></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="7" class="text-center text-muted py-3">Sin seguimientos registrados.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card p-3 border-0 shadow-sm">
+      <h6 class="mb-3">Asistencia reciente</h6>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Fecha</th><th>Actividad</th><th>Proceso</th><th>Asistió</th></tr></thead>
+        <tbody>
+          {% for a in asistencias %}
+            <tr>
+              <td>{{ a.id_actividad.fecha|date:"d/m/Y" }}</td>
+              <td><a href="{% url 'formacion:actividad_detalle' a.id_actividad_id %}" class="text-decoration-none">{{ a.id_actividad.titulo }}</a></td>
+              <td>{{ a.id_actividad.id_proceso_formacion.nombre }}</td>
+              <td>{% if a.presente %}<i class="bi bi-check-circle-fill text-success" aria-label="Sí"></i>{% else %}<i class="bi bi-x-circle text-danger" aria-label="No"></i>{% endif %}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="text-center text-muted py-3">Sin registros de asistencia.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

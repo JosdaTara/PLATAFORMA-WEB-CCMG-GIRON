@@ -745,7 +745,9 @@ CREATE TABLE public.seguimiento (
     tipo character varying(20) DEFAULT 'VISITA'::character varying NOT NULL,
     estado character varying(15) DEFAULT 'ABIERTO'::character varying NOT NULL,
     actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    id_proceso_formacion integer,
     CONSTRAINT chk_seguimiento_estado CHECK (((estado)::text = ANY ((ARRAY['ABIERTO'::character varying, 'EN_PROCESO'::character varying, 'CERRADO'::character varying])::text[]))),
+    CONSTRAINT chk_seguimiento_proceso CHECK (((tipo_modulo <> 'ESCUELAS_FORMACION'::public.tipo_modulo) OR (id_proceso_formacion IS NOT NULL))),
     CONSTRAINT chk_seguimiento_tipo CHECK (((tipo)::text = ANY ((ARRAY['VISITA'::character varying, 'LLAMADA'::character varying, 'CONSEJERIA'::character varying, 'OTRO'::character varying])::text[])))
 );
 
@@ -1255,6 +1257,13 @@ CREATE INDEX idx_actividad_fecha ON public.actividad USING btree (fecha);
 
 
 --
+-- Name: idx_actividad_proceso; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_actividad_proceso ON public.actividad USING btree (id_proceso_formacion);
+
+
+--
 -- Name: idx_asistencia_actividad; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1290,6 +1299,13 @@ CREATE INDEX idx_cve_usuario ON public.casa_vida_equipo USING btree (id_usuario)
 
 
 --
+-- Name: idx_inscripcion_proceso; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_inscripcion_proceso ON public.inscripcion_formacion USING btree (id_proceso_formacion);
+
+
+--
 -- Name: idx_ofrenda_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1308,6 +1324,13 @@ CREATE INDEX idx_reporte_general ON public.reporte USING btree (id_reporte_gener
 --
 
 CREATE INDEX idx_seguimiento_participante ON public.seguimiento USING btree (id_participante);
+
+
+--
+-- Name: idx_seguimiento_proceso; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_seguimiento_proceso ON public.seguimiento USING btree (id_proceso_formacion);
 
 
 --
@@ -1597,6 +1620,14 @@ ALTER TABLE ONLY public.reporte
 
 ALTER TABLE ONLY public.seguimiento
     ADD CONSTRAINT seguimiento_id_participante_fkey FOREIGN KEY (id_participante) REFERENCES public.participante(id_participante);
+
+
+--
+-- Name: seguimiento seguimiento_id_proceso_formacion_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.seguimiento
+    ADD CONSTRAINT seguimiento_id_proceso_formacion_fkey FOREIGN KEY (id_proceso_formacion) REFERENCES public.proceso_formacion(id_proceso_formacion);
 
 
 --

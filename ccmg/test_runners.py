@@ -131,6 +131,29 @@ class CcmgTestRunner(DiscoverRunner):
                 );
             """)
             cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.proceso_formacion (
+                    id_proceso_formacion serial PRIMARY KEY,
+                    nombre varchar(150) NOT NULL,
+                    tipo_proceso varchar(20) NOT NULL
+                        CHECK (tipo_proceso IN ('ESCUELAS_VIDA', 'MODULOS_LIDERAZGO', 'PASOS_VIDA', 'MISIONES')),
+                    id_coordinador integer NOT NULL REFERENCES public.usuario(id_usuario),
+                    descripcion text,
+                    estado varchar(10) DEFAULT 'ACTIVO',
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.inscripcion_formacion (
+                    id_inscripcion serial PRIMARY KEY,
+                    id_participante integer NOT NULL REFERENCES public.participante(id_participante),
+                    id_proceso_formacion integer NOT NULL REFERENCES public.proceso_formacion(id_proceso_formacion),
+                    fecha_inscripcion date DEFAULT CURRENT_DATE,
+                    estado varchar(10) DEFAULT 'ACTIVO',
+                    UNIQUE (id_participante, id_proceso_formacion)
+                );
+            """)
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS public.seguimiento (
                     id_seguimiento serial PRIMARY KEY,
                     id_participante integer NOT NULL REFERENCES public.participante(id_participante),
@@ -143,7 +166,11 @@ class CcmgTestRunner(DiscoverRunner):
                         CHECK (tipo IN ('VISITA', 'LLAMADA', 'CONSEJERIA', 'OTRO')),
                     estado varchar(15) DEFAULT 'ABIERTO' NOT NULL
                         CHECK (estado IN ('ABIERTO', 'EN_PROCESO', 'CERRADO')),
-                    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+                    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    id_proceso_formacion integer REFERENCES public.proceso_formacion(id_proceso_formacion),
+                    CONSTRAINT chk_seguimiento_proceso CHECK (
+                        tipo_modulo <> 'ESCUELAS_FORMACION' OR id_proceso_formacion IS NOT NULL
+                    )
                 );
             """)
             cursor.execute("""

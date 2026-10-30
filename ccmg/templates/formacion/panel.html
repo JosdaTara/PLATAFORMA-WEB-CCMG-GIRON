@@ -41,10 +41,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 {{ sesion_js|json_script:"ccmg-sesion" }}
+{{ resumen_formacion|json_script:"formacion-resumen" }}
+{{ urls_formacion|json_script:"formacion-urls" }}
 <script src="{% static 'js/cuentas/auth.js' %}?v=3"></script>
 <script src="{% static 'js/comun/loader.js' %}?v=3"></script>
 <script src="{% static 'js/comun/panel-comun.js' %}?v=5"></script>
-<script src="{% static 'js/formacion/panel-escuelas.js' %}?v=3"></script>
+<script src="{% static 'js/formacion/panel-escuelas.js' %}?v=4"></script>
 <script>setTimeout(function(){var l=document.getElementById('loader');if(l)l.classList.add('hidden');},100);</script>
 </body>
 </html>

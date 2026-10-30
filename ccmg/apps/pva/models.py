@@ -129,7 +129,9 @@ class Actividad(models.Model):
     id_actividad = models.AutoField(primary_key=True, db_column="id_actividad")
     tipo_modulo = models.CharField(max_length=20, default=TIPO_CASA_VIDA)
     id_casa_vida = models.ForeignKey(CasaVida, models.DO_NOTHING, db_column="id_casa_vida", blank=True, null=True)
-    id_proceso_formacion = models.IntegerField(db_column="id_proceso_formacion", blank=True, null=True)
+    id_proceso_formacion = models.ForeignKey(
+        "formacion.ProcesoFormacion", models.DO_NOTHING, db_column="id_proceso_formacion", blank=True, null=True
+    )
     titulo = models.CharField(max_length=150)
     fecha = models.DateField()
     hora = models.TimeField(blank=True, null=True)
@@ -178,6 +180,10 @@ class Seguimiento(models.Model):
     observacion = models.TextField()
     estado = models.CharField(max_length=15, choices=ESTADOS, default="ABIERTO")
     tipo_modulo = models.CharField(max_length=20, default=Actividad.TIPO_CASA_VIDA)
+    # Solo en Escuelas de Formación: proceso al que pertenece el seguimiento.
+    id_proceso_formacion = models.ForeignKey(
+        "formacion.ProcesoFormacion", models.DO_NOTHING, db_column="id_proceso_formacion", blank=True, null=True
+    )
     creado_en = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     actualizado_en = models.DateTimeField(auto_now=True, blank=True, null=True)
 

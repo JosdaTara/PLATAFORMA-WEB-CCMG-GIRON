@@ -1,0 +1,58 @@
+{% extends "formacion/base.html" %}
+{% block titulo %}Seguimiento{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="m-0">Seguimiento de participantes</h3>
+  <a href="{% url 'formacion:seguimiento_crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-plus-lg me-1"></i>Nuevo seguimiento</a>
+</div>
+
+<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label small mb-1" for="q">Buscar</label>
+      <input id="q" name="q" value="{{ filtros.q }}" class="form-control" placeholder="Participante u observación">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1" for="proceso">Proceso</label>
+      <select id="proceso" name="proceso" class="form-select">
+        <option value="">Todos</option>
+        {% for p in procesos_filtro %}<option value="{{ p.pk }}"{% if filtros.proceso == p.pk|stringformat:"s" %} selected{% endif %}>{{ p.nombre }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1" for="estado">Estado</label>
+      <select id="estado" name="estado" class="form-select">
+        <option value="">Todos</option>
+        {% for v, t in estados %}<option value="{{ v }}"{% if filtros.estado == v %} selected{% endif %}>{{ t }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-flex gap-2">
+      <button class="btn btn-ccmg flex-fill"><i class="bi bi-search"></i> Filtrar</button>
+      <a href="{% url 'formacion:seguimientos' %}" class="btn btn-light" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Fecha</th><th>Participante</th><th>Proceso</th><th>Tipo</th><th>Observaciones</th><th>Responsable</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+      {% for s in seguimientos %}
+      <tr>
+        <td class="text-nowrap">{{ s.fecha|date:"d/m/Y" }}</td>
+        <td><a href="{% url 'formacion:participante_detalle' s.id_participante_id %}" class="text-decoration-none">{{ s.id_participante.nombres_apellidos }}</a></td>
+        <td>{{ s.id_proceso_formacion.nombre }}</td>
+        <td>{{ s.get_tipo_display }}</td>
+        <td style="min-width:14rem">{{ s.observacion|linebreaksbr }}</td>
+        <td>{{ s.id_usuario.nombre_completo }}</td>
+        <td>{% include "pva/_estado_seguimiento.html" %}</td>
+        <td class="text-end"><a href="{% url 'formacion:seguimiento_editar' s.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i><span class="visually-hidden">Editar</span></a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="text-center text-muted py-4">No hay seguimientos registrados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "pva/_paginacion.html" %}
+{% endblock %}

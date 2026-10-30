@@ -1,0 +1,54 @@
+{% extends "formacion/base.html" %}
+{% block titulo %}Participantes{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="m-0">Participantes de formación</h3>
+  <div class="d-flex gap-2">
+    <a href="{% url 'formacion:inscribir' %}" class="btn btn-outline-secondary btn-sm">Inscribir existente</a>
+    <a href="{% url 'formacion:participante_crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-plus-lg me-1"></i>Nuevo participante</a>
+  </div>
+</div>
+
+<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-5">
+      <label class="form-label small mb-1" for="q">Buscar</label>
+      <input id="q" name="q" value="{{ filtros.q }}" class="form-control" placeholder="Nombre o documento">
+    </div>
+    <div class="col-md-5">
+      <label class="form-label small mb-1" for="proceso">Proceso</label>
+      <select id="proceso" name="proceso" class="form-select">
+        <option value="">Todos</option>
+        {% for p in procesos_filtro %}<option value="{{ p.pk }}"{% if filtros.proceso == p.pk|stringformat:"s" %} selected{% endif %}>{{ p.get_tipo_proceso_display }} · {{ p.nombre }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-flex gap-2">
+      <button class="btn btn-ccmg flex-fill"><i class="bi bi-search"></i> Filtrar</button>
+      <a href="{% url 'formacion:participantes' %}" class="btn btn-light" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Nombre</th><th>Documento</th><th>Teléfono</th><th>Procesos actuales</th><th></th></tr></thead>
+    <tbody>
+      {% for p in participantes %}
+      <tr>
+        <td><a href="{% url 'formacion:participante_detalle' p.pk %}" class="fw-semibold text-decoration-none">{{ p.nombres_apellidos }}</a>{% if not p.activo %} <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Desactivado</span>{% endif %}</td>
+        <td>{{ p.documento_identidad }}</td>
+        <td>{{ p.telefono|default:"—" }}</td>
+        <td>{% for i in p.inscripciones %}<span class="badge rounded-pill bg-light text-dark border me-1">{{ i.id_proceso_formacion.nombre }}</span>{% empty %}<span class="text-muted">Ninguno</span>{% endfor %}</td>
+        <td class="text-end text-nowrap">
+          <a href="{% url 'formacion:participante_detalle' p.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye me-1"></i>Ver</a>
+          <a href="{% url 'formacion:participante_editar' p.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i><span class="visually-hidden">Editar</span></a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="text-center text-muted py-4">No se encontraron participantes.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "pva/_paginacion.html" %}
+{% endblock %}
