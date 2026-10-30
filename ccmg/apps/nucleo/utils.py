@@ -1,0 +1,35 @@
+"""Constantes y helpers para roles y módulos (ERS)."""
+ROLES_PASTOR = "PASTOR"
+ROLES_SUPERVISOR = "SUPERVISOR_AREA"
+ROLES_LIDER = "LIDER_CASA_VIDA"
+ROLES_APOYO = "APOYO_CASA_VIDA"
+ROLES_COORD = "COORDINADOR_FORMACION"
+
+MODULO_CASAS_VIDA = "CASAS_VIDA"
+MODULO_ESCUELAS_FORMACION = "ESCUELAS_FORMACION"
+MODULO_AMBOS = "AMBOS"
+
+# Códigos de rol que entiende el JavaScript del panel (auth.js / ROLES_INFO).
+ROLES_JS = {
+    ROLES_PASTOR: "pastor",
+    ROLES_SUPERVISOR: "supervisor",
+    ROLES_LIDER: "lider",
+    ROLES_APOYO: "apoyo",
+    ROLES_COORD: "coord",
+}
+
+
+def sesion_js(user):
+    """Datos de sesión que el JavaScript necesita para pintar el panel.
+
+    La fuente de verdad sigue siendo la sesión de Django: esto solo se usa
+    para mostrar nombre/rol y filtrar el menú, nunca para autorizar.
+    """
+    if not getattr(user, "is_authenticated", False):
+        return None
+    rol = getattr(user, "rol", None)
+    return {
+        "nombre": getattr(user, "nombre_completo", None) or getattr(user, "correo", ""),
+        "rol": ROLES_JS.get(getattr(rol, "nombre", None), ""),
+    }
+

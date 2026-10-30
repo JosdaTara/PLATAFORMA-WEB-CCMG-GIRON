@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo en construcción | CCMG PVA</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="container text-center py-5">
+  <img src="{% static 'img/logo.png' %}" alt="CCMG" height="60" class="mb-4">
+  <h1 class="mb-3">Módulo en construcción</h1>
+  <p class="text-muted mb-4">Este módulo estará disponible próximamente.</p>
+  <a href="{% url 'cuentas:selector_modulo' %}" class="btn btn-ccmg">Volver al selector de módulos</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iniciar sesión | CCMG PVA</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+<div id="loader"><img src="{% static 'img/logo.png' %}" alt="Cargando..."></div>
+<div class="login-split">
+  <div class="login-banner">
+   <picture>
+    <source media="(max-width:991px)" srcset="{% static 'img/banner-movil.jpg' %}">
+    <img src="{% static 'img/banner.jpg' %}" alt="Centro Cristiano Misión Global CCMG">
+   </picture>
+  </div>
+  <div class="login-form-side">
+   <div class="card card-ccmg p-4 w-100" style="max-width:440px">
+    <div class="text-center mb-3"><img src="{% static 'img/logo.png' %}" alt="Logo CCMG" class="logo-login"><h4 class="mt-2">CCMG Girón</h4><small>Plataforma Plan Vida Abundante</small></div>
+    <form method="post" action="{% url 'cuentas:login' %}" novalidate aria-label="Formulario de inicio de sesión" data-no-loader>
+{% csrf_token %}
+     <div class="mb-3"><label class="form-label" for="usuario">Usuario o correo</label><input id="usuario" name="usuario" type="text" class="form-control" autocomplete="username" required aria-required="true"></div>
+     <div class="mb-3"><label class="form-label" for="clave">Contraseña</label><input id="clave" name="clave" type="password" class="form-control" autocomplete="current-password" minlength="15" required aria-required="true"><div class="form-text">Mínimo 15 caracteres.</div></div>
+      {% if error %}<div class="alert alert-danger py-2" role="alert">{{ error }}</div>{% endif %}
+     <button class="btn btn-ccmg w-100">Ingresar</button>
+     <a href="{% url 'publico:index' %}" class="d-block text-center mt-3 small">← Volver al inicio</a>
+    </form>
+   </div>
+  </div>
+</div>
+<script src="{% static 'js/loader.js' %}"></script>
+<script>setTimeout(function(){var l=document.getElementById('loader');if(l)l.classList.add('hidden');},100);</script>
+</body>
+</html>

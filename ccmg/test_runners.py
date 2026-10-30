@@ -7,6 +7,14 @@ from django.db import connection
 class CcmgTestRunner(DiscoverRunner):
     """Crea las tablas usuario y rol en la BD de test si no existen."""
 
+    def build_suite(self, test_labels=None, **kwargs):
+        # Las apps viven en apps/ (sin __init__.py), así que el descubrimiento
+        # por defecto desde la raíz no las encuentra: se busca allí directamente.
+        if not test_labels:
+            from django.conf import settings
+            test_labels = [str(settings.APPS_DIR)]
+        return super().build_suite(test_labels, **kwargs)
+
     def setup_databases(self, **kwargs):
         old_config = super().setup_databases(**kwargs)
         # Crear tablas rol y usuario en la BD de test si no existen
@@ -71,6 +79,13 @@ class CcmgTestRunner(DiscoverRunner):
                     creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE (id_casa_vida, id_usuario)
                 );
+            """)
+            cursor.execute("""
+                ALTER TABLE public.usuario ADD COLUMN IF NOT EXISTS debe_cambiar_password BOOLEAN DEFAULT FALSE NOT NULL;
+            """)
+            cursor.execute("""
+                CREATE UNIQUE INDEX IF NOT EXISTS uq_area_supervisor
+                ON public.area (id_supervisor) WHERE id_supervisor IS NOT NULL;
             """)
             cursor.execute("""
                 CREATE UNIQUE INDEX IF NOT EXISTS uq_cve_usuario_activo
