@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.forms import PasswordResetForm as DjangoPasswordResetForm
 
 from .models import Usuario, Rol
-from pva.models import Area, CasaVida
+from pva.forms import EstiloBootstrapMixin
+from pva.models import ACTIVO, Area, CasaVida
 
 
 class LoginForm(forms.Form):
@@ -25,11 +26,16 @@ class CcmgPasswordResetForm(DjangoPasswordResetForm):
         )
 
 
-class UsuarioForm(forms.ModelForm):
+class UsuarioForm(EstiloBootstrapMixin, forms.ModelForm):
     class Meta:
         model = Usuario
         fields = ["nombre_completo", "correo", "username", "rol", "responsable_ofrendas"]
-        labels = {"responsable_ofrendas": "Autorizado como responsable de ofrendas"}
+        labels = {
+            "nombre_completo": "Nombre completo",
+            "correo": "Correo electrónico",
+            "username": "Nombre de usuario (opcional)",
+            "responsable_ofrendas": "Autorizado como responsable de ofrendas",
+        }
         help_texts = {
             "responsable_ofrendas": "Puede registrar y consultar ofrendas (RN14). El Pastor siempre tiene este acceso.",
         }
@@ -67,10 +73,18 @@ class UsuarioForm(forms.ModelForm):
         return user
 
 
-class UsuarioAsignacionForm(forms.Form):
-    area = forms.ModelChoiceField(queryset=Area.objects.all(), required=False)
-    casa_vida = forms.ModelChoiceField(queryset=CasaVida.objects.all(), required=False)
+class UsuarioAsignacionForm(EstiloBootstrapMixin, forms.Form):
+    """Asignación según el rol: Área para el Supervisor; Casa de Vida para el Líder y el apoyo."""
+
+    area = forms.ModelChoiceField(queryset=Area.objects.all(), required=False, label="Área que supervisa")
+    casa_vida = forms.ModelChoiceField(queryset=CasaVida.objects.all(), required=False, label="Casa de Vida")
     funcion_apoyo = forms.ChoiceField(
         choices=[("", "---------"), ("APRENDIZ", "Aprendiz"), ("ANFITRION", "Anfitrión"), ("MAESTRO_NINOS", "Maestro de Niños")],
         required=False,
+        label="Función de apoyo",
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["area"].queryset = Area.objects.filter(estado=ACTIVO).order_by("nombre")
+        self.fields["casa_vida"].queryset = CasaVida.objects.filter(estado=ACTIVO).order_by("nombre")

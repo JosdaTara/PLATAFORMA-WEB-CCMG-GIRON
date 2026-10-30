@@ -81,16 +81,53 @@ def selector_modulo(request):
     )
 
 
-class UsuarioListView(PastorRequiredMixin, ListView):
+class AdminUsuariosMixin:
+    """Barra lateral y datos comunes de la gestión de usuarios (RF03)."""
+
+    def get_context_data(self, **kwargs):
+        from pva.views import ROLES_NOMBRE, menu_casas
+
+        ctx = super().get_context_data(**kwargs)
+        ctx["menu"] = menu_casas(self.request.user, "usuarios")
+        ctx["rol_nombre"] = ROLES_NOMBRE.get(self.request.user.rol.nombre, "")
+        ctx["es_pastor"] = True
+        # Para mostrar solo los campos de asignación que aplican al rol elegido.
+        ctx["roles_codigos"] = dict(Rol.objects.values_list("id_rol", "nombre"))
+        return ctx
+
+
+def asignacion_actual(user):
+    """Valores iniciales del formulario de asignación según lo que el usuario tiene hoy."""
+    inicial = {}
+    area = Area.objects.filter(id_supervisor=user).first()
+    if area:
+        inicial["area"] = area.pk
+    casa = CasaVida.objects.filter(id_lider=user).order_by("-estado").first()
+    if casa:
+        inicial["casa_vida"] = casa.pk
+    equipo = CasaVidaEquipo.objects.filter(id_usuario=user, activo=True).first()
+    if equipo:
+        inicial.update(casa_vida=equipo.id_casa_vida_id, funcion_apoyo=equipo.funcion)
+    return inicial
+
+
+class UsuarioListView(AdminUsuariosMixin, PastorRequiredMixin, ListView):
     model = Usuario
     template_name = "cuentas/usuarios/lista.html"
     context_object_name = "usuarios"
 
     def get_queryset(self):
-        return Usuario.objects.all().select_related("rol")
+        return Usuario.objects.all().select_related("rol").order_by("-activo", "rol__id_rol", "nombre_completo")
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        # La contraseña temporal se muestra una sola vez, justo después de crear el usuario.
+        ctx["password_generada"] = self.request.session.pop("password_generada", None)
+        ctx["usuario_creado"] = self.request.session.pop("usuario_creado", None)
+        return ctx
 
 
-class UsuarioCreateView(PastorRequiredMixin, CreateView):
+class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
     model = Usuario
     form_class = UsuarioForm
     template_name = "cuentas/usuarios/formulario.html"
@@ -100,7 +137,6 @@ class UsuarioCreateView(PastorRequiredMixin, CreateView):
         ctx = super().get_context_data(**kwargs)
         ctx["form_asig"] = UsuarioAsignacionForm(self.request.POST or None)
         ctx["titulo"] = "Crear usuario"
-        ctx["password_generada"] = self.request.session.pop("password_generada", None)
         return ctx
 
     def post(self, request, *args, **kwargs):
@@ -159,6 +195,7 @@ class UsuarioCreateView(PastorRequiredMixin, CreateView):
                         CasaVidaEquipo.objects.create(id_casa_vida=casa, id_usuario=user, funcion=funcion, activo=True)
 
                     request.session["password_generada"] = pwd
+                    request.session["usuario_creado"] = user.correo
                     messages.success(request, "Usuario creado correctamente.")
                     return redirect(self.success_url)
             except Exception as e:
@@ -168,7 +205,7 @@ class UsuarioCreateView(PastorRequiredMixin, CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class UsuarioUpdateView(PastorRequiredMixin, UpdateView):
+class UsuarioUpdateView(AdminUsuariosMixin, PastorRequiredMixin, UpdateView):
     model = Usuario
     form_class = UsuarioForm
     template_name = "cuentas/usuarios/formulario.html"
@@ -176,7 +213,7 @@ class UsuarioUpdateView(PastorRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["form_asig"] = UsuarioAsignacionForm(self.request.POST or None)
+        ctx["form_asig"] = UsuarioAsignacionForm(self.request.POST or None, initial=asignacion_actual(self.object))
         ctx["titulo"] = "Editar usuario"
         return ctx
 

@@ -23,7 +23,7 @@
       <p>Casas de Vida y Escuelas de Formación son módulos independientes.</p>
       <div class="selector-usuario">
         <i class="bi bi-person-badge"></i>
-        <span><strong id="nombreUsuario">—</strong> · Pastor / Administrador</span>
+        <span><strong id="nombreUsuario">{{ user.nombre_completo }}</strong> · Pastor / Administrador</span>
       </div>
     </div>
 
@@ -76,6 +76,7 @@
 
     <div class="selector-pie">
       <a href="{% url 'publico:index' %}" class="small text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Volver al inicio</a>
+      <a href="{% url 'cuentas:usuarios_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-person-gear me-1"></i>Gestión de usuarios</a>
 <form method="post" action="{% url 'cuentas:logout' %}" style="display:inline;">
 {% csrf_token %}
 <button type="submit" class="btn btn-outline-secondary btn-sm">
@@ -87,7 +88,7 @@
   </div>
 </div>
 
-<script src="{% static 'js/cuentas/auth.js' %}?v=3"></script>
+<script src="{% static 'js/cuentas/auth.js' %}?v=5"></script>
 <script src="{% static 'js/comun/loader.js' %}?v=3"></script>
 {{ sesion_js|json_script:"ccmg-sesion" }}
 <script>

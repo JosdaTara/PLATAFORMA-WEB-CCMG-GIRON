@@ -18,7 +18,13 @@ class Rol(models.Model):
         db_table = "rol"
 
     def __str__(self):
-        return self.nombre
+        return self.etiqueta
+
+    @property
+    def etiqueta(self):
+        from nucleo.utils import ROLES_ETIQUETA
+
+        return ROLES_ETIQUETA.get(self.nombre, self.nombre)
 
 
 class UsuarioManager(models.Manager):

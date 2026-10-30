@@ -85,6 +85,12 @@ function vacio(icono, texto) {
   return '<div class="empty-state"><i class="bi bi-' + icono + '"></i><p class="mb-0">' + texto + '</p></div>';
 }
 
+/* Convierte aaaa-mm-dd en dd/mm/aaaa para mostrar */
+function fechaCorta(iso) {
+  const p = String(iso || '').split('-');
+  return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : esc(iso);
+}
+
 /* Devuelve la fecha de hoy en formato aaaa-mm-dd */
 function hoyISO() {
   return new Date().toISOString().slice(0, 10);

@@ -1,0 +1,5 @@
+{% extends "_error.html" %}
+{% block titulo %}Acceso no permitido{% endblock %}
+{% block icono %}shield-lock{% endblock %}
+{% block encabezado %}No tienes permiso para ver esta página{% endblock %}
+{% block mensaje %}{% if exception %}{{ exception }}{% else %}Tu rol no tiene acceso a esta sección.{% endif %} Si crees que es un error, comunícate con el Pastor.{% endblock %}

@@ -31,7 +31,7 @@ const VISTAS_CASAS = {
       '<div class="d-flex justify-content-between align-items-center mb-3"><h6 class="m-0">Últimas actividades registradas</h6>' +
       (URLS_PVA.asistencia ? '<a class="small text-decoration-none" href="' + URLS_PVA.asistencia + '">Ver asistencia</a>' : '') + '</div>' +
       tabla(['Casa de Vida', 'Fecha', 'Actividad', 'Asistentes'], RESUMEN.actividades.map(function (a) {
-        return [esc(a.casa), esc(a.fecha), esc(a.tipo), a.asistentes];
+        return [esc(a.casa), fechaCorta(a.fecha), esc(a.tipo), a.asistentes];
       })) +
       '</div></div>' +
       '<div class="col-lg-5"><div class="card p-3 border-0 shadow-sm h-100">' +
@@ -77,6 +77,7 @@ const MENU_CASAS = [
   { id: 'asistencia', t: 'Asistencia', i: 'check2-square', url: URLS_PVA.asistencia, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'seguimiento', t: 'Seguimiento', i: 'clipboard-check', url: URLS_PVA.seguimiento, r: ['pastor', 'supervisor', 'lider'] },
   { id: 'reportes', t: 'Reportes', i: 'file-earmark-text', url: URLS_PVA.reportes, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
+  { id: 'usuarios', t: 'Usuarios', i: 'person-gear', url: URLS_PVA.usuarios, r: ['pastor'] },
   { id: 'perfil', t: 'Mi perfil', i: 'person-circle', r: ['pastor', 'supervisor', 'lider', 'apoyo'] }
 ];
 

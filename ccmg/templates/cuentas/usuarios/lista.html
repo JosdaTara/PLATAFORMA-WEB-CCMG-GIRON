@@ -1,58 +1,43 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gestión de usuarios | CCMG PVA</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<link href="{% static 'css/styles.css' %}" rel="stylesheet">
-</head>
-<body>
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Gestión de usuarios</h2>
-    <div>
-      <a href="{% url 'cuentas:usuarios_crear' %}" class="btn btn-ccmg">Crear usuario</a>
-      <a href="{% url 'cuentas:selector_modulo' %}" class="btn btn-outline-secondary">Volver</a>
-    </div>
+{% extends "pva/base.html" %}
+{% block titulo %}Gestión de usuarios{% endblock %}
+{% block marca_sub %}Administración{% endblock %}
+{% block modulo_tag %}<i class="bi bi-person-gear"></i> Gestión de usuarios{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="m-0">Gestión de usuarios</h3>
+  <a href="{% url 'cuentas:usuarios_crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-person-plus me-1"></i>Crear usuario</a>
+</div>
+
+{% if password_generada %}
+  <div class="alert alert-warning">
+    <strong><i class="bi bi-key me-1"></i>Contraseña temporal de {{ usuario_creado }}</strong> (se muestra una sola vez):
+    <code class="fs-6 ms-1 user-select-all">{{ password_generada }}</code>
+    <div class="small mt-1">Entréguela al usuario por un medio seguro. Deberá cambiarla al iniciar sesión por primera vez.</div>
   </div>
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Nombre completo</th>
-        <th>Correo</th>
-        <th>Username</th>
-        <th>Rol</th>
-        <th>Activo</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
+{% endif %}
+
+<div class="table-responsive bg-white rounded shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Último acceso</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
     <tbody>
       {% for u in usuarios %}
       <tr>
-        <td>{{ u.nombre_completo }}</td>
+        <td class="fw-semibold">{{ u.nombre_completo }}{% if u.username %} <span class="text-muted small">({{ u.username }})</span>{% endif %}</td>
         <td>{{ u.correo }}</td>
-        <td>{{ u.username|default:"-" }}</td>
-        <td>{{ u.rol.nombre }}{% if u.responsable_ofrendas %} <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis" title="Responsable de ofrendas"><i class="bi bi-cash-coin"></i></span>{% endif %}</td>
-        <td>{% if u.activo %}Sí{% else %}No{% endif %}</td>
-        <td>
-          <a href="{% url 'cuentas:usuarios_editar' u.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
+        <td>{{ u.rol.etiqueta }}{% if u.responsable_ofrendas %} <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis" title="Responsable de ofrendas"><i class="bi bi-cash-coin"></i></span>{% endif %}</td>
+        <td class="small">{{ u.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</td>
+        <td>{% if u.activo %}<span class="badge rounded-pill bg-success-subtle text-success-emphasis">Activo</span>{% else %}<span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Inactivo</span>{% endif %}</td>
+        <td class="text-end text-nowrap">
+          <a href="{% url 'cuentas:usuarios_editar' u.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
           {% if u.activo %}
-            <form method="post" action="{% url 'cuentas:usuarios_desactivar' u.pk %}" style="display:inline;">
+            <form method="post" action="{% url 'cuentas:usuarios_desactivar' u.pk %}" class="d-inline" onsubmit="return confirm('¿Desactivar a {{ u.nombre_completo|escapejs }}? Perderá el acceso y se liberarán sus asignaciones.');">
               {% csrf_token %}
-              <button class="btn btn-sm btn-outline-danger">Desactivar</button>
+              <button class="btn btn-sm btn-outline-danger"><i class="bi bi-slash-circle me-1"></i>Desactivar</button>
             </form>
           {% else %}
-            <form method="post" action="{% url 'cuentas:usuarios_reactivar' u.pk %}" style="display:inline;">
+            <form method="post" action="{% url 'cuentas:usuarios_reactivar' u.pk %}" class="d-inline">
               {% csrf_token %}
-              <button class="btn btn-sm btn-outline-success">Reactivar</button>
+              <button class="btn btn-sm btn-outline-success"><i class="bi bi-arrow-counterclockwise me-1"></i>Reactivar</button>
             </form>
           {% endif %}
         </td>
@@ -61,5 +46,4 @@
     </tbody>
   </table>
 </div>
-</body>
-</html>
+{% endblock %}

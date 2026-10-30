@@ -9,6 +9,15 @@ MODULO_CASAS_VIDA = "CASAS_VIDA"
 MODULO_ESCUELAS_FORMACION = "ESCUELAS_FORMACION"
 MODULO_AMBOS = "AMBOS"
 
+# Nombre visible de cada rol en la interfaz.
+ROLES_ETIQUETA = {
+    ROLES_PASTOR: "Pastor",
+    ROLES_SUPERVISOR: "Supervisor de Área",
+    ROLES_LIDER: "Líder de Casa de Vida",
+    ROLES_APOYO: "Apoyo de Casa de Vida",
+    ROLES_COORD: "Coordinador de Formación",
+}
+
 # Códigos de rol que entiende el JavaScript del panel (auth.js / ROLES_INFO).
 ROLES_JS = {
     ROLES_PASTOR: "pastor",

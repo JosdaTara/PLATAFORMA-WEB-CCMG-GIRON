@@ -37,7 +37,7 @@ const VISTAS_ESCUELAS = {
       '<div class="col-lg-5"><div class="card p-3 border-0 shadow-sm h-100">' +
       '<h6 class="mb-3">Últimas actividades</h6>' +
       tabla(['Proceso', 'Fecha', 'Asistentes'], RESUMEN_ESC.actividades.map(function (a) {
-        return [esc(a.proceso), esc(a.fecha), a.asistentes];
+        return [esc(a.proceso), fechaCorta(a.fecha), a.asistentes];
       })) +
       '</div></div>' +
       '</div>';
@@ -75,6 +75,7 @@ const MENU_ESCUELAS = [
   { id: 'asistencia', t: 'Actividades y asistencia', i: 'check2-square', url: URLS_ESC.asistencia, r: ['pastor', 'coord'] },
   { id: 'seguimiento', t: 'Seguimiento', i: 'clipboard-check', url: URLS_ESC.seguimiento, r: ['pastor', 'coord'] },
   { id: 'reportes', t: 'Reportes', i: 'file-earmark-text', url: URLS_ESC.reportes, r: ['pastor', 'coord'] },
+  { id: 'usuarios', t: 'Usuarios', i: 'person-gear', url: URLS_ESC.usuarios, r: ['pastor'] },
   { id: 'perfil', t: 'Mi perfil', i: 'person-circle', r: ['pastor', 'coord'] }
 ];
 

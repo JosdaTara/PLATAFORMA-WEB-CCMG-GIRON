@@ -14,6 +14,7 @@ from nucleo.mixins import ModuleRequiredMixin, PastorRequiredMixin
 from nucleo.permissions import module_required, puede_gestionar_ofrendas
 from nucleo.utils import (
     ROLES_APOYO,
+    ROLES_ETIQUETA,
     ROLES_LIDER,
     ROLES_PASTOR,
     ROLES_SUPERVISOR,
@@ -43,12 +44,7 @@ from .models import (
     Participante,
 )
 
-ROLES_NOMBRE = {
-    ROLES_PASTOR: "Pastor",
-    ROLES_SUPERVISOR: "Supervisor de Área",
-    ROLES_LIDER: "Líder de Casa de Vida",
-    ROLES_APOYO: "Usuario de apoyo",
-}
+ROLES_NOMBRE = ROLES_ETIQUETA
 
 
 def menu_casas(user, seccion):
@@ -66,6 +62,7 @@ def menu_casas(user, seccion):
         ("seguimiento", "Seguimiento", "clipboard-check", reverse("pva:seguimientos"), [ROLES_PASTOR, ROLES_SUPERVISOR, ROLES_LIDER]),
         ("ofrendas", "Ofrendas", "cash-coin", reverse("ofrendas:index"), todos if puede_gestionar_ofrendas(user) else []),
         ("reportes", "Reportes", "file-earmark-text", reverse("pva:reportes"), todos),
+        ("usuarios", "Usuarios", "person-gear", reverse("cuentas:usuarios_list"), [ROLES_PASTOR]),
         ("perfil", "Mi perfil", "person-circle", panel + "#perfil", todos),
     ]
     return [
@@ -171,6 +168,7 @@ def panel_casas(request):
                 "casas": reverse("pva:casas"),
                 "areas": reverse("pva:areas"),
                 "importar": reverse("pva:importar"),
+                "usuarios": reverse("cuentas:usuarios_list"),
                 "asistencia": reverse("pva:asistencia"),
                 "seguimiento": reverse("pva:seguimientos"),
                 "reportes": reverse("pva:reportes"),

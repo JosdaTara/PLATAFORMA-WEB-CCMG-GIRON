@@ -1,5 +1,33 @@
 /* ===== CCMG PVA - Autenticación ===== */
 
+/* Nombre visible de cada rol: igual que nucleo.utils.ROLES_ETIQUETA */
+const ROLES_INFO = {
+  pastor:     { nombre: 'Pastor' },
+  supervisor: { nombre: 'Supervisor de Área' },
+  lider:      { nombre: 'Líder de Casa de Vida' },
+  apoyo:      { nombre: 'Apoyo de Casa de Vida' },
+  coord:      { nombre: 'Coordinador de Formación' }
+};
+
+/* Sesión que Django entrega en <script id="ccmg-sesion"> (nucleo.utils.sesion_js).
+   Solo se usa para mostrar nombre, rol y menú: los permisos se validan en el servidor. */
+function sesionActual() {
+  const el = document.getElementById('ccmg-sesion');
+  if (!el) return null;
+  try { return JSON.parse(el.textContent); } catch (e) { return null; }
+}
+
+/* Devuelve la sesión o, si no hay, envía al inicio de sesión.
+   El módulo esperado ya lo verificó Django antes de servir la página. */
+function requiereSesion(moduloEsperado) {
+  const sesion = sesionActual();
+  if (!sesion || !sesion.rol) {
+    window.location.href = '/cuentas/login/';
+    return null;
+  }
+  return sesion;
+}
+
 /* Login unificado: un solo formulario */
 function iniciarLogin() {
   const form = document.getElementById('formLogin');
