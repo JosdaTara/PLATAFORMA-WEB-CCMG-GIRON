@@ -39,3 +39,10 @@ Thumbs.db
 
 # Archivos retirados del proyecto (no versionar)
 _archivo/
+
+# Documentos académicos con datos personales (se conservan solo en local)
+DOCUMENTACION/**/*.doc
+DOCUMENTACION/**/*.docx
+
+# Configuración local del entorno de Claude Code
+.claude/
