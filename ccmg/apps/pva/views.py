@@ -28,6 +28,7 @@ from .alcance import (
     es_pastor,
     participantes_visibles,
     rol_de,
+    seguimientos_visibles,
 )
 from .forms import AreaForm, CasaVidaForm, ParticipanteForm, RegistroAsistenciaForm
 from .models import (
@@ -61,9 +62,9 @@ def menu_casas(user, seccion):
         ("casas", "Casas de Vida", "houses", reverse("pva:casas"), todos),
         ("areas", "Áreas", "map", reverse("pva:areas"), [ROLES_PASTOR]),
         ("asistencia", "Asistencia", "check2-square", reverse("pva:asistencia"), todos),
-        ("seguimiento", "Seguimiento", "clipboard-check", panel + "#seguimiento", [ROLES_PASTOR, ROLES_SUPERVISOR, ROLES_LIDER]),
+        ("seguimiento", "Seguimiento", "clipboard-check", reverse("pva:seguimientos"), [ROLES_PASTOR, ROLES_SUPERVISOR, ROLES_LIDER]),
         ("ofrendas", "Ofrendas", "cash-coin", panel + "#ofrendas", [ROLES_PASTOR]),
-        ("reportes", "Reportes", "file-earmark-text", panel + "#reportes", todos),
+        ("reportes", "Reportes", "file-earmark-text", reverse("pva:reportes"), todos),
         ("perfil", "Mi perfil", "person-circle", panel + "#perfil", todos),
     ]
     return [
@@ -139,6 +140,7 @@ def panel_casas(request):
         presentes=Count("asistencia", filter=Q(asistencia__presente=True)),
         total=Count("asistencia"),
     ).order_by("-fecha", "-id_actividad")
+    seguimientos = seguimientos_visibles(user).order_by("-fecha", "-id_seguimiento")
     total_presentes = sum(a.presentes for a in actividades)
     total_registros = sum(a.total for a in actividades)
     resumen = {
@@ -149,6 +151,11 @@ def panel_casas(request):
         "actividades": [
             {"casa": a.id_casa_vida.nombre, "fecha": a.fecha.isoformat(), "tipo": a.titulo, "asistentes": a.presentes}
             for a in actividades[:4]
+        ],
+        "seguimientosAbiertos": seguimientos.exclude(estado="CERRADO").count(),
+        "seguimientos": [
+            {"participante": s.id_participante.nombres_apellidos, "estado": s.get_estado_display(), "cerrado": s.estado == "CERRADO"}
+            for s in seguimientos[:4]
         ],
     }
     return render(
@@ -163,6 +170,8 @@ def panel_casas(request):
                 "casas": reverse("pva:casas"),
                 "areas": reverse("pva:areas"),
                 "asistencia": reverse("pva:asistencia"),
+                "seguimiento": reverse("pva:seguimientos"),
+                "reportes": reverse("pva:reportes"),
             },
         },
     )
@@ -380,6 +389,8 @@ class ParticipanteDetailView(PanelCasasMixin, DetailView):
             .select_related("id_actividad", "id_actividad__id_casa_vida")
             .order_by("-id_actividad__fecha")[:10]
         )
+        ctx["ve_seguimiento"] = rol_de(self.request.user) in (ROLES_PASTOR, ROLES_SUPERVISOR, ROLES_LIDER)
+        ctx["seguimientos"] = seguimientos_visibles(self.request.user).filter(id_participante=p)[:10]
         return ctx
 
 

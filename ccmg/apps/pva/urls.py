@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, views_reportes, views_seguimiento
 
 app_name = "pva"
 
@@ -26,4 +26,14 @@ urlpatterns = [
     path("asistencia/", views.AsistenciaListView.as_view(), name="asistencia"),
     path("asistencia/registrar/", views.RegistrarAsistenciaView.as_view(), name="asistencia_registrar"),
     path("asistencia/<int:pk>/", views.AsistenciaDetailView.as_view(), name="asistencia_detalle"),
+    # Seguimiento
+    path("seguimiento/", views_seguimiento.SeguimientoListView.as_view(), name="seguimientos"),
+    path("seguimiento/nuevo/", views_seguimiento.SeguimientoCreateView.as_view(), name="seguimiento_crear"),
+    path("seguimiento/<int:pk>/editar/", views_seguimiento.SeguimientoUpdateView.as_view(), name="seguimiento_editar"),
+    # Reportes
+    path("reportes/", views_reportes.ReporteListView.as_view(), name="reportes"),
+    path("reportes/enviar/", views_reportes.EnviarReporteCasaView.as_view(), name="reporte_enviar_casa"),
+    path("reportes/enviar-general/", views_reportes.EnviarReporteGeneralView.as_view(), name="reporte_enviar_general"),
+    path("reportes/generar/", views_reportes.GenerarReporteView.as_view(), name="reporte_generar"),
+    path("reportes/<int:pk>/", views_reportes.ReporteDetailView.as_view(), name="reporte_detalle"),
 ]

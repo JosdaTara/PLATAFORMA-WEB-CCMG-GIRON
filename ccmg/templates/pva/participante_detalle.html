@@ -49,6 +49,35 @@
       </table>
     </div>
   </div>
+  {% if ve_seguimiento %}
+  <div class="col-12">
+    <div class="card p-3 border-0 shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="m-0">Seguimiento</h6>
+        <span class="d-flex gap-2">
+          <a href="{% url 'pva:seguimientos' %}?participante={{ participante.pk }}" class="small text-decoration-none align-self-center">Ver todo</a>
+          {% if es_pastor %}<a href="{% url 'pva:seguimiento_crear' %}?participante={{ participante.pk }}" class="btn btn-sm btn-ccmg"><i class="bi bi-plus-lg me-1"></i>Nuevo seguimiento</a>{% endif %}
+        </span>
+      </div>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Fecha</th><th>Tipo</th><th>Observaciones</th><th>Responsable</th><th>Estado</th></tr></thead>
+        <tbody>
+          {% for s in seguimientos %}
+            <tr>
+              <td class="text-nowrap">{{ s.fecha|date:"d/m/Y" }}</td>
+              <td>{{ s.get_tipo_display }}</td>
+              <td>{{ s.observacion|linebreaksbr }}</td>
+              <td>{{ s.id_usuario.nombre_completo }}</td>
+              <td>{% include "pva/_estado_seguimiento.html" %}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-center text-muted py-3">Sin seguimientos registrados.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
   <div class="col-12">
     <div class="card p-3 border-0 shadow-sm">
       <h6 class="mb-3">Asistencia reciente</h6>

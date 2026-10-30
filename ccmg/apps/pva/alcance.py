@@ -5,7 +5,7 @@ funciones para que cada rol vea únicamente lo que le corresponde.
 """
 from nucleo.utils import ROLES_APOYO, ROLES_LIDER, ROLES_PASTOR, ROLES_SUPERVISOR
 
-from .models import ACTIVO, Actividad, CasaVida, CasaVidaEquipo, Participante
+from .models import ACTIVO, Actividad, Area, CasaVida, CasaVidaEquipo, Participante, Reporte, Seguimiento
 
 
 def rol_de(user):
@@ -61,3 +61,38 @@ def actividades_visibles(user):
         tipo_modulo=Actividad.TIPO_CASA_VIDA,
         id_casa_vida__in=casas_visibles(user),
     ).select_related("id_casa_vida", "id_responsable")
+
+
+def area_del_supervisor(user):
+    if rol_de(user) != ROLES_SUPERVISOR:
+        return None
+    return Area.objects.filter(id_supervisor=user).first()
+
+
+def seguimientos_visibles(user):
+    """Seguimiento: lo registra el Pastor; el Supervisor y el Líder solo lo consultan (RF11)."""
+    if rol_de(user) not in (ROLES_PASTOR, ROLES_SUPERVISOR, ROLES_LIDER):
+        return Seguimiento.objects.none()
+    return Seguimiento.objects.filter(
+        tipo_modulo=Actividad.TIPO_CASA_VIDA,
+        id_participante__in=participantes_visibles(user),
+    ).select_related("id_participante", "id_usuario")
+
+
+def reportes_casa_visibles(user):
+    """Reportes semanales de las Casas de Vida al alcance del usuario (RF15)."""
+    return Reporte.objects.filter(
+        tipo_reporte=Reporte.CASA_VIDA,
+        id_casa_vida__in=casas_visibles(user),
+    ).select_related("id_casa_vida", "id_usuario_envia", "id_reporte_general")
+
+
+def reportes_generales_visibles(user):
+    """Reportes generales: el Pastor los recibe todos; el Supervisor ve los suyos (RF15)."""
+    qs = Reporte.objects.filter(tipo_reporte=Reporte.GENERAL_AREA).select_related("id_area", "id_usuario_envia")
+    rol = rol_de(user)
+    if rol == ROLES_PASTOR:
+        return qs
+    if rol == ROLES_SUPERVISOR:
+        return qs.filter(id_area__id_supervisor=user)
+    return qs.none()

@@ -131,6 +131,52 @@ class CcmgTestRunner(DiscoverRunner):
                 );
             """)
             cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.seguimiento (
+                    id_seguimiento serial PRIMARY KEY,
+                    id_participante integer NOT NULL REFERENCES public.participante(id_participante),
+                    id_usuario integer NOT NULL REFERENCES public.usuario(id_usuario),
+                    fecha date DEFAULT CURRENT_DATE NOT NULL,
+                    observacion text NOT NULL,
+                    tipo_modulo varchar(20) NOT NULL,
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    tipo varchar(20) DEFAULT 'VISITA' NOT NULL
+                        CHECK (tipo IN ('VISITA', 'LLAMADA', 'CONSEJERIA', 'OTRO')),
+                    estado varchar(15) DEFAULT 'ABIERTO' NOT NULL
+                        CHECK (estado IN ('ABIERTO', 'EN_PROCESO', 'CERRADO')),
+                    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.reporte (
+                    id_reporte serial PRIMARY KEY,
+                    tipo_modulo varchar(20) NOT NULL,
+                    id_usuario_envia integer NOT NULL REFERENCES public.usuario(id_usuario),
+                    id_usuario_destino integer REFERENCES public.usuario(id_usuario),
+                    periodo varchar(20) NOT NULL,
+                    observaciones text,
+                    ruta_archivo varchar(255),
+                    enviado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    tipo_reporte varchar(20) DEFAULT 'CASA_VIDA' NOT NULL,
+                    id_casa_vida integer REFERENCES public.casa_vida(id_casa_vida),
+                    id_area integer REFERENCES public.area(id_area),
+                    fecha_inicio date,
+                    fecha_fin date,
+                    id_reporte_general integer REFERENCES public.reporte(id_reporte),
+                    CONSTRAINT chk_reporte_tipo CHECK (
+                        (tipo_reporte = 'CASA_VIDA' AND id_casa_vida IS NOT NULL)
+                        OR (tipo_reporte = 'GENERAL_AREA' AND id_area IS NOT NULL AND id_reporte_general IS NULL)
+                    )
+                );
+            """)
+            cursor.execute("""
+                CREATE UNIQUE INDEX IF NOT EXISTS uq_reporte_casa_periodo
+                ON public.reporte (id_casa_vida, periodo) WHERE tipo_reporte = 'CASA_VIDA';
+            """)
+            cursor.execute("""
+                CREATE UNIQUE INDEX IF NOT EXISTS uq_reporte_area_periodo
+                ON public.reporte (id_area, periodo) WHERE tipo_reporte = 'GENERAL_AREA';
+            """)
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS public.auditoria (
                     id_auditoria serial PRIMARY KEY,
                     id_usuario integer REFERENCES public.usuario(id_usuario),

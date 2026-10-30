@@ -5,7 +5,8 @@ from django import forms
 from cuentas.models import Usuario
 from nucleo.utils import ROLES_LIDER, ROLES_SUPERVISOR
 
-from .models import ACTIVO, Actividad, Area, CasaVida, Participante
+from . import periodos
+from .models import ACTIVO, Actividad, Area, CasaVida, Participante, Reporte, Seguimiento
 
 
 def _usuarios_con_rol(rol):
@@ -214,6 +215,12 @@ class RegistroAsistenciaForm(EstiloBootstrapMixin, forms.Form):
         fecha = self.cleaned_data["fecha"]
         if fecha > datetime.date.today():
             raise forms.ValidationError("No se puede registrar asistencia de una fecha futura.")
+        if self.casa and Reporte.objects.filter(
+            tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=periodos.semana(fecha).etiqueta
+        ).exists():
+            raise forms.ValidationError(
+                "El reporte de esa semana ya fue enviado al Supervisor; no se puede agregar asistencia."
+            )
         return fecha
 
     def clean(self):
@@ -232,3 +239,115 @@ class RegistroAsistenciaForm(EstiloBootstrapMixin, forms.Form):
                     f"La asistencia de «{titulo}» del {fecha:%d/%m/%Y} ya fue registrada por {quien}."
                 )
         return datos
+
+
+class SeguimientoForm(EstiloBootstrapMixin, forms.ModelForm):
+    """Registro de seguimiento por el Pastor (RF11, RN10)."""
+
+    class Meta:
+        model = Seguimiento
+        fields = ["id_participante", "fecha", "tipo", "estado", "observacion"]
+        labels = {"id_participante": "Participante", "observacion": "Observaciones"}
+        widgets = {
+            "fecha": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "observacion": forms.Textarea(attrs={"rows": 4}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        participantes = Participante.objects.filter(estado=ACTIVO)
+        if self.instance.pk:
+            participantes = Participante.objects.filter(pk=self.instance.id_participante_id) | participantes
+        self.fields["id_participante"].queryset = participantes.order_by("nombres_apellidos")
+
+    def clean_fecha(self):
+        fecha = self.cleaned_data["fecha"]
+        if fecha > datetime.date.today():
+            raise forms.ValidationError("La fecha del seguimiento no puede ser futura.")
+        return fecha
+
+    def clean_observacion(self):
+        return self.cleaned_data["observacion"].strip()
+
+
+class EnviarReporteCasaForm(EstiloBootstrapMixin, forms.Form):
+    """Reporte semanal de la Casa de Vida al Supervisor de Área (RF14, CU02)."""
+
+    semana = forms.ChoiceField(label="Semana")
+    observaciones = forms.CharField(
+        label="Observaciones para el Supervisor", required=False, widget=forms.Textarea(attrs={"rows": 3})
+    )
+
+    def __init__(self, *args, casa=None, **kwargs):
+        self.casa = casa
+        super().__init__(*args, **kwargs)
+        self.fields["semana"].choices = [(p.inicio.isoformat(), p.nombre) for p in periodos.semanas_recientes(8)]
+
+    def clean_semana(self):
+        periodo = periodos.semana(datetime.date.fromisoformat(self.cleaned_data["semana"]))
+        ya = (
+            Reporte.objects.filter(tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=periodo.etiqueta)
+            .select_related("id_usuario_envia")
+            .first()
+        )
+        if ya:
+            raise forms.ValidationError(
+                f"El reporte de esta semana ya fue enviado por {ya.id_usuario_envia.nombre_completo}."
+            )
+        if not Actividad.objects.filter(id_casa_vida=self.casa, fecha__range=(periodo.inicio, periodo.fin)).exists():
+            raise forms.ValidationError("No hay asistencia registrada en esta semana. Regístrela antes de enviar el reporte.")
+        return periodo
+
+
+class EnviarReporteGeneralForm(EstiloBootstrapMixin, forms.Form):
+    """Reporte general mensual del Supervisor al Pastor (RF13, CU03)."""
+
+    mes = forms.ChoiceField(label="Mes")
+    observaciones = forms.CharField(
+        label="Observaciones generales", required=False, widget=forms.Textarea(attrs={"rows": 3})
+    )
+
+    def __init__(self, *args, area=None, **kwargs):
+        self.area = area
+        super().__init__(*args, **kwargs)
+        self.fields["mes"].choices = [(p.inicio.isoformat(), p.nombre) for p in periodos.meses_recientes(6)]
+
+    def clean_mes(self):
+        periodo = periodos.mes(datetime.date.fromisoformat(self.cleaned_data["mes"]))
+        if Reporte.objects.filter(tipo_reporte=Reporte.GENERAL_AREA, id_area=self.area, periodo=periodo.etiqueta).exists():
+            raise forms.ValidationError("El reporte general de este mes ya fue enviado al Pastor.")
+        if not reportes_casa_pendientes(self.area, periodo).exists():
+            raise forms.ValidationError("No hay reportes de las Casas de Vida en este mes; no se puede enviar un reporte vacío.")
+        return periodo
+
+
+def reportes_casa_pendientes(area, periodo):
+    """Reportes semanales del Área que empiezan en el mes y aún no van en un reporte general."""
+    return Reporte.objects.filter(
+        tipo_reporte=Reporte.CASA_VIDA,
+        id_casa_vida__id_area=area,
+        fecha_inicio__range=(periodo.inicio, periodo.fin),
+        id_reporte_general__isnull=True,
+    ).select_related("id_casa_vida", "id_usuario_envia")
+
+
+class GenerarReporteForm(EstiloBootstrapMixin, forms.Form):
+    """Parámetros del reporte consolidado del Pastor (RF16, CU04)."""
+
+    tipo = forms.ChoiceField(
+        label="Periodo", choices=[("semanal", "Semanal"), ("mensual", "Mensual"), ("anual", "Anual")], initial="mensual"
+    )
+    fecha = forms.DateField(
+        label="Fecha de referencia", widget=forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+        help_text="Se toma la semana, el mes o el año que contiene esta fecha.",
+    )
+    area = forms.ModelChoiceField(queryset=Area.objects.all(), required=False, empty_label="Todas", label="Área")
+    casa = forms.ModelChoiceField(queryset=CasaVida.objects.all(), required=False, empty_label="Todas", label="Casa de Vida")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["fecha"].initial = datetime.date.today
+
+    @property
+    def periodo(self):
+        return periodos.POR_TIPO[self.cleaned_data["tipo"]](self.cleaned_data["fecha"])

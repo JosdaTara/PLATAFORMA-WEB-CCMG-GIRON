@@ -162,3 +162,65 @@ class Asistencia(models.Model):
 
     def __str__(self):
         return f"{self.id_participante} - {self.id_actividad}"
+
+
+class Seguimiento(models.Model):
+    """Seguimiento pastoral de un participante (RF11, RN10)."""
+
+    TIPOS = [("VISITA", "Visita"), ("LLAMADA", "Llamada"), ("CONSEJERIA", "Consejería"), ("OTRO", "Otro")]
+    ESTADOS = [("ABIERTO", "Abierto"), ("EN_PROCESO", "En proceso"), ("CERRADO", "Cerrado")]
+
+    id_seguimiento = models.AutoField(primary_key=True, db_column="id_seguimiento")
+    id_participante = models.ForeignKey(Participante, models.DO_NOTHING, db_column="id_participante")
+    id_usuario = models.ForeignKey("cuentas.Usuario", models.DO_NOTHING, db_column="id_usuario")
+    fecha = models.DateField(default=datetime.date.today)
+    tipo = models.CharField(max_length=20, choices=TIPOS, default="VISITA")
+    observacion = models.TextField()
+    estado = models.CharField(max_length=15, choices=ESTADOS, default="ABIERTO")
+    tipo_modulo = models.CharField(max_length=20, default=Actividad.TIPO_CASA_VIDA)
+    creado_en = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    actualizado_en = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = "seguimiento"
+        ordering = ["-fecha", "-id_seguimiento"]
+
+    def __str__(self):
+        return f"Seguimiento de {self.id_participante} ({self.fecha})"
+
+
+class Reporte(models.Model):
+    """Reporte semanal de una Casa de Vida (RF14) o general mensual de un Área (RF13)."""
+
+    CASA_VIDA = "CASA_VIDA"
+    GENERAL_AREA = "GENERAL_AREA"
+
+    id_reporte = models.AutoField(primary_key=True, db_column="id_reporte")
+    tipo_modulo = models.CharField(max_length=20, default=Actividad.TIPO_CASA_VIDA)
+    tipo_reporte = models.CharField(max_length=20, default=CASA_VIDA)
+    id_usuario_envia = models.ForeignKey("cuentas.Usuario", models.DO_NOTHING, db_column="id_usuario_envia", related_name="reportes_enviados")
+    id_usuario_destino = models.ForeignKey("cuentas.Usuario", models.DO_NOTHING, db_column="id_usuario_destino", blank=True, null=True, related_name="reportes_recibidos")
+    id_casa_vida = models.ForeignKey(CasaVida, models.DO_NOTHING, db_column="id_casa_vida", blank=True, null=True)
+    id_area = models.ForeignKey(Area, models.DO_NOTHING, db_column="id_area", blank=True, null=True)
+    id_reporte_general = models.ForeignKey("self", models.DO_NOTHING, db_column="id_reporte_general", blank=True, null=True, related_name="reportes_casa")
+    periodo = models.CharField(max_length=20)
+    fecha_inicio = models.DateField(blank=True, null=True)
+    fecha_fin = models.DateField(blank=True, null=True)
+    observaciones = models.TextField(blank=True, null=True)
+    ruta_archivo = models.CharField(max_length=255, blank=True, null=True)
+    enviado_en = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = "reporte"
+        ordering = ["-fecha_inicio", "-id_reporte"]
+
+    def __str__(self):
+        if self.tipo_reporte == self.GENERAL_AREA:
+            return f"Reporte general {self.id_area} · {self.periodo}"
+        return f"Reporte {self.id_casa_vida} · {self.periodo}"
+
+    @property
+    def es_general(self):
+        return self.tipo_reporte == self.GENERAL_AREA

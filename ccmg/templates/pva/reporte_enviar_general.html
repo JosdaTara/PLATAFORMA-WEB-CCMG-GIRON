@@ -1,0 +1,69 @@
+{% extends "pva/base.html" %}
+{% block titulo %}Enviar reporte general{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <h3 class="m-0">Reporte general al Pastor</h3>
+    <span class="text-muted">Área {{ area.nombre }}</span>
+  </div>
+  <a href="{% url 'pva:reportes' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Volver</a>
+</div>
+
+<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-6">
+      <label class="form-label small mb-1" for="mes-ver">Mes</label>
+      <select id="mes-ver" name="mes" class="form-select" onchange="this.form.submit()">
+        {% for valor, texto in form.fields.mes.choices %}<option value="{{ valor }}"{% if valor == mes.inicio|date:"Y-m-d" %} selected{% endif %}>{{ texto }}</option>{% endfor %}
+      </select>
+    </div>
+    <noscript><div class="col-md-2"><button class="btn btn-light">Ver</button></div></noscript>
+  </div>
+  <p class="small text-muted mb-0 mt-2">Se incluyen los reportes semanales cuya semana empieza en el mes y que aún no van en otro reporte general.</p>
+</form>
+
+{% if not ya_enviado %}
+<h6 class="mb-2">Reportes de las Casas de Vida a incluir ({{ pendientes|length }})</h6>
+<div class="table-responsive bg-white rounded shadow-sm mb-3">
+  <table class="table align-middle mb-0">
+    <thead><tr><th>Casa de Vida</th><th>Semana</th><th>Envió</th><th>Observaciones</th><th></th></tr></thead>
+    <tbody>
+      {% for r in pendientes %}
+        <tr>
+          <td>{{ r.id_casa_vida.nombre }}</td>
+          <td class="text-nowrap">{{ r.fecha_inicio|date:"d/m" }} – {{ r.fecha_fin|date:"d/m" }}</td>
+          <td>{{ r.id_usuario_envia.nombre_completo }}</td>
+          <td>{{ r.observaciones|default:"—"|linebreaksbr }}</td>
+          <td class="text-end"><a href="{% url 'pva:reporte_detalle' r.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i><span class="visually-hidden">Ver</span></a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="text-center text-muted py-3">No hay reportes de Casas de Vida pendientes en este mes.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if casas_sin_reporte %}
+  <div class="alert alert-warning small">Casas de Vida activas sin reportes en el mes: {% for c in casas_sin_reporte %}{{ c.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}.</div>
+{% endif %}
+{% endif %}
+
+<div class="card p-3 p-md-4 border-0 shadow-sm">
+  {% if ya_enviado %}
+    <div class="alert alert-success mb-0">
+      <i class="bi bi-check2-circle me-1"></i>El reporte general de este mes ya fue enviado el {{ ya_enviado.enviado_en|date:"d/m/Y H:i" }}.
+      <a href="{% url 'pva:reporte_detalle' ya_enviado.pk %}" class="alert-link">Ver reporte</a>
+    </div>
+  {% else %}
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="mes" value="{{ mes.inicio|date:'Y-m-d' }}">
+      {% if form.non_field_errors or form.mes.errors %}
+        <div class="alert alert-danger">{% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}{% for e in form.mes.errors %}{{ e }}{% endfor %}</div>
+      {% endif %}
+      <label class="form-label" for="{{ form.observaciones.id_for_label }}">{{ form.observaciones.label }}</label>
+      {{ form.observaciones }}
+      <button class="btn btn-oro mt-3"{% if not pendientes %} disabled{% endif %}><i class="bi bi-send me-1"></i>Enviar al Pastor</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
