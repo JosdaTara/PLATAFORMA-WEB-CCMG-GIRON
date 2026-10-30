@@ -1,0 +1,45 @@
+{% extends "pva/base.html" %}
+{% block titulo %}Importar datos{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="m-0">Importar datos</h3>
+</div>
+<p class="text-muted">Cargue los datos que hoy lleva en hojas de cálculo o formularios de Google. Antes de guardar verá una vista previa con los errores encontrados.</p>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <form method="post" enctype="multipart/form-data" class="card p-3 p-md-4 border-0 shadow-sm" novalidate>
+      {% csrf_token %}
+      <fieldset class="mb-3">
+        <legend class="form-label fs-6">{{ form.tipo.label }}</legend>
+        {% for opcion in form.tipo %}
+          <div class="form-check form-check-inline">
+            {{ opcion.tag }}
+            <label class="form-check-label" for="{{ opcion.id_for_label }}">{{ opcion.choice_label }}</label>
+          </div>
+        {% endfor %}
+      </fieldset>
+      <label class="form-label" for="{{ form.archivo.id_for_label }}">{{ form.archivo.label }}</label>
+      {{ form.archivo }}
+      {% for e in form.archivo.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+      <div class="form-text">Máximo 5 MB y 2.000 filas. La primera fila debe tener los encabezados.</div>
+      <button class="btn btn-ccmg mt-3"><i class="bi bi-eye me-1"></i>Revisar archivo</button>
+    </form>
+  </div>
+  <div class="col-lg-5">
+    <div class="card p-3 border-0 shadow-sm h-100">
+      <h6>Plantillas</h6>
+      <ol class="small mb-3">
+        <li>Registre primero las <a href="{% url 'pva:areas' %}">Áreas</a>.</li>
+        <li>Importe las <strong>Casas de Vida</strong>.</li>
+        <li>Importe los <strong>Participantes</strong>: cada uno se asigna a su Casa de Vida por el nombre.</li>
+      </ol>
+      <div class="d-grid gap-2">
+        <a href="{% url 'pva:importar_plantilla' 'casas' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Plantilla de Casas de Vida</a>
+        <a href="{% url 'pva:importar_plantilla' 'participantes' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Plantilla de Participantes</a>
+      </div>
+      <p class="small text-muted mt-3 mb-0">Las personas o casas que ya existen se omiten, no se duplican. Los participantes sin autorización de tratamiento de datos se importan con autorización pendiente (RN25).</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

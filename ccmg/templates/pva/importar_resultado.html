@@ -1,0 +1,43 @@
+{% extends "pva/base.html" %}
+{% block titulo %}Resultado de importación{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <h3 class="m-0">Importación completada · {{ titulo_tipo }}</h3>
+    <span class="text-muted">{{ archivo }}</span>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'pva:importar' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-upload me-1"></i>Importar otro archivo</a>
+    <a href="{% if tipo == 'casas' %}{% url 'pva:casas' %}{% else %}{% url 'pva:participantes' %}{% endif %}" class="btn btn-ccmg btn-sm">Ver {{ titulo_tipo|lower }}</a>
+  </div>
+</div>
+
+{% include "pva/_conteo_importacion.html" with etiqueta_validas="Importadas" %}
+
+{% if problemas %}
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+    <h6 class="m-0">Filas no importadas</h6>
+    <a href="{% url 'pva:importar_detalle' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-download me-1"></i>Descargar detalle (CSV)</a>
+  </div>
+  <div class="table-responsive bg-white rounded shadow-sm">
+    <table class="table table-sm align-middle mb-0">
+      <thead><tr><th>Fila</th><th>Estado</th>{% for c in columnas %}<th>{{ c.1 }}</th>{% endfor %}<th>Detalle</th></tr></thead>
+      <tbody>
+        {% for r in problemas %}
+          <tr class="{% if r.estado == 'error' %}table-danger{% else %}table-light{% endif %}">
+            <td>{{ r.fila }}</td>
+            <td>{% if r.estado == "omitida" %}Omitida{% else %}Error{% endif %}</td>
+            {% for v in r.valores %}<td>{{ v }}</td>{% endfor %}
+            <td class="small">{% for m in r.mensajes %}{{ m }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-success">Todas las filas del archivo se importaron.</div>
+{% endif %}
+{% if tipo == "participantes" and conteo.pendientes %}
+  <div class="alert alert-warning mt-3 mb-0">{{ conteo.pendientes }} participante{{ conteo.pendientes|pluralize }} quedó con autorización de datos pendiente. Obtenga su autorización conforme a RN23 y actualícela en su ficha.</div>
+{% endif %}
+{% endblock %}

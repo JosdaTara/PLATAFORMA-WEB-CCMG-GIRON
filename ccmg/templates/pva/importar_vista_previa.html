@@ -1,0 +1,46 @@
+{% extends "pva/base.html" %}
+{% block titulo %}Vista previa de importación{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <h3 class="m-0">Vista previa · {{ titulo_tipo }}</h3>
+    <span class="text-muted">{{ archivo }} · {{ resultados|length }} filas</span>
+  </div>
+  <a href="{% url 'pva:importar' %}?tipo={{ tipo }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Cambiar archivo</a>
+</div>
+
+{% include "pva/_conteo_importacion.html" with etiqueta_validas="Listas para importar" %}
+
+<div class="card p-3 border-0 shadow-sm mb-3">
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    {% if conteo.validas %}
+      <form method="post" class="m-0">
+        {% csrf_token %}
+        <button class="btn btn-ccmg"><i class="bi bi-cloud-upload me-1"></i>Confirmar e importar {{ conteo.validas }} registro{{ conteo.validas|pluralize }}</button>
+      </form>
+      <span class="small text-muted">Las filas omitidas y con error no se guardan.</span>
+    {% else %}
+      <span class="text-danger">No hay filas válidas para importar. Corrija el archivo y vuelva a cargarlo.</span>
+    {% endif %}
+    {% if conteo.errores or conteo.omitidas %}
+      <a href="{% url 'pva:importar_detalle' %}" class="btn btn-outline-secondary btn-sm ms-auto"><i class="bi bi-download me-1"></i>Descargar detalle de errores</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+  <table class="table table-sm align-middle mb-0">
+    <thead><tr><th>Fila</th><th>Estado</th>{% for c in columnas %}<th>{{ c.1 }}</th>{% endfor %}<th>Detalle</th></tr></thead>
+    <tbody>
+      {% for r in resultados %}
+        <tr class="{% if r.estado == 'error' %}table-danger{% elif r.estado == 'omitida' %}table-light{% endif %}">
+          <td>{{ r.fila }}</td>
+          <td>{% if r.estado == "valida" %}<span class="badge rounded-pill bg-success-subtle text-success-emphasis">Válida</span>{% elif r.estado == "omitida" %}<span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Omitida</span>{% else %}<span class="badge rounded-pill bg-danger-subtle text-danger-emphasis">Error</span>{% endif %}</td>
+          {% for v in r.valores %}<td>{{ v }}</td>{% endfor %}
+          <td class="small">{% for m in r.mensajes %}{{ m }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

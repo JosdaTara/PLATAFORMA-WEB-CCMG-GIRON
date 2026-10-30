@@ -73,6 +73,7 @@ const MENU_CASAS = [
   { id: 'participantes', t: 'Participantes', i: 'people', url: URLS_PVA.participantes, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'casas', t: 'Casas de Vida', i: 'houses', url: URLS_PVA.casas, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'areas', t: 'Áreas', i: 'map', url: URLS_PVA.areas, r: ['pastor'] },
+  { id: 'importar', t: 'Importar datos', i: 'upload', url: URLS_PVA.importar, r: ['pastor'] },
   { id: 'asistencia', t: 'Asistencia', i: 'check2-square', url: URLS_PVA.asistencia, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'seguimiento', t: 'Seguimiento', i: 'clipboard-check', url: URLS_PVA.seguimiento, r: ['pastor', 'supervisor', 'lider'] },
   { id: 'reportes', t: 'Reportes', i: 'file-earmark-text', url: URLS_PVA.reportes, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },

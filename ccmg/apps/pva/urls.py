@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views, views_reportes, views_seguimiento
+from . import views, views_importacion, views_reportes, views_seguimiento
 
 app_name = "pva"
 
@@ -36,4 +36,10 @@ urlpatterns = [
     path("reportes/enviar-general/", views_reportes.EnviarReporteGeneralView.as_view(), name="reporte_enviar_general"),
     path("reportes/generar/", views_reportes.GenerarReporteView.as_view(), name="reporte_generar"),
     path("reportes/<int:pk>/", views_reportes.ReporteDetailView.as_view(), name="reporte_detalle"),
+    # Importación de datos (solo Pastor)
+    path("importar/", views_importacion.ImportarView.as_view(), name="importar"),
+    path("importar/vista-previa/", views_importacion.VistaPreviaView.as_view(), name="importar_vista_previa"),
+    path("importar/resultado/", views_importacion.ResultadoView.as_view(), name="importar_resultado"),
+    path("importar/detalle.csv", views_importacion.DetalleErroresView.as_view(), name="importar_detalle"),
+    path("importar/plantilla/<str:tipo>/", views_importacion.PlantillaView.as_view(), name="importar_plantilla"),
 ]

@@ -1,0 +1,6 @@
+<div class="row g-3 mb-3">
+  <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">{{ etiqueta_validas }}</small><div class="num text-success">{{ conteo.validas }}</div></div></div>
+  <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Omitidas (ya existen)</small><div class="num">{{ conteo.omitidas }}</div></div></div>
+  <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Con error</small><div class="num text-danger">{{ conteo.errores }}</div></div></div>
+  {% if tipo == "participantes" %}<div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Autorización pendiente</small><div class="num">{{ conteo.pendientes }}</div></div></div>{% endif %}
+</div>
