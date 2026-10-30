@@ -1,38 +1,47 @@
-/* ===== CCMG PVA - Modo claro/oscuro ===== */
-(function(){
+/* ===== CCMG PVA - Modo claro/oscuro =====
+   El tema inicial lo aplica templates/_tema.html antes de pintar. Este archivo
+   atiende los botones [data-tema-toggle] y recuerda la preferencia del usuario. */
+(function () {
   const root = document.documentElement;
   const STORAGE_KEY = 'ccmg-theme';
-  const btn = document.getElementById('themeToggle');
 
-  function aplicarTema(tema){
-    if(tema === 'dark'){
-      root.setAttribute('data-theme', 'dark');
-    }else{
-      root.removeAttribute('data-theme');
-    }
-    if(btn){
-      btn.setAttribute('aria-pressed', tema === 'dark' ? 'true' : 'false');
-      btn.innerHTML = tema === 'dark'
-        ? '<i class="bi bi-sun"></i><span class="d-none d-lg-inline ms-1">Claro</span>'
-        : '<i class="bi bi-moon-stars"></i><span class="d-none d-lg-inline ms-1">Oscuro</span>';
-    }
+  function temaActual() {
+    return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
   }
 
-  const guardado = localStorage.getItem(STORAGE_KEY);
-  if(guardado === 'dark' || guardado === 'light'){
-    aplicarTema(guardado);
-  }else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
-    aplicarTema('dark');
-  }else{
-    aplicarTema('light');
-  }
-
-  if(btn){
-    btn.addEventListener('click', function(){
-      const actual = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-      const nuevo = actual === 'dark' ? 'light' : 'dark';
-      localStorage.setItem(STORAGE_KEY, nuevo);
-      aplicarTema(nuevo);
+  function pintarBotones(tema) {
+    const oscuro = tema === 'dark';
+    document.querySelectorAll('[data-tema-toggle]').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', oscuro ? 'true' : 'false');
+      btn.setAttribute('aria-label', oscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+      btn.setAttribute('title', oscuro ? 'Modo claro' : 'Modo oscuro');
+      const texto = btn.hasAttribute('data-tema-texto')
+        ? '<span class="d-none d-lg-inline ms-1">' + (oscuro ? 'Claro' : 'Oscuro') + '</span>'
+        : '';
+      btn.innerHTML = '<i class="bi bi-' + (oscuro ? 'sun' : 'moon-stars') + '" aria-hidden="true"></i>' + texto;
     });
+  }
+
+  function aplicarTema(tema) {
+    root.setAttribute('data-theme', tema);
+    root.setAttribute('data-bs-theme', tema);
+    pintarBotones(tema);
+  }
+
+  function iniciar() {
+    pintarBotones(temaActual());
+    document.querySelectorAll('[data-tema-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const nuevo = temaActual() === 'dark' ? 'light' : 'dark';
+        try { localStorage.setItem(STORAGE_KEY, nuevo); } catch (e) {}
+        aplicarTema(nuevo);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciar);
+  } else {
+    iniciar();
   }
 })();

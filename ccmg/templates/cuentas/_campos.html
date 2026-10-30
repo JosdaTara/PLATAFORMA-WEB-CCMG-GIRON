@@ -1,0 +1,12 @@
+{% comment %}Campos de un formulario de cuenta con estilo Bootstrap (los widgets ya traen la clase).{% endcomment %}
+{% if form.non_field_errors %}
+  <div class="alert alert-danger py-2">{% for e in form.non_field_errors %}{{ e }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</div>
+{% endif %}
+{% for campo in form %}
+  <div class="mb-3">
+    <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+    {{ campo }}
+    {% for e in campo.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+    {% if campo.help_text %}<div class="form-text small">{{ campo.help_text|safe }}</div>{% endif %}
+  </div>
+{% endfor %}

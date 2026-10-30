@@ -14,13 +14,14 @@ from nucleo.mixins import PastorRequiredMixin
 from nucleo.permissions import pastor_required
 from nucleo.utils import sesion_js
 
-from .forms import LoginForm, UsuarioForm, UsuarioAsignacionForm
+from .forms import CcmgPasswordChangeForm, LoginForm, UsuarioForm, UsuarioAsignacionForm
 from .models import Usuario, Rol
 from pva.models import Area, CasaVida, CasaVidaEquipo
 
 
 class CambiarPasswordView(PasswordChangeView):
     template_name = "cuentas/cambiar_password.html"
+    form_class = CcmgPasswordChangeForm
     success_url = reverse_lazy("cuentas:panel_por_rol")
 
     def form_valid(self, form):

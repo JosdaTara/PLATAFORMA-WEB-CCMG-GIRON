@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.forms import PasswordResetForm as DjangoPasswordResetForm
 
 from .models import Usuario, Rol
@@ -11,7 +12,7 @@ class LoginForm(forms.Form):
     clave = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
 
 
-class CcmgPasswordResetForm(DjangoPasswordResetForm):
+class CcmgPasswordResetForm(EstiloBootstrapMixin, DjangoPasswordResetForm):
     """PasswordResetForm adaptado a nuestro modelo (campo 'activo' en vez de 'is_active')."""
 
     def get_users(self, email):
@@ -19,11 +20,16 @@ class CcmgPasswordResetForm(DjangoPasswordResetForm):
         active_users = Usuario._default_manager.filter(
             **{f"{email_field_name}__iexact": email, "activo": True}
         )
-        return (
-            u for u in active_users
-            if u.has_usable_password()
-            and getattr(u, "email", None)
-        )
+        # El correo está en «correo» (EMAIL_FIELD), no en «email».
+        return (u for u in active_users if u.has_usable_password() and getattr(u, email_field_name, None))
+
+
+class CcmgPasswordChangeForm(EstiloBootstrapMixin, PasswordChangeForm):
+    pass
+
+
+class CcmgSetPasswordForm(EstiloBootstrapMixin, SetPasswordForm):
+    pass
 
 
 class UsuarioForm(EstiloBootstrapMixin, forms.ModelForm):

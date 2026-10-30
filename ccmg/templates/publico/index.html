@@ -3,6 +3,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+{% include "_tema.html" %}
 <script>document.documentElement.classList.add('js-anim');</script>
 <title>CCMG Girón | Plan Vida Abundante</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -11,7 +12,7 @@
 <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+  <link href="{% static 'css/styles.css' %}?v=3" rel="stylesheet">
 </head>
 <body data-bs-spy="scroll" data-bs-target="#navbarNav" data-bs-offset="80">
 <div id="loader"><img src="{% static 'img/logo.png' %}" alt="Cargando..."></div>
@@ -27,7 +28,7 @@
               <li class="nav-item"><a class="nav-link nav-link-close" href="#formacion">Formación</a></li>
               <li class="nav-item"><a class="nav-link nav-link-close" href="#contacto">Contacto</a></li>
               <li class="nav-item ms-lg-2">
-                <button id="themeToggle" class="btn btn-sm btn-outline-light" type="button" aria-pressed="false" aria-label="Cambiar tema claro/oscuro">
+                <button id="themeToggle" class="btn btn-sm btn-outline-light btn-tema" type="button" data-tema-toggle data-tema-texto aria-pressed="false" aria-label="Cambiar a modo oscuro">
                   <i class="bi bi-moon-stars"></i><span class="d-none d-lg-inline ms-1">Oscuro</span>
                 </button>
               </li>
@@ -221,5 +222,6 @@
 <script src="{% static 'js/comun/loader.js' %}"></script>
 <script src="{% static 'js/comun/ui.js' %}" defer></script>
 <script>setTimeout(function(){var l=document.getElementById('loader');if(l)l.classList.add('hidden');},100);</script>
+<script src="{% static 'js/comun/theme.js' %}?v=2"></script>
 </body>
 </html>

@@ -1,31 +1,33 @@
-﻿/* CSS original restaurado - sin modo oscuro */
-:root{--verde:#00674F;--verde-osc:#004d3b;--blanco:#FFFFFF;--arena:#F4F5F2;--oro:#CBB279;--carbon:#2B2D2F}
-body{font-family:'Montserrat','Segoe UI',system-ui,sans-serif;color:var(--carbon);background:var(--blanco)}
-h1,h2,h3,h4,h5{color:var(--verde);font-weight:700}
-a{color:var(--verde)}
+﻿/* Paleta institucional. Los tokens de superficie y texto cambian en modo oscuro (ver final del archivo). */
+:root{--verde:#00674F;--verde-osc:#004d3b;--blanco:#FFFFFF;--arena:#F4F5F2;--oro:#CBB279;--carbon:#2B2D2F;
+ --fondo:var(--arena);--superficie:#FFFFFF;--superficie-2:#FAFBF9;--borde:#E3E5E0;--texto:var(--carbon);--texto-suave:#6B706E;
+ --titulo:var(--verde);--pie:var(--carbon);--sombra:rgba(0,0,0,.07)}
+body{font-family:'Montserrat','Segoe UI',system-ui,sans-serif;color:var(--texto);background:var(--superficie)}
+h1,h2,h3,h4,h5{color:var(--titulo);font-weight:700}
+a{color:var(--titulo)}
 .btn-ccmg{background:var(--verde);color:#fff;border:0}.btn-ccmg:hover{background:var(--verde-osc);color:#fff}
 .btn-oro{background:var(--oro);color:var(--carbon);border:0;font-weight:600}.btn-oro:hover{background:#b99f63}
 .form-control:focus,.form-select:focus{border-color:var(--verde);box-shadow:0 0 0 .2rem rgba(0,103,79,.2)}
 .navbar-ccmg{background:var(--verde)}
 .navbar-ccmg .nav-link,.navbar-ccmg .navbar-brand{color:#fff}.navbar-ccmg .nav-link:hover{color:var(--oro)}
 .hero{background:linear-gradient(135deg,var(--verde),var(--verde-osc));color:#fff;padding:5rem 0}
-.hero h1{color:#fff}.acento{color:var(--oro)}.bg-arena{background:var(--arena)}
-.card-ccmg{border:0;border-top:4px solid var(--oro);box-shadow:0 2px 10px rgba(0,0,0,.07);height:100%;transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;will-change:transform}
+.hero h1{color:#fff}.acento{color:var(--oro)}.bg-arena{background:var(--fondo)}
+.card-ccmg{border:0;border-top:4px solid var(--oro);box-shadow:0 2px 10px var(--sombra);background:var(--superficie);height:100%;transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;will-change:transform}
 .card-ccmg:hover{transform:translateY(-6px);box-shadow:0 16px 38px rgba(0,77,59,.12);border-top-color:#b9a06c}
 .card-ccmg .icono{transition:none}
 .card-ccmg:hover .icono{transform:none !important}
 .icono{font-size:2rem;color:var(--oro)}
-footer{background:var(--carbon);color:#ddd}footer a{color:var(--oro)}
-.login-wrap{min-height:100vh;background:var(--arena);display:flex;align-items:center}
+footer{background:var(--pie);color:#ddd}footer a{color:var(--oro)}
+.login-wrap{min-height:100vh;background:var(--fondo);display:flex;align-items:center}
 /* Panel */
 .sidebar{width:250px;background:var(--verde);min-height:100vh;position:fixed;top:0;left:0;z-index:1040;transition:transform .25s}
 .sidebar a{color:#fff;display:block;padding:.7rem 1.2rem;text-decoration:none;border-left:4px solid transparent}
 .sidebar a:hover,.sidebar a.active{background:rgba(255,255,255,.12);border-left-color:var(--oro)}
 .sidebar .marca{padding:1.2rem;color:var(--oro);font-weight:700;font-size:1.1rem}
-.contenido{margin-left:250px;background:var(--arena);min-height:100vh}
-.topbar{background:#fff;border-bottom:1px solid #e3e5e0}
+.contenido{margin-left:250px;background:var(--fondo);min-height:100vh}
+.topbar{background:var(--superficie);border-bottom:1px solid var(--borde)}
 .stat{border:0;border-left:5px solid var(--oro);box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.stat .num{font-size:1.9rem;font-weight:700;color:var(--verde)}
+.stat .num{font-size:1.9rem;font-weight:700;color:var(--titulo)}
 .table thead{background:var(--verde);color:#fff}
 @media(max-width:991px){.sidebar{transform:translateX(-100%)}.sidebar.abierto{transform:none}.contenido{margin-left:0}}
 
@@ -38,7 +40,7 @@ footer{background:var(--carbon);color:#ddd}footer a{color:var(--oro)}
 @media(max-width:576px){.logo-hero{height:96px}}
 
 .banner-portada{display:block;width:100%;height:auto}
-.login-split{min-height:100vh;display:flex;background:var(--arena)}
+.login-split{min-height:100vh;display:flex;background:var(--fondo)}
 .login-banner{flex:1 1 58%;position:relative;overflow:hidden;background:var(--verde)}
 .login-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:35% center}
 .login-form-side{flex:1 1 42%;display:flex;align-items:center;justify-content:center;padding:2rem}
@@ -98,7 +100,7 @@ h2{font-weight:700}
 html { scroll-behavior: smooth; }
 section[id], header[id] { scroll-margin-top: 84px; }
 
-.modulo-card{position:relative;border:0;border-radius:18px;height:100%;overflow:hidden;background:#fff;box-shadow:0 6px 26px rgba(15,32,28,.10);transition:transform .35s ease, box-shadow .35s ease;will-change:transform;}
+.modulo-card{position:relative;border:0;border-radius:18px;height:100%;overflow:hidden;background:var(--superficie);box-shadow:0 6px 26px rgba(15,32,28,.10);transition:transform .35s ease, box-shadow .35s ease;will-change:transform;}
 .modulo-card::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 80% at 100% 0%, rgba(203,178,121,.16), transparent 62%);opacity:0;transition:opacity .35s ease;}
 .modulo-card:hover{transform:translateY(-6px);box-shadow:0 16px 38px rgba(0,77,59,.12)}
 .modulo-card:hover::before{opacity:1}
@@ -107,7 +109,7 @@ section[id], header[id] { scroll-margin-top: 84px; }
 .modulo-card--escuelas .modulo-icono{background:rgba(203,178,121,.22);color:#8a7439}
 .modulo-card--escuelas:hover .modulo-icono{background:var(--oro);color:var(--carbon)}
 .modulo-card__lista{list-style:none;padding:0;margin:0}
-.modulo-card__lista li{display:flex;align-items:flex-start;gap:.55rem;font-size:.92rem;padding:.3rem 0;color:#4a4f4d}
+.modulo-card__lista li{display:flex;align-items:flex-start;gap:.55rem;font-size:.92rem;padding:.3rem 0;color:var(--texto-lista,#4a4f4d)}
 .modulo-card__lista i{color:var(--verde);margin-top:.15rem}
 .modulo-card--escuelas .modulo-card__lista i{color:#a58a48}
 .modulo-etiqueta{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.32rem .7rem;border-radius:999px;background:rgba(0,103,79,.10);color:var(--verde);}
@@ -115,15 +117,15 @@ section[id], header[id] { scroll-margin-top: 84px; }
 
 .selector-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2.5rem 1rem;background:linear-gradient(140deg,var(--verde) 0%,var(--verde-osc) 62%,#00352a 100%);position:relative;overflow:hidden;}
 .selector-wrap::after{content:"";position:absolute;width:520px;height:520px;right:-160px;top:-160px;border-radius:50%;background:radial-gradient(circle,rgba(203,178,121,.22),transparent 68%);animation:flotarLento 14s ease-in-out infinite;}
-.selector-card{position:relative;z-index:1;width:100%;max-width:960px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:entrarEscala .6s cubic-bezier(.22,.68,.28,1) both;}
+.selector-card{position:relative;z-index:1;width:100%;max-width:960px;background:var(--superficie);border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:entrarEscala .6s cubic-bezier(.22,.68,.28,1) both;}
 .selector-header{background:linear-gradient(135deg,var(--verde),var(--verde-osc));color:#fff;text-align:center;padding:2.4rem 1.5rem 2rem;}
 .selector-header h1{color:#fff;font-size:1.6rem;font-weight:800;margin:.7rem 0 .35rem}
 .selector-header p{color:rgba(255,255,255,.85);margin:0}
 .selector-body{padding:2.2rem}
 .selector-usuario{display:inline-flex;align-items:center;gap:.5rem;margin-top:.9rem;padding:.4rem .9rem;border-radius:999px;background:rgba(255,255,255,.14);font-size:.86rem;}
-.selector-pie{border-top:1px solid #eceee9;padding:1.1rem 2.2rem;background:#fafbf9;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.selector-pie{border-top:1px solid var(--borde-pie,#eceee9);padding:1.1rem 2.2rem;background:var(--superficie-2);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
 
-.panel-body{background:var(--arena)}
+.panel-body{background:var(--fondo)}
 .marca-sub{display:block;font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:.15rem}
 .modulo-tag{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .8rem;border-radius:999px;font-size:.78rem;font-weight:600;background:rgba(0,103,79,.10);color:var(--verde);}
 .modulo-tag--escuelas{background:rgba(203,178,121,.22);color:#7d682f}
@@ -134,7 +136,7 @@ section[id], header[id] { scroll-margin-top: 84px; }
 .stat:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.09)}
 .toast-ccmg{position:fixed;left:50%;bottom:26px;transform:translate(-50%,140%);background:var(--carbon);color:#fff;padding:.75rem 1.15rem;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.28);font-size:.9rem;z-index:1080;opacity:0;transition:transform .35s cubic-bezier(.22,.68,.28,1), opacity .35s ease;max-width:92vw;}
 .toast-ccmg.show{transform:translate(-50%,0);opacity:1}
-.empty-state{text-align:center;padding:2.5rem 1rem;color:#6b706e}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--texto-suave)}
 .empty-state i{font-size:2.4rem;color:var(--oro);display:block;margin-bottom:.6rem}
 
 @keyframes flotarLento{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-18px,26px,0) scale(1.06)}}
@@ -176,7 +178,7 @@ section[id], header[id] { scroll-margin-top: 84px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: var(--superficie);
   z-index: 100000;
   transition: opacity 0.4s ease, visibility 0.4s ease;
 }
@@ -211,3 +213,60 @@ section[id], header[id] { scroll-margin-top: 84px; }
   .fade-up{opacity:1 !important;transform:none !important}
   .modulo-card:hover,.card-ccmg:hover,.stat:hover,.btn:hover{transform:none !important}
 }
+
+/* ===================== MODO OSCURO =====================
+   Misma identidad que el modo claro: el verde institucional y el oro se conservan en
+   barra lateral, navbar, botones y acentos; las superficies pasan a un carbón con tinte verde
+   y los títulos a un verde más claro del mismo tono. Contraste WCAG AA verificado (>= 6.3:1).
+   theme.js y _tema.html ponen data-theme y data-bs-theme en <html>. */
+[data-theme="dark"]{
+ color-scheme:dark;
+ --fondo:#0F1714;--superficie:#17221E;--superficie-2:#1E2C27;--borde:#2B3B35;--borde-pie:#2B3B35;
+ --texto:#E3E9E6;--texto-suave:#9DB0A8;--texto-lista:#C9D4CF;--titulo:#5CC9A7;--pie:#0A100E;--sombra:rgba(0,0,0,.35);
+ /* Bootstrap usa la misma paleta en tablas, formularios, alertas y badges */
+ --bs-body-bg:#0F1714;--bs-body-bg-rgb:15,23,20;--bs-body-color:#E3E9E6;--bs-body-color-rgb:227,233,230;
+ --bs-emphasis-color:#FFFFFF;--bs-emphasis-color-rgb:255,255,255;--bs-heading-color:#5CC9A7;
+ --bs-secondary-color:#9DB0A8;--bs-secondary-color-rgb:157,176,168;--bs-secondary-bg:#1E2C27;--bs-secondary-bg-rgb:30,44,39;
+ --bs-tertiary-color:rgba(227,233,230,.55);--bs-tertiary-bg:#1A2722;--bs-tertiary-bg-rgb:26,39,34;
+ --bs-border-color:#2B3B35;--bs-border-color-translucent:rgba(227,233,230,.12);
+ --bs-link-color:#5CC9A7;--bs-link-color-rgb:92,201,167;--bs-link-hover-color:#8FDCC3;--bs-link-hover-color-rgb:143,220,195;
+ --bs-focus-ring-color:rgba(92,201,167,.25);
+}
+[data-theme="dark"] body{background:var(--superficie)}
+[data-theme="dark"] .card{--bs-card-bg:var(--superficie);--bs-card-border-color:var(--borde)}
+[data-theme="dark"] .bg-white{background-color:var(--superficie) !important}
+[data-theme="dark"] .bg-light{background-color:var(--superficie-2) !important}
+[data-theme="dark"] .text-dark{color:var(--texto) !important}
+[data-theme="dark"] .table{--bs-table-bg:var(--superficie);--bs-table-color:var(--texto);--bs-table-border-color:var(--borde);
+ --bs-table-hover-bg:rgba(92,201,167,.07);--bs-table-hover-color:var(--texto);--bs-table-striped-bg:rgba(255,255,255,.03)}
+[data-theme="dark"] .table-light{--bs-table-bg:var(--superficie-2);--bs-table-color:var(--texto);--bs-table-border-color:var(--borde)}
+[data-theme="dark"] .btn-light{--bs-btn-bg:#1E2C27;--bs-btn-color:#E3E9E6;--bs-btn-border-color:#2B3B35;
+ --bs-btn-hover-bg:#26372F;--bs-btn-hover-color:#FFFFFF;--bs-btn-hover-border-color:#33473F;
+ --bs-btn-active-bg:#2B3B35;--bs-btn-active-color:#FFFFFF;--bs-btn-active-border-color:#33473F}
+[data-theme="dark"] .form-control:focus,[data-theme="dark"] .form-select:focus{border-color:#5CC9A7;box-shadow:0 0 0 .2rem rgba(92,201,167,.25)}
+[data-theme="dark"] .form-check-input:checked{background-color:var(--verde);border-color:#5CC9A7}
+[data-theme="dark"] .stat{box-shadow:0 2px 8px var(--sombra)}
+[data-theme="dark"] .stat:hover{box-shadow:0 10px 24px rgba(0,0,0,.45)}
+[data-theme="dark"] .card-ccmg:hover,[data-theme="dark"] .modulo-card:hover{box-shadow:0 16px 38px rgba(0,0,0,.5)}
+[data-theme="dark"] .modulo-card{box-shadow:0 6px 26px rgba(0,0,0,.4)}
+[data-theme="dark"] .modulo-tag,[data-theme="dark"] .modulo-etiqueta,[data-theme="dark"] .modulo-card .modulo-icono{background:rgba(92,201,167,.14);color:#5CC9A7}
+[data-theme="dark"] .modulo-tag--escuelas,[data-theme="dark"] .modulo-card--escuelas .modulo-etiqueta,
+[data-theme="dark"] .modulo-card--escuelas .modulo-icono{background:rgba(203,178,121,.16);color:var(--oro)}
+[data-theme="dark"] .modulo-card__lista i{color:#5CC9A7}
+[data-theme="dark"] .modulo-card--escuelas .modulo-card__lista i{color:var(--oro)}
+[data-theme="dark"] .modulo-card:hover .modulo-icono{background:var(--verde);color:#fff}
+[data-theme="dark"] .modulo-card--escuelas:hover .modulo-icono{background:var(--oro);color:var(--carbon)}
+[data-theme="dark"] .selector-card{box-shadow:0 30px 80px rgba(0,0,0,.55)}
+[data-theme="dark"] .table-horarios tr + tr td,[data-theme="dark"] .table.horarios tr + tr td{border-top-color:rgba(255,255,255,.08)}
+[data-theme="dark"] .toast-ccmg{background:var(--superficie-2);border:1px solid var(--borde)}
+/* El logo verde se pierde sobre superficies oscuras: se aclara (el blanco ya se usa sobre el verde) */
+[data-theme="dark"] img[src*="/img/logo."]:not([src*="blanco"]){filter:brightness(0) invert(1) opacity(.92)}
+
+/* Botón de tema (luna/sol) */
+.btn-tema{line-height:1}
+.selector-header{position:relative}
+.selector-header .btn-tema{position:absolute;top:1rem;right:1rem;border-color:rgba(255,255,255,.5)}
+
+/* Cambio de tema suave */
+body,.contenido,.topbar,.selector-card,.selector-pie,footer{transition:background-color .3s ease,color .3s ease,border-color .3s ease}
+@media (prefers-reduced-motion: reduce){body,.contenido,.topbar,.selector-card,.selector-pie,footer{transition:none}}

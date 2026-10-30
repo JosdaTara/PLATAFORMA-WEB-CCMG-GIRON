@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 from . import views
-from .forms import CcmgPasswordResetForm
+from .forms import CcmgPasswordResetForm, CcmgSetPasswordForm
 
 app_name = "cuentas"
 
@@ -30,7 +30,9 @@ urlpatterns = [
     ),
     path(
         "recuperar/<uidb64>/<token>/",
-        auth_views.PasswordResetConfirmView.as_view(template_name="cuentas/password_reset_confirm.html"),
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name="cuentas/password_reset_confirm.html", form_class=CcmgSetPasswordForm
+        ),
         name="password_reset_confirm",
     ),
     path(
