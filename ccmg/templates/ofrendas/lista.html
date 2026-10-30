@@ -1,0 +1,60 @@
+{% extends "pva/base.html" %}
+{% load formato %}
+{% block titulo %}Ofrendas{% endblock %}
+{% block marca_sub %}Ofrendas{% endblock %}
+{% block modulo_tag %}<i class="bi bi-cash-coin"></i> Ofrendas{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="m-0">Ofrendas</h3>
+  <a href="{% url 'ofrendas:crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-plus-lg me-1"></i>Registrar ofrenda</a>
+</div>
+
+<form method="get" class="card p-3 border-0 shadow-sm mb-3" novalidate>
+  {% if filtro.non_field_errors %}<div class="alert alert-danger py-2">{{ filtro.non_field_errors.0 }}</div>{% endif %}
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label small mb-1" for="{{ filtro.q.id_for_label }}">Concepto</label>{{ filtro.q }}
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small mb-1" for="{{ filtro.desde.id_for_label }}">Desde</label>{{ filtro.desde }}
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small mb-1" for="{{ filtro.hasta.id_for_label }}">Hasta</label>{{ filtro.hasta }}
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1" for="{{ filtro.casa.id_for_label }}">Casa de Vida</label>{{ filtro.casa }}
+    </div>
+    <div class="col-md-2 d-flex gap-2">
+      <button class="btn btn-ccmg flex-fill"><i class="bi bi-search"></i> Filtrar</button>
+      <a href="{% url 'ofrendas:index' %}" class="btn btn-light" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </div>
+</form>
+
+<div class="row g-3 mb-3">
+  <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Total</small><div class="num">{{ total|pesos }}</div></div></div>
+  <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Registros</small><div class="num">{{ cantidad }}</div></div></div>
+</div>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Fecha</th><th>Concepto</th><th>Casa de Vida</th><th class="text-end">Valor</th><th>Registró</th><th>Observaciones</th><th></th></tr></thead>
+    <tbody>
+      {% for o in ofrendas %}
+        <tr>
+          <td class="text-nowrap">{{ o.fecha|date:"d/m/Y" }}</td>
+          <td>{{ o.concepto }}</td>
+          <td>{{ o.id_casa_vida.nombre|default:"General" }}</td>
+          <td class="text-end text-nowrap fw-semibold">{{ o.valor|pesos }}</td>
+          <td>{{ o.id_usuario_registro.nombre_completo|default:"—" }}</td>
+          <td>{{ o.observacion|default:""|truncatechars:80 }}</td>
+          <td class="text-end"><a href="{% url 'ofrendas:editar' o.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i><span class="visually-hidden">Editar</span></a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="text-center text-muted py-4">No hay ofrendas registradas con estos filtros.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "pva/_paginacion.html" %}
+{% endblock %}

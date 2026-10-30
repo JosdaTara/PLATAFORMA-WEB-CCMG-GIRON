@@ -1,19 +1,9 @@
 /* =====================================================================
    CCMG PVA · Panel del módulo CASAS DE VIDA
    Roles con acceso: pastor, supervisor, lider, apoyo
-   Corresponde a los RF de Casas de Vida, participantes, asistencia,
-   seguimiento, ofrendas y reportes.
+   Pinta el inicio y el perfil; participantes, casas, asistencia,
+   seguimiento y reportes son páginas de Django (apps/pva).
    ===================================================================== */
-
-/* ---------------------------------------------------------------------
-   Datos del módulo.
-   Sin registros de demostración: lo que se muestre debe venir de la base
-   de datos o de lo que registre el usuario.
-   --------------------------------------------------------------------- */
-const CASAS = [];
-const PARTICIPANTES = [];
-const ACTIVIDADES = [];
-const OFRENDAS = [];
 
 /* Resumen y rutas calculados en el servidor según el alcance del rol (pva.views.panel_casas) */
 function leerJSON(id, porDefecto) {
@@ -22,39 +12,6 @@ function leerJSON(id, porDefecto) {
 }
 const RESUMEN = leerJSON('pva-resumen', { participantes: 0, casas: 0, casasActivas: 0, asistenciaPromedio: 0, actividades: [], seguimientosAbiertos: 0, seguimientos: [] });
 const URLS_PVA = leerJSON('pva-urls', {});
-
-let siguienteId = 100;
-function nuevoId() { return ++siguienteId; }
-
-function opcionesCasas(seleccionada) {
-  if (!CASAS.length) {
-    return '<option value="">Sin casas de vida registradas</option>';
-  }
-  return CASAS.map(function (c) {
-    return '<option' + (c.nombre === seleccionada ? ' selected' : '') + '>' + esc(c.nombre) + '</option>';
-  }).join('');
-}
-
-function dinero(n) {
-  return '$' + Number(n).toLocaleString('es-CO');
-}
-
-/* --------------------------- Acciones --------------------------- */
-function guardarOfrenda(ev) {
-  ev.preventDefault();
-  const f = ev.target;
-  OFRENDAS.push({
-    id: nuevoId(),
-    fecha: f.fecha.value,
-    casa: f.casa.value,
-    concepto: f.concepto.value.trim(),
-    valor: Number(f.valor.value),
-    metodo: f.metodo.value
-  });
-  avisar('Ofrenda registrada.');
-  refrescar();
-  return false;
-}
 
 /* ----------------------------- Vistas ----------------------------- */
 const VISTAS_CASAS = {
@@ -84,24 +41,6 @@ const VISTAS_CASAS = {
       })) +
       '</div></div>' +
       '</div>';
-  },
-
-  ofrendas: function () {
-    const total = OFRENDAS.reduce(function (a, b) { return a + b.valor; }, 0);
-    return titulo('Ofrendas', '<span class="fw-semibold text-success">Total: ' + dinero(total) + '</span>') +
-      '<div class="card p-3 border-0 shadow-sm mb-3">' +
-      '<form onsubmit="return guardarOfrenda(event)">' +
-      '<div class="row g-3">' +
-      '<div class="col-md-4"><label class="form-label">Casa de Vida</label><select name="casa" class="form-select">' + opcionesCasas() + '</select></div>' +
-      '<div class="col-md-4"><label class="form-label">Concepto</label><input name="concepto" class="form-control" placeholder="Ofrenda semanal" required></div>' +
-      '<div class="col-md-4"><label class="form-label">Fecha</label><input name="fecha" type="date" class="form-control" value="' + hoyISO() + '" required></div>' +
-      '<div class="col-md-4"><label class="form-label">Valor</label><input name="valor" type="number" min="0" class="form-control" required></div>' +
-      '<div class="col-md-4"><label class="form-label">Método</label><select name="metodo" class="form-select"><option>Efectivo</option><option>Transferencia</option><option>Nequi / Daviplata</option></select></div>' +
-      '<div class="col-md-4 d-flex align-items-end"><button class="btn btn-ccmg w-100">Registrar ofrenda</button></div>' +
-      '</div></form></div>' +
-      tabla(['Fecha', 'Casa de Vida', 'Concepto', 'Método', 'Valor'], OFRENDAS.map(function (o) {
-        return [o.fecha, esc(o.casa), esc(o.concepto), esc(o.metodo), dinero(o.valor)];
-      }));
   },
 
   perfil: function (s) {
@@ -136,7 +75,6 @@ const MENU_CASAS = [
   { id: 'areas', t: 'Áreas', i: 'map', url: URLS_PVA.areas, r: ['pastor'] },
   { id: 'asistencia', t: 'Asistencia', i: 'check2-square', url: URLS_PVA.asistencia, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'seguimiento', t: 'Seguimiento', i: 'clipboard-check', url: URLS_PVA.seguimiento, r: ['pastor', 'supervisor', 'lider'] },
-  { id: 'ofrendas', t: 'Ofrendas', i: 'cash-coin', r: ['pastor'] },
   { id: 'reportes', t: 'Reportes', i: 'file-earmark-text', url: URLS_PVA.reportes, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'perfil', t: 'Mi perfil', i: 'person-circle', r: ['pastor', 'supervisor', 'lider', 'apoyo'] }
 ];

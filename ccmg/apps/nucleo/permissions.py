@@ -35,6 +35,14 @@ def es_pastor(request):
     return _rol_codigo(request) == "PASTOR"
 
 
+def puede_gestionar_ofrendas(user):
+    """El Pastor o el usuario que él autorice como responsable de ofrendas (RF17, RN14)."""
+    if not getattr(user, "is_authenticated", False):
+        return False
+    rol = getattr(getattr(user, "rol", None), "nombre", None)
+    return rol == "PASTOR" or bool(getattr(user, "responsable_ofrendas", False))
+
+
 def role_required(*roles):
     """Decorador para vistas funcionales: exige rol exacto."""
     def decorator(view):

@@ -139,6 +139,13 @@ function iniciarPanelModulo(cfg) {
   /* Menú permitido según el rol (control de acceso) */
   let permitidos = cfg.menu.filter(function (m) { return m.r.indexOf(sesion.rol) !== -1; });
 
+  /* Ofrendas: módulo aparte para el Pastor o el responsable que él autorice (RN14) */
+  if (sesion.ofrendas) {
+    const perfil = permitidos.findIndex(function (m) { return m.id === 'perfil'; });
+    const ofrendas = { id: 'ofrendas', t: 'Ofrendas', i: 'cash-coin', url: sesion.ofrendas, r: [sesion.rol] };
+    permitidos.splice(perfil === -1 ? permitidos.length : perfil, 0, ofrendas);
+  }
+
   /* Las secciones con `url` son páginas de Django; el resto se pinta aquí */
   menu.innerHTML = permitidos.map(function (m) {
     return '<a href="' + (m.url || '#' + m.id) + '" data-id="' + m.id + '"><i class="bi bi-' + m.i + ' me-2"></i>' + m.t + '</a>';

@@ -40,7 +40,7 @@
         <td>{{ u.nombre_completo }}</td>
         <td>{{ u.correo }}</td>
         <td>{{ u.username|default:"-" }}</td>
-        <td>{{ u.rol.nombre }}</td>
+        <td>{{ u.rol.nombre }}{% if u.responsable_ofrendas %} <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis" title="Responsable de ofrendas"><i class="bi bi-cash-coin"></i></span>{% endif %}</td>
         <td>{% if u.activo %}Sí{% else %}No{% endif %}</td>
         <td>
           <a href="{% url 'cuentas:usuarios_editar' u.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>

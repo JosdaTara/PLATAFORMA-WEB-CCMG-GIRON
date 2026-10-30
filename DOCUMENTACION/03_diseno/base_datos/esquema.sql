@@ -531,7 +531,10 @@ CREATE TABLE public.ofrenda (
     id_casa_vida integer,
     id_usuario_registro integer,
     observacion text,
-    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    modificado_por integer,
+    CONSTRAINT chk_ofrenda_valor CHECK ((valor > (0)::numeric))
 );
 
 
@@ -790,7 +793,8 @@ CREATE TABLE public.usuario (
     actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     creado_por integer,
     modificado_por integer,
-    debe_cambiar_password boolean DEFAULT false NOT NULL
+    debe_cambiar_password boolean DEFAULT false NOT NULL,
+    responsable_ofrendas boolean DEFAULT false NOT NULL
 );
 
 
@@ -1286,6 +1290,13 @@ CREATE INDEX idx_cve_usuario ON public.casa_vida_equipo USING btree (id_usuario)
 
 
 --
+-- Name: idx_ofrenda_fecha; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_ofrenda_fecha ON public.ofrenda USING btree (fecha);
+
+
+--
 -- Name: idx_reporte_general; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1522,6 +1533,14 @@ ALTER TABLE ONLY public.ofrenda
 
 ALTER TABLE ONLY public.ofrenda
     ADD CONSTRAINT ofrenda_id_usuario_registro_fkey FOREIGN KEY (id_usuario_registro) REFERENCES public.usuario(id_usuario);
+
+
+--
+-- Name: ofrenda ofrenda_modificado_por_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ofrenda
+    ADD CONSTRAINT ofrenda_modificado_por_fkey FOREIGN KEY (modificado_por) REFERENCES public.usuario(id_usuario);
 
 
 --

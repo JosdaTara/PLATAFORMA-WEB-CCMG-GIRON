@@ -69,6 +69,8 @@ class Usuario(AbstractBaseUser):
     )
     last_login = models.DateTimeField(blank=True, null=True, db_column="ultimo_acceso")
     debe_cambiar_password = models.BooleanField(default=False)
+    # Autorización expresa del Pastor para registrar y consultar ofrendas (RN14).
+    responsable_ofrendas = models.BooleanField(default=False)
 
     USERNAME_FIELD = "correo"
     EMAIL_FIELD = "correo"

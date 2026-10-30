@@ -28,7 +28,11 @@ class CcmgPasswordResetForm(DjangoPasswordResetForm):
 class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
-        fields = ["nombre_completo", "correo", "username", "rol"]
+        fields = ["nombre_completo", "correo", "username", "rol", "responsable_ofrendas"]
+        labels = {"responsable_ofrendas": "Autorizado como responsable de ofrendas"}
+        help_texts = {
+            "responsable_ofrendas": "Puede registrar y consultar ofrendas (RN14). El Pastor siempre tiene este acceso.",
+        }
 
     def clean_correo(self):
         correo = self.cleaned_data.get("correo", "")

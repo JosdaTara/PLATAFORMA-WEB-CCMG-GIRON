@@ -27,10 +27,16 @@ def sesion_js(user):
     """
     if not getattr(user, "is_authenticated", False):
         return None
+    from django.urls import reverse
+
+    from nucleo.permissions import puede_gestionar_ofrendas
+
     rol = getattr(user, "rol", None)
     return {
         "nombre": getattr(user, "nombre_completo", None) or getattr(user, "correo", ""),
         "rol": ROLES_JS.get(getattr(rol, "nombre", None), ""),
+        # Enlace al módulo de ofrendas si el usuario está autorizado (RN14).
+        "ofrendas": reverse("ofrendas:index") if puede_gestionar_ofrendas(user) else None,
     }
 
 

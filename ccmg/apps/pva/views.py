@@ -11,7 +11,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, DetailView, FormView, ListView, UpdateView, View
 
 from nucleo.mixins import ModuleRequiredMixin, PastorRequiredMixin
-from nucleo.permissions import module_required
+from nucleo.permissions import module_required, puede_gestionar_ofrendas
 from nucleo.utils import (
     ROLES_APOYO,
     ROLES_LIDER,
@@ -63,7 +63,7 @@ def menu_casas(user, seccion):
         ("areas", "Áreas", "map", reverse("pva:areas"), [ROLES_PASTOR]),
         ("asistencia", "Asistencia", "check2-square", reverse("pva:asistencia"), todos),
         ("seguimiento", "Seguimiento", "clipboard-check", reverse("pva:seguimientos"), [ROLES_PASTOR, ROLES_SUPERVISOR, ROLES_LIDER]),
-        ("ofrendas", "Ofrendas", "cash-coin", panel + "#ofrendas", [ROLES_PASTOR]),
+        ("ofrendas", "Ofrendas", "cash-coin", reverse("ofrendas:index"), todos if puede_gestionar_ofrendas(user) else []),
         ("reportes", "Reportes", "file-earmark-text", reverse("pva:reportes"), todos),
         ("perfil", "Mi perfil", "person-circle", panel + "#perfil", todos),
     ]

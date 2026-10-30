@@ -191,6 +191,23 @@ class CcmgTestRunner(DiscoverRunner):
                 ALTER TABLE public.usuario ADD COLUMN IF NOT EXISTS debe_cambiar_password BOOLEAN DEFAULT FALSE NOT NULL;
             """)
             cursor.execute("""
+                ALTER TABLE public.usuario ADD COLUMN IF NOT EXISTS responsable_ofrendas BOOLEAN DEFAULT FALSE NOT NULL;
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.ofrenda (
+                    id_ofrenda serial PRIMARY KEY,
+                    fecha date DEFAULT CURRENT_DATE NOT NULL,
+                    concepto varchar(150) NOT NULL,
+                    valor numeric(12,2) NOT NULL CHECK (valor > 0),
+                    id_casa_vida integer REFERENCES public.casa_vida(id_casa_vida),
+                    id_usuario_registro integer REFERENCES public.usuario(id_usuario),
+                    observacion text,
+                    creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    modificado_por integer REFERENCES public.usuario(id_usuario)
+                );
+            """)
+            cursor.execute("""
                 CREATE UNIQUE INDEX IF NOT EXISTS uq_area_supervisor
                 ON public.area (id_supervisor) WHERE id_supervisor IS NOT NULL;
             """)

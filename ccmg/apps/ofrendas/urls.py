@@ -4,5 +4,7 @@ from . import views
 app_name = "ofrendas"
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", views.OfrendaListView.as_view(), name="index"),
+    path("nueva/", views.OfrendaCreateView.as_view(), name="crear"),
+    path("<int:pk>/editar/", views.OfrendaUpdateView.as_view(), name="editar"),
 ]

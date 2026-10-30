@@ -17,9 +17,9 @@
   <div class="marca text-center">
     <img src="{% static 'img/logo-blanco.png' %}" alt="Logo CCMG" class="logo-side">
     <div class="mt-2">CCMG · Girón</div>
-    <small class="marca-sub">Casas de Vida</small>
+    <small class="marca-sub">{% block marca_sub %}Casas de Vida{% endblock %}</small>
   </div>
-  <nav id="menu" aria-label="Menú del módulo Casas de Vida">
+  <nav id="menu" aria-label="Menú del módulo">
     {% for item in menu %}
       <a href="{{ item.url }}"{% if item.activo %} class="active" aria-current="page"{% endif %}><i class="bi bi-{{ item.icono }} me-2"></i>{{ item.t }}</a>
     {% endfor %}
@@ -41,7 +41,7 @@
   <div class="topbar d-flex align-items-center px-3 py-2">
     <button class="btn btn-outline-secondary d-lg-none" id="toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
     <img src="{% static 'img/logo.png' %}" alt="Logo CCMG" class="logo-top ms-2 d-lg-none">
-    <span class="modulo-tag ms-3 d-none d-lg-inline-flex"><i class="bi bi-houses"></i> Módulo Casas de Vida</span>
+    <span class="modulo-tag ms-3 d-none d-lg-inline-flex">{% block modulo_tag %}<i class="bi bi-houses"></i> Módulo Casas de Vida{% endblock %}</span>
     <span class="ms-auto text-end"><strong>{{ user.nombre_completo }}</strong><br><small class="text-muted">{{ rol_nombre }}</small></span>
   </div>
   <main class="p-3 p-md-4">
