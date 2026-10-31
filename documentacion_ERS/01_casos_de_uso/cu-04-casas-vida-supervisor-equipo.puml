@@ -1,0 +1,56 @@
+@startuml cu-04-casas-vida-supervisor-equipo
+' Figura CU-04. Casos de uso: módulo PVA – Casas de Vida, Supervisor de Área y equipo de la Casa
+' Fuentes: RF06, RF08, RF09, RF10, RF11, RF12, RF13, RF14, RF15, RF27, RN03–RN06;
+'          pva/alcance.py, pva/views.py, pva/views_reportes.py (solo_roles), pva/views_seguimiento.py
+' Convención de distribución: actores a la izquierda escritos "ACTOR -- CU";
+' actores a la derecha escritos "CU -- ACTOR". Las asociaciones no llevan flecha.
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontSize 13
+skinparam ArrowColor #555555
+skinparam ArrowFontSize 11
+skinparam actorBorderColor #2C3E50
+skinparam usecaseBackgroundColor #EAF4FB
+skinparam usecaseBorderColor #2C3E50
+skinparam rectangleBorderColor #2C3E50
+skinparam rectangleFontStyle bold
+left to right direction
+
+title Módulo PVA – Casas de Vida: equipo de la Casa y Supervisor de Área
+
+actor "//Equipo de Casa de Vida//\n<size:11>(solo su Casa: RN04, RN05)</size>" as EQ
+actor "Líder de Casa de Vida" as LI
+actor "Supervisor de Área\n<size:11>(solo su Área: RN03)</size>" as SU
+
+rectangle "Módulo PVA – Casas de Vida" {
+  usecase "Registrar actividad\ny asistencia\n<size:10>RF09, RF12</size>" as UC09
+  usecase "Enviar reporte semanal\nal Supervisor\n<size:10>RF14, RN06</size>" as UC14
+  usecase "Consultar Casas de Vida\n<size:10>RF08</size>" as UC08
+  usecase "Consultar participantes\n<size:10>RF06</size>" as UC06
+  usecase "Consultar asistencia\n<size:10>RF10</size>" as UC10
+  usecase "Consultar reportes\n<size:10>RF15</size>" as UC15
+  usecase "Consultar seguimiento\n<size:10>RF11</size>" as UC11c
+  usecase "Exportar a PDF / Excel\n<size:10>RF27</size>" as UC27
+  usecase "Enviar reporte general\nal Pastor\n<size:10>RF13, RN07</size>" as UC13
+}
+
+LI -|> EQ
+
+EQ -- UC09
+EQ -- UC14
+EQ -- UC08
+EQ -- UC06
+EQ -- UC10
+EQ -- UC15
+LI -- UC11c
+
+UC08 -- SU
+UC06 -- SU
+UC10 -- SU
+UC15 -- SU
+UC11c -- SU
+UC13 -- SU
+
+UC15 <.. UC27 : <<extend>>
+UC15 <.. UC13 : <<include>>
+@enduml

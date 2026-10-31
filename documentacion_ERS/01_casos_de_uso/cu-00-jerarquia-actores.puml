@@ -1,0 +1,73 @@
+@startuml cu-00-jerarquia-actores
+' Figura CU-00. Jerarquía de actores de la plataforma web PVA – CCMG Girón
+' Fuentes: datos_iniciales.sql (tabla rol), 2026-10-31_rol_superadmin.sql,
+'          casa_vida_equipo.funcion, usuario.responsable_ofrendas, ERS sección 2.4 y RN14.
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontSize 13
+skinparam ArrowColor #555555
+skinparam actorBorderColor #2C3E50
+skinparam actorBackgroundColor #FFFFFF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #B0A060
+skinparam noteFontSize 11
+top to bottom direction
+
+title Jerarquía de actores
+
+actor "Miembro Asistente" as MA
+actor "//Usuario registrado//" as UR
+
+actor "Pastor" as PA
+actor "Supervisor de Área" as SU
+actor "//Equipo de Casa de Vida//" as EQ
+actor "Coordinador de Formación" as CO
+actor "Responsable de ofrendas" as RO
+
+actor "Super Administrador" as SA
+actor "Líder de Casa de Vida" as LI
+actor "//Usuario de apoyo//" as AP
+
+actor "Aprendiz" as A1
+actor "Anfitrión" as A2
+actor "Maestro de Niños" as A3
+
+UR <|-- PA
+UR <|-- SU
+UR <|-- EQ
+UR <|-- CO
+UR <|-- RO
+
+PA <|-- SA
+EQ <|-- LI
+EQ <|-- AP
+
+AP <|-- A1
+AP <|-- A2
+AP <|-- A3
+
+note right of MA
+  Visitante sin cuenta.
+  Solo ve la página pública (RN22).
+end note
+
+note bottom of SA
+  Rol SUPERADMIN: todo lo del Pastor
+  más la bitácora de auditoría.
+end note
+
+note bottom of RO
+  No es un rol: usuario de cualquier rol
+  autorizado por el Pastor (RN14).
+end note
+
+note bottom of A2
+  Un solo rol en el sistema (APOYO_CASA_VIDA);
+  la función se guarda en casa_vida_equipo.funcion.
+end note
+
+legend right
+  Nombre en cursiva = actor abstracto
+  (no se instancia directamente).
+endlegend
+@enduml

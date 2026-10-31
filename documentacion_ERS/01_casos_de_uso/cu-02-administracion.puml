@@ -1,0 +1,43 @@
+@startuml cu-02-administracion
+' Figura CU-02. Casos de uso: administración, ofrendas y auditoría
+' Fuentes: RF03, RF04, RF17, RF27, RF28, RNF18; cuentas/views.py, ofrendas/views.py,
+'          nucleo/permissions.py (puede_gestionar_ofrendas), nucleo/mixins.py
+' Convención de distribución: actores a la izquierda escritos "ACTOR -- CU";
+' actores a la derecha escritos "CU -- ACTOR". Las asociaciones no llevan flecha.
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontSize 13
+skinparam ArrowColor #555555
+skinparam ArrowFontSize 11
+skinparam actorBorderColor #2C3E50
+skinparam usecaseBackgroundColor #EAF4FB
+skinparam usecaseBorderColor #2C3E50
+skinparam rectangleBorderColor #2C3E50
+skinparam rectangleFontStyle bold
+left to right direction
+
+title Administración, ofrendas y auditoría
+
+actor "Pastor" as PA
+actor "Responsable de ofrendas" as RO
+actor "Super Administrador\n<size:11>(hereda los casos de uso del Pastor)</size>" as SA
+
+rectangle "Plataforma web PVA – CCMG Girón" {
+  usecase "Gestionar usuarios\n<size:10>RF03</size>" as UC03
+  usecase "Asignar rol y permisos\n<size:10>RF04</size>" as UC04
+  usecase "Desactivar / reactivar\nusuario\n<size:10>RF28</size>" as UC28
+  usecase "Gestionar ofrendas\n<size:10>RF17</size>" as UC17
+  usecase "Consultar bitácora\nde auditoría\n<size:10>RNF18</size>" as UCAU
+  usecase "Exportar a PDF / Excel\n<size:10>RF27</size>" as UC27
+}
+
+PA -- UC03
+PA -- UC17
+UC17 -- RO
+UCAU -- SA
+
+UC03 ..> UC04 : <<include>>
+UC03 <.. UC28 : <<extend>>
+UC17 <.. UC27 : <<extend>>
+UCAU <.. UC27 : <<extend>>
+@enduml
