@@ -79,7 +79,7 @@ class ProteccionSuperAdminTests(BaseCasasVida):
 
 
 class CreacionDeAdministradoresTests(BaseCasasVida):
-    """Solo el Super Administrador crea Administradores (rol PASTOR); el Pastor crea los niveles inferiores."""
+    """Solo el Super Administrador crea y gestiona Administradores (rol PASTOR); el Pastor gestiona los niveles inferiores."""
 
     def datos(self, usuario, rol):
         return {"nombre_completo": usuario.nombre_completo, "correo": usuario.correo,
@@ -119,6 +119,40 @@ class CreacionDeAdministradoresTests(BaseCasasVida):
                              reverse("cuentas:usuarios_list"))
         self.pastor.refresh_from_db()
         self.assertEqual((self.pastor.nombre_completo, self.pastor.rol.nombre), ("Pastor Principal", "PASTOR"))
+
+    def test_pastor_no_puede_cambiarse_el_rol(self):
+        self.entrar(self.pastor)
+        resp = self.client.post(reverse("cuentas:usuarios_editar", args=[self.pastor.pk]),
+                                self.datos(self.pastor, "COORDINADOR_FORMACION"))
+        self.assertIn("rol", resp.context["form"].errors)
+        self.pastor.refresh_from_db()
+        self.assertEqual(self.pastor.rol.nombre, "PASTOR")
+
+    def test_pastor_no_gestiona_a_otros_administradores(self):
+        otro = Usuario.objects.create_user(correo="pastor2@ccmg.org", nombre_completo="Pastor 2",
+                                           rol=self.rol["PASTOR"], password=CLAVE)
+        self.entrar(self.pastor)
+        usuarios = self.client.get(reverse("cuentas:usuarios_list")).context["usuarios"]
+        self.assertNotIn(otro, usuarios)
+        self.assertIn(self.pastor, usuarios)
+        self.assertEqual(self.client.get(reverse("cuentas:usuarios_editar", args=[otro.pk])).status_code, 404)
+        self.assertEqual(self.client.post(reverse("cuentas:usuarios_editar", args=[otro.pk]),
+                                          self.datos(otro, "PASTOR")).status_code, 404)
+        self.assertEqual(self.client.post(reverse("cuentas:usuarios_desactivar", args=[otro.pk])).status_code, 404)
+        self.assertEqual(self.client.post(reverse("cuentas:usuarios_reactivar", args=[otro.pk])).status_code, 404)
+        otro.refresh_from_db()
+        self.assertTrue(otro.activo)
+
+    def test_superadmin_gestiona_a_los_administradores(self):
+        otro = Usuario.objects.create_user(correo="pastor2@ccmg.org", nombre_completo="Pastor 2",
+                                           rol=self.rol["PASTOR"], password=CLAVE)
+        self.entrar(self.superadmin)
+        self.assertIn(otro, self.client.get(reverse("cuentas:usuarios_list")).context["usuarios"])
+        self.client.post(reverse("cuentas:usuarios_editar", args=[otro.pk]),
+                         self.datos(otro, "PASTOR") | {"nombre_completo": "Pastor Dos"})
+        self.client.post(reverse("cuentas:usuarios_desactivar", args=[otro.pk]))
+        otro.refresh_from_db()
+        self.assertEqual((otro.nombre_completo, otro.activo), ("Pastor Dos", False))
 
     def test_superadmin_crea_administradores(self):
         self.entrar(self.superadmin)

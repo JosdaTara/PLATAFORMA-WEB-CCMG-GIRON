@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, View
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import Q
 import secrets
 import string
 
@@ -16,7 +17,7 @@ from nucleo import exportar
 from nucleo.exportar import ExportableMixin
 from nucleo.mixins import PastorRequiredMixin, SuperAdminRequiredMixin
 from nucleo.permissions import pastor_required
-from nucleo.utils import ROLES_SUPERADMIN, es_superadmin, registrar_auditoria, rol_efectivo, sesion_js
+from nucleo.utils import ROLES_PASTOR, ROLES_SUPERADMIN, es_superadmin, registrar_auditoria, rol_efectivo, sesion_js
 
 from .forms import CcmgPasswordChangeForm, LoginForm, UsuarioForm, UsuarioAsignacionForm
 from .models import Usuario, Rol
@@ -102,10 +103,16 @@ class AdminUsuariosMixin:
 
 
 def usuarios_gestionables(editor):
-    """Usuarios que el editor puede ver y modificar: el Pastor no ve a los Super Administradores."""
+    """Usuarios que el editor puede ver y modificar.
+
+    Solo el Super Administrador gestiona a los Super Administradores y a los Administradores (Pastor).
+    El Pastor no ve a ninguno de ellos, salvo a sí mismo.
+    """
     qs = Usuario.objects.all()
     if not es_superadmin(editor):
-        qs = qs.exclude(rol__nombre=ROLES_SUPERADMIN)
+        qs = qs.exclude(rol__nombre=ROLES_SUPERADMIN).exclude(
+            Q(rol__nombre=ROLES_PASTOR) & ~Q(pk=getattr(editor, "pk", None))
+        )
     return qs
 
 

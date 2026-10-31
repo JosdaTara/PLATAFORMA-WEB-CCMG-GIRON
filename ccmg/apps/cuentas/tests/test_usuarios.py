@@ -61,15 +61,20 @@ class UsuarioGestionTests(TestCase):
         self.assertIn(resp.status_code, [302])
 
     def test_cannot_deactivate_last_pastor(self):
+        # Solo el Super Administrador gestiona a los Pastores.
+        rol_superadmin = Rol.objects.create(nombre="SUPERADMIN", acceso_casas_vida=True, acceso_escuelas_formacion=True)
+        Usuario.objects.create_user(
+            correo="dev@ccmg.org", nombre_completo="Dev", rol=rol_superadmin, password="password12345678901", activo=True
+        )
         c = Client()
-        c.login(username="pastor@ccmg.org", password="password12345678901")
+        c.login(username="dev@ccmg.org", password="password12345678901")
         otro = Usuario.objects.create_user(
             correo="pastor2@ccmg.org", nombre_completo="P2", rol=self.rol_pastor, password="password12345678901", activo=True
         )
         c.post(reverse("cuentas:usuarios_desactivar", args=[otro.pk]))
         otro.refresh_from_db()
         self.assertFalse(otro.activo)
-        # ahora solo queda pastor, no puede desactivarlo
+        # ahora solo queda un Pastor activo: no se puede desactivar
         resp = c.post(reverse("cuentas:usuarios_desactivar", args=[self.pastor.pk]))
         self.pastor.refresh_from_db()
         self.assertTrue(self.pastor.activo)
