@@ -78,6 +78,59 @@ class ProteccionSuperAdminTests(BaseCasasVida):
         self.assertTrue(otro.activo)  # no se desactiva a sí mismo
 
 
+class CreacionDeAdministradoresTests(BaseCasasVida):
+    """Solo el Super Administrador crea Administradores (rol PASTOR); el Pastor crea los niveles inferiores."""
+
+    def datos(self, usuario, rol):
+        return {"nombre_completo": usuario.nombre_completo, "correo": usuario.correo,
+                "username": usuario.username or "", "rol": self.rol[rol].pk}
+
+    def test_pastor_no_puede_crear_administradores(self):
+        self.entrar(self.pastor)
+        form = self.client.get(reverse("cuentas:usuarios_crear")).context["form"]
+        self.assertNotIn("PASTOR", [r.nombre for r in form.fields["rol"].queryset])
+        resp = self.client.post(
+            reverse("cuentas:usuarios_crear"),
+            {"nombre_completo": "Otro Pastor", "correo": "pastor2@ccmg.org", "username": "", "rol": self.rol["PASTOR"].pk},
+        )
+        self.assertIn("rol", resp.context["form"].errors)
+        self.assertFalse(Usuario.objects.filter(correo="pastor2@ccmg.org").exists())
+
+    def test_pastor_no_puede_ascender_a_administrador(self):
+        self.entrar(self.pastor)
+        resp = self.client.post(reverse("cuentas:usuarios_editar", args=[self.coord.pk]), self.datos(self.coord, "PASTOR"))
+        self.assertIn("rol", resp.context["form"].errors)
+        self.coord.refresh_from_db()
+        self.assertEqual(self.coord.rol.nombre, "COORDINADOR_FORMACION")
+
+    def test_pastor_sigue_creando_los_niveles_inferiores(self):
+        self.entrar(self.pastor)
+        self.client.post(
+            reverse("cuentas:usuarios_crear"),
+            {"nombre_completo": "Nuevo Coord", "correo": "coord2@ccmg.org", "username": "",
+             "rol": self.rol["COORDINADOR_FORMACION"].pk},
+        )
+        self.assertEqual(Usuario.objects.get(correo="coord2@ccmg.org").rol.nombre, "COORDINADOR_FORMACION")
+
+    def test_pastor_conserva_su_rol_al_editar_sus_datos(self):
+        self.entrar(self.pastor)
+        datos = self.datos(self.pastor, "PASTOR") | {"nombre_completo": "Pastor Principal"}
+        self.assertRedirects(self.client.post(reverse("cuentas:usuarios_editar", args=[self.pastor.pk]), datos),
+                             reverse("cuentas:usuarios_list"))
+        self.pastor.refresh_from_db()
+        self.assertEqual((self.pastor.nombre_completo, self.pastor.rol.nombre), ("Pastor Principal", "PASTOR"))
+
+    def test_superadmin_crea_administradores(self):
+        self.entrar(self.superadmin)
+        form = self.client.get(reverse("cuentas:usuarios_crear")).context["form"]
+        self.assertIn("PASTOR", [r.nombre for r in form.fields["rol"].queryset])
+        self.client.post(
+            reverse("cuentas:usuarios_crear"),
+            {"nombre_completo": "Otro Pastor", "correo": "pastor2@ccmg.org", "username": "", "rol": self.rol["PASTOR"].pk},
+        )
+        self.assertEqual(Usuario.objects.get(correo="pastor2@ccmg.org").rol.nombre, "PASTOR")
+
+
 class AuditoriaTests(BaseCasasVida):
     def test_solo_el_superadmin_ve_la_bitacora(self):
         for user in (self.pastor, self.supervisor, self.lider, self.coord):

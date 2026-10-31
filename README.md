@@ -8,7 +8,7 @@
 ![Django](https://img.shields.io/badge/Django-5.2-092E20?logo=django&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white)
-![Pruebas](https://img.shields.io/badge/pruebas-179%20pasando-00674F)
+![Pruebas](https://img.shields.io/badge/pruebas-184%20pasando-00674F)
 ![Requisitos](https://img.shields.io/badge/requisitos%20funcionales-28%2F28-CBB279)
 
 Proyecto de grado · Tecnología en Desarrollo de Sistemas Informáticos · Unidades Tecnológicas de Santander (UTS)
@@ -181,7 +181,7 @@ Los usuarios de demostración usan el dominio `demo.test` (`superadmin@`, `pasto
 cd ccmg
 python manage.py test --noinput
 ```
-Son **179 pruebas automatizadas** sobre PostgreSQL. Cubren:
+Son **184 pruebas automatizadas** sobre PostgreSQL. Cubren:
 - los permisos y el alcance de cada rol;
 - las reglas de negocio del ERS;
 - los flujos de reportes;

@@ -48,12 +48,15 @@ class UsuarioForm(EstiloBootstrapMixin, forms.ModelForm):
 
     def __init__(self, *args, editor=None, **kwargs):
         super().__init__(*args, **kwargs)
-        from nucleo.utils import ROLES_SUPERADMIN, es_superadmin
+        from nucleo.utils import ROLES_PASTOR, ROLES_SUPERADMIN, es_superadmin
 
         roles = Rol.objects.order_by("id_rol")
-        # Solo un Super Administrador puede asignar ese rol.
+        # Solo un Super Administrador crea Super Administradores y Administradores (Pastor).
+        # Quien ya es Administrador conserva su rol al editar sus datos.
         if not es_superadmin(editor):
             roles = roles.exclude(nombre=ROLES_SUPERADMIN)
+            if getattr(getattr(self.instance, "rol", None), "nombre", None) != ROLES_PASTOR:
+                roles = roles.exclude(nombre=ROLES_PASTOR)
         self.fields["rol"].queryset = roles
 
     def clean_correo(self):
