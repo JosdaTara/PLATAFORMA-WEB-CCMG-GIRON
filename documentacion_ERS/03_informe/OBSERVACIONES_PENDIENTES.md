@@ -13,6 +13,7 @@ Puntos donde la ERS, las reglas de negocio y el código no coinciden, o donde la
 | O7 | Significado de "área" en RN12 | Baja | Equipo |
 | O8 | El Pastor registra asistencia en formación | Baja | Cliente |
 | O9 | Reemplazar el IEEE original por la copia corregida | Media | Equipo |
+| O10 | Quién puede crear Administradores (resuelta; queda la edición de Administradores) | Media | Cliente |
 
 ---
 
@@ -46,7 +47,7 @@ El rol `SUPERADMIN` existe en la base de datos y en el código, pero la ERS no l
 
 No es un rol sino un permiso (`usuario.responsable_ofrendas`) que el Pastor concede a un usuario de cualquier rol (RN14).
 
-**Diagrama actual:** se modela como actor, porque UML define un actor como un *papel* que desempeña un usuario, no como un rol de la base de datos. Una nota en CU-00 lo explica.
+**Diagrama actual:** se modela como actor, porque UML define un actor como un *papel* que desempeña un usuario, no como un rol de la base de datos. Una nota en CU-00 aclara que no es un nivel de la jerarquía sino un permiso.
 **A confirmar:** que el director del proyecto acepte esta representación.
 
 ### O5. Columna redundante `casa_vida.id_supervisor`
@@ -88,6 +89,15 @@ Existen tres versiones de los diagramas:
 
 **Estado:** los diagramas vigentes ya están insertados en `IEEE_PLATAFORMA_WEB_CCMG_diagramas_corregidos.docx` (generada desde el original sin modificar): CU-01 (general) como Figura 1a, CU-00 (jerarquía) como Figura 1b y CU-02 a CU-05 (por módulo) como Figuras 1c a 1f; DER-00, DER-01, DER-02, DER-04 y DER-03 como Figuras 2a a 2e. Los diagramas por módulo y los entidad-relación van en páginas apaisadas para que el texto se lea. El diagrama general ocupa todo el ancho de una página vertical; en papel su letra queda pequeña (unos 4,5 puntos), así que conviene revisarlo en el PDF o en el SVG.
 **Pendiente:** decidir si la copia corregida reemplaza al original.
+
+### O10. Quién puede crear Administradores (resuelta el 31/10/2026)
+
+- **Regla del cliente:** solo el Super Administrador crea Administradores y otros Super Administradores; el Administrador crea las cuentas de los niveles 3 a 5.
+- **Antes:** el Administrador (Pastor) podía asignar el rol `PASTOR` a otro usuario, porque `UsuarioForm` solo le ocultaba el rol `SUPERADMIN`.
+- **Corrección:** `UsuarioForm` (`cuentas/forms.py`) ya no ofrece el rol `PASTOR` a quien no es Super Administrador, ni al crear una cuenta ni al editarla. Como la lista de roles del formulario es la que valida el servidor, un envío manipulado con ese rol también se rechaza. Quien ya es Administrador conserva su rol al editar sus propios datos.
+- **Pruebas:** `CreacionDeAdministradoresTests` (`cuentas/tests/test_superadmin.py`), con cinco casos: el Pastor no crea ni asciende Administradores, sigue creando los niveles inferiores y conserva su rol al editarse; el Super Administrador sí crea Administradores. Sin la corrección, los dos casos de la regla fallan. La suite completa (184 pruebas) pasa.
+
+**Queda por decidir:** el Administrador todavía puede editar o desactivar a otro Administrador que ya exista, y cambiarle el rol a uno inferior. La regla del cliente habla de crear; si «gestiona todo» significa que solo el Super Administrador administra a los Administradores, hay que restringir también esas acciones.
 
 ---
 

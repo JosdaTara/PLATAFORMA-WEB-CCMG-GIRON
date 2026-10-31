@@ -78,6 +78,37 @@ class Diagrama:
             f'pos={self._pos(x, y)}];'
         )
 
+    def tarjeta(self, ident, x, y, ancho, alto, titulo, codigo, lineas, cabecera):
+        """Ficha de un nivel de la jerarquía: título con el rol del sistema y su descripción."""
+        cuerpo = "<BR/>".join(lineas)
+        self.nodos.append(
+            f'  {ident} [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" '
+            f'COLOR="#2C3E50" BGCOLOR="white" FIXEDSIZE="TRUE" WIDTH="{ancho * PT:.0f}" HEIGHT="{alto * PT:.0f}">'
+            f'<TR><TD BGCOLOR="{cabecera}" ALIGN="LEFT" WIDTH="{ancho * PT - 4:.0f}"><FONT POINT-SIZE="13"><B>{titulo}</B></FONT>'
+            f'<FONT POINT-SIZE="10" COLOR="#4A5A68">   rol: {codigo}</FONT></TD></TR>'
+            f'<TR><TD ALIGN="LEFT" BALIGN="LEFT" VALIGN="TOP"><FONT POINT-SIZE="11">{cuerpo}</FONT></TD></TR>'
+            f'</TABLE>>, pos={self._pos(x, y)}];'
+        )
+        self.xy[ident] = (x, y)
+
+    def nivel(self, ident, texto, x, y, color):
+        self.nodos.append(
+            f'  {ident} [shape=box, style="rounded,filled", fillcolor="{color}", color="#2C3E50", fontcolor="white", '
+            f'label=<<B>{texto}</B>>, fontsize=13, fixedsize=true, width=1.15, height=0.45, pos={self._pos(x, y)}];'
+        )
+        self.xy[ident] = (x, y)
+
+    def texto(self, ident, texto, x, y, tam=11, color="#4A5A68"):
+        self.nodos.append(
+            f'  {ident} [shape=plaintext, label=<<I>{texto}</I>>, fontsize={tam}, fontcolor="{color}", '
+            f'pos={self._pos(x, y)}];'
+        )
+
+    def flecha(self, a, b):
+        """Flecha simple de un nivel al siguiente (orden jerárquico)."""
+        o, d = self._extremos(a, b)
+        self.aristas.append(f'  {o} -> {d} [arrowhead=normal, arrowsize=0.9, color="#2C3E50", penwidth=1.6];')
+
     def nota(self, ident, texto, x, y, ancho, alto):
         self.nodos.append(
             f'  {ident} [shape=note, label="{texto}", fontsize=10, style=filled, fillcolor="#FFFDE7", '
@@ -214,10 +245,10 @@ def general():
     d.actor("UR", "Usuario registrado\n(cualquier rol)", X_ACT, 3.25)
     d.actor("SA", "Super\nAdministrador", X_ACT, 5.1)
     d.actor("RO", "Responsable\nde ofrendas", X_ACT, 6.4)
-    d.actor("PA", "Pastor", X_ACT, 7.75)
+    d.actor("PA", "Administrador\n(Pastor)", X_ACT, 7.75)
     d.actor("SU", "Supervisor\nde Área", X_ACT, 10.0)
     d.actor("EQ", "Equipo de\nCasa de Vida", X_ACT, 12.0)
-    d.actor("CO", "Coordinador\nde Formación", X_ACT, 15.0)
+    d.actor("CO", "Coordinador de\nEscuelas de\nFormación", X_ACT, 15.0)
     d.actor("SMTP", "Servidor de\ncorreo SMTP", X_SIS, 1.9, sistema=True)
     d.actor("DB", "Servidor de base\nde datos PostgreSQL", X_SIS, 4.6, sistema=True)
 
@@ -243,7 +274,7 @@ def general():
     d.asocia("bit", "DB")
 
     d.nota("n1", "Vista general con los casos de uso\\lprincipales. El detalle de cada módulo\\l"
-           "y la participación del Pastor en\\lEscuelas de Formación están en\\lCU-02 a CU-05.\\l",
+           "y la participación del Administrador\\len Escuelas de Formación están en\\lCU-02 a CU-05.\\l",
            13.75, 15.9, 2.6, 1.3)
     d.escribir()
 
@@ -313,9 +344,9 @@ def administracion():
     d.cu("bit", "Registrar en bitácora", X3, 3.4, "seg", ancho=2.2)
     d.cu("cif", "Cifrar contraseña", X3, 5.65, "seg", ancho=2.2)
 
-    d.actor("SA", "Super Administrador\n(hereda del Pastor)", X_ACT, 1.75)
+    d.actor("SA", "Super Administrador\n(hereda del Administrador)", X_ACT, 1.75)
     d.actor("RO", "Responsable\nde ofrendas", X_ACT, 3.05)
-    d.actor("PA", "Pastor", X_ACT, 4.55)
+    d.actor("PA", "Administrador\n(Pastor)", X_ACT, 4.55)
     d.actor("DB", "Servidor de base\nde datos PostgreSQL", X_SIS, 3.4, sistema=True)
 
     asociar(d, {"SA": ["bita"], "RO": ["ofr"], "PA": ["ofr", "usr"]})
@@ -329,6 +360,8 @@ def administracion():
     d.extend("exp", "ofr")
     d.asocia("bit", "DB")
     d.asocia("cif", "DB")
+    d.nota("n1", "Solo el Super Administrador\\lasigna los roles Administrador\\ly Super Administrador.\\l"
+           "El Administrador crea las\\lcuentas de los niveles 3 a 5.\\l", 12.25, 5.7, 2.3, 1.05)
     d.escribir()
 
 
@@ -360,7 +393,7 @@ def casas_vida():
     d.cu("act", "Registrar actividad", X2, r["asis"])
     d.cu("bit", "Registrar en bitácora", X3, r["casis"], "seg", ancho=2.2)
 
-    d.actor("PA", "Pastor", X_ACT, 3.7)
+    d.actor("PA", "Administrador\n(Pastor)", X_ACT, 3.7)
     d.actor("SU", "Supervisor\nde Área", X_ACT, 7.25)
     d.actor("LI", "Líder de\nCasa de Vida", X_ACT, 8.75)
     d.actor("EQ", "Equipo de\nCasa de Vida", X_ACT, 10.05, abstracto=True)
@@ -414,8 +447,8 @@ def formacion():
     # La bitácora va arriba: el abanico de «include» sube y deja libres los casos de la columna 2.
     d.cu("bit", "Registrar en bitácora", X3, 1.9, "seg", ancho=2.1)
 
-    d.actor("PA", "Pastor\n(todos los procesos)", X_ACT, 1.75)
-    d.actor("CO", "Coordinador de Formación\n(procesos que coordina)", X_ACT, 4.6)
+    d.actor("PA", "Administrador (Pastor)\n(todos los procesos)", X_ACT, 1.75)
+    d.actor("CO", "Coordinador de Escuelas\nde Formación\n(procesos que coordina)", X_ACT, 4.6)
     d.actor("DB", "Servidor de base\nde datos PostgreSQL", X_SIS, 1.9, sistema=True)
 
     asociar(d, {"PA": ["dproc"], "CO": ["proc", "pfor", "ret", "afor", "sfor", "rfor"]})
@@ -426,12 +459,80 @@ def formacion():
         d.include(k, "bit")
     d.extend("exp", "rfor")
     d.asocia("bit", "DB")
-    d.nota("n1", "El Pastor hereda todos los casos de uso\\ldel Coordinador en este módulo y,\\l"
-           "además, puede desactivar procesos.\\l", 12.15, 7.55, 2.7, 0.75)
+    d.nota("n1", "El Administrador hereda todos\\llos casos de uso del Coordinador\\l"
+           "en este módulo y, además,\\lpuede desactivar procesos.\\l", 12.15, 7.45, 2.4, 0.9)
+    d.escribir()
+
+
+# -------------------------------------------------------------------------------------
+# CU-00 · Jerarquía de usuarios (niveles de autoridad, de mayor a menor)
+# -------------------------------------------------------------------------------------
+def jerarquia():
+    d = Diagrama("cu-00-jerarquia-actores", "CU-00 · Jerarquía de usuarios de la plataforma web PVA – CCMG Girón",
+                 12.3, 12.6)
+    X_NIV, X_FIG, X_TAR, ANCHO = 0.95, 2.45, 7.55, 8.3
+    ADMIN, OPER, SIN = "#1F3A5F", "#3D7A8C", "#8A949C"
+
+    d.marco("g_adm", "Administración del sistema", 0.25, 0.95, 12.0, 4.25)
+    d.marco("g_ope", "Operación del Plan Vida Abundante", 0.25, 4.6, 12.0, 9.85)
+    d.marco("g_sin", "Sin cuenta en la plataforma", 0.25, 10.2, 12.0, 11.85)
+
+    filas = {
+        "n1": (1.95, "Nivel 1", ADMIN), "n2": (3.5, "Nivel 2", ADMIN),
+        "n3": (5.6, "Nivel 3", OPER), "n4": (7.15, "Nivel 4", OPER), "n5": (8.75, "Nivel 5", OPER),
+        "n6": (11.0, "Nivel 6", SIN),
+    }
+    for k, (y, txt, color) in filas.items():
+        d.nivel(k, txt, X_NIV, y, color)
+    claves = list(filas)
+    for a, b in zip(claves, claves[1:]):
+        d.flecha(a, b)
+    d.texto("mas", "mayor autoridad", X_NIV, 1.4)
+    d.texto("menos", "menor autoridad", X_NIV, 11.55)
+
+    d.actor("SA", "Super\nAdministrador", X_FIG, 1.95)
+    d.actor("AD", "Administrador\n(Pastor)", X_FIG, 3.5)
+    d.actor("SU", "Supervisor\nde Área", X_FIG, 5.6)
+    d.actor("CO", "Coordinador de\nEscuelas de\nFormación", X_FIG, 7.15)
+    d.actor("LI", "Líder de Casa de\nVida y su equipo", X_FIG, 8.75)
+    d.actor("MA", "Miembro\nAsistente", X_FIG, 11.0)
+
+    d.tarjeta("t1", X_TAR, 1.95, ANCHO, 1.15, "Super Administrador", "SUPERADMIN", [
+        "Gestiona toda la plataforma y consulta la bitácora de auditoría.",
+        "<B>Es el único que crea Administradores y otros Super Administradores.</B>",
+    ], "#D6E4F0")
+    d.tarjeta("t2", X_TAR, 3.5, ANCHO, 1.15, "Administrador (Pastor)", "PASTOR", [
+        "Administra el PVA y las Escuelas de Formación: usuarios, Áreas, Casas de Vida,",
+        "participantes, ofrendas y reportes. <B>Crea las cuentas de los niveles 3 a 5</B>",
+        "y autoriza al responsable de ofrendas.",
+    ], "#D6E4F0")
+    d.tarjeta("t3", X_TAR, 5.6, ANCHO, 1.05, "Supervisor de Área", "SUPERVISOR_AREA", [
+        "Supervisa, en solo lectura, las Casas de Vida de su Área.",
+        "Recibe los reportes semanales y envía el reporte general al Administrador.",
+    ], "#D5ECEF")
+    d.tarjeta("t4", X_TAR, 7.15, ANCHO, 1.05, "Coordinador de Escuelas de Formación", "COORDINADOR_FORMACION", [
+        "Gestiona los procesos de formación que coordina (Pasos de Vida, Escuelas Vida,",
+        "Módulos de Liderazgo, Misiones): participantes, asistencia, seguimiento y reportes.",
+    ], "#D5ECEF")
+    d.tarjeta("t5", X_TAR, 8.75, ANCHO, 1.15, "Líder de Casa de Vida y su equipo de trabajo",
+              "LIDER_CASA_VIDA · APOYO_CASA_VIDA", [
+                  "Consultan su Casa de Vida, registran la asistencia y envían el reporte semanal",
+                  "al Supervisor de Área. Equipo de trabajo: Aprendiz, Anfitrión y Maestro de Niños.",
+              ], "#D5ECEF")
+    d.tarjeta("t6", X_TAR, 11.0, ANCHO, 0.85, "Miembro Asistente", "ninguno", [
+        "Visitante o miembro nuevo: solo consulta la página pública de la iglesia.",
+    ], "#E6E9EB")
+
+    for a, t in [("SA", "t1"), ("AD", "t2"), ("SU", "t3"), ("CO", "t4"), ("LI", "t5"), ("MA", "t6")]:
+        d.asocia(a, t)
+
+    d.nota("n_of", "Responsable de ofrendas: no es un nivel. Es un permiso que el\\l"
+           "Administrador concede a un usuario de cualquier nivel (RN14).\\l", 8.6, 12.25, 4.6, 0.5)
     d.escribir()
 
 
 if __name__ == "__main__":
+    jerarquia()
     general()
     acceso()
     administracion()

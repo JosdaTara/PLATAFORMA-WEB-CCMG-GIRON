@@ -142,8 +142,9 @@
 <!-- PA -->
 <g id="node22" class="node">
 <title>PA</title>
-<image xlink:href="data:image/png;base64,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" width="25.2px" height="42px" preserveAspectRatio="xMinYMin meet" x="40.9" y="-648.325"/>
-<text text-anchor="start" x="36.25" y="-592.92" font-family="Arial" font-size="12.00">Pastor</text>
+<image xlink:href="data:image/png;base64,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" width="25.2px" height="42px" preserveAspectRatio="xMinYMin meet" x="40.9" y="-655.45"/>
+<text text-anchor="start" x="16.38" y="-600.05" font-family="Arial" font-size="12.00">Administrador</text>
+<text text-anchor="start" x="32.5" y="-585.8" font-family="Arial" font-size="12.00">(Pastor)</text>
 </g>
 <!-- SU -->
 <g id="node23" class="node">
@@ -302,42 +303,42 @@
 <!-- PA&#45;&gt;area -->
 <g id="edge1" class="edge">
 <title>PA:e&#45;&gt;area:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M71.54,-619.2C71.54,-619.2 202.53,-777.6 202.53,-777.6"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M91.59,-619.2C91.59,-619.2 202.53,-777.6 202.53,-777.6"/>
 </g>
 <!-- PA&#45;&gt;casa -->
 <g id="edge2" class="edge">
 <title>PA:e&#45;&gt;casa:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M71.54,-619.2C71.54,-619.2 202.53,-725.8 202.53,-725.8"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M91.59,-619.2C91.59,-619.2 202.53,-725.8 202.53,-725.8"/>
 </g>
 <!-- PA&#45;&gt;part -->
 <g id="edge3" class="edge">
 <title>PA:e&#45;&gt;part:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M71.54,-619.2C71.54,-619.2 202.53,-673.9 202.53,-673.9"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M91.59,-619.2C91.59,-619.2 202.53,-673.9 202.53,-673.9"/>
 </g>
 <!-- PA&#45;&gt;imp -->
 <g id="edge4" class="edge">
 <title>PA:e&#45;&gt;imp:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M71.54,-619.2C71.54,-619.2 202.53,-622.1 202.53,-622.1"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M91.59,-619.2C91.59,-619.2 202.53,-622.1 202.53,-622.1"/>
 </g>
 <!-- PA&#45;&gt;seg -->
 <g id="edge5" class="edge">
 <title>PA:e&#45;&gt;seg:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M71.54,-619.2C71.54,-619.2 202.53,-570.2 202.53,-570.2"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M91.59,-619.2C91.59,-619.2 202.53,-570.2 202.53,-570.2"/>
 </g>
 <!-- PA&#45;&gt;gen -->
 <g id="edge6" class="edge">
 <title>PA:e&#45;&gt;gen:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M71.54,-619.2C71.54,-619.2 202.53,-518.4 202.53,-518.4"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M91.59,-619.2C91.59,-619.2 202.53,-518.4 202.53,-518.4"/>
 </g>
 <!-- PA&#45;&gt;casis -->
 <g id="edge7" class="edge">
 <title>PA:e&#45;&gt;casis:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M71.54,-619.2C71.54,-619.2 202.53,-466.6 202.53,-466.6"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M91.59,-619.2C91.59,-619.2 202.53,-466.6 202.53,-466.6"/>
 </g>
 <!-- PA&#45;&gt;crep -->
 <g id="edge8" class="edge">
 <title>PA:e&#45;&gt;crep:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M71.54,-619.2C71.54,-619.2 202.53,-414.7 202.53,-414.7"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M91.59,-619.2C91.59,-619.2 202.53,-414.7 202.53,-414.7"/>
 </g>
 <!-- SU&#45;&gt;casis -->
 <g id="edge9" class="edge">

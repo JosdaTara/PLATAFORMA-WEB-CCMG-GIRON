@@ -90,7 +90,7 @@ El contenido de la v1 era correcto, pero la presentación no cumplía los criter
 
 | Figura | Archivo | Actores | Contenido |
 |---|---|---|---|
-| CU-00 | `cu-00-jerarquia-actores` | Todos | Generalización entre actores (quién hereda de quién) |
+| CU-00 | `cu-00-jerarquia-actores` | Todos | Jerarquía de usuarios en seis niveles de autoridad (ver 3.1.1) |
 | **CU-01** | `cu-01-general` | Todos | **Diagrama general único**: casos de uso principales de los cuatro módulos, servicios de seguridad, servidor web, servidor PostgreSQL y servidor SMTP |
 | CU-02 | `cu-02-acceso-seguridad` | Miembro Asistente, Usuario registrado | Acceso, página pública y los cinco servicios de seguridad |
 | CU-03 | `cu-03-administracion` | Super Administrador, Responsable de ofrendas, Pastor | Usuarios, ofrendas y bitácora |
@@ -119,6 +119,25 @@ Reglas de diseño aplicadas:
 
 Notación UML: asociación = línea continua sin flecha; «include» = línea punteada con flecha hacia el caso incluido; «extend» = línea punteada con flecha hacia el caso base; generalización = triángulo hueco hacia el actor padre. *Iniciar sesión* no se incluye en cada caso de uso porque es una precondición, no un paso.
 
+#### 3.1.1 Jerarquía de usuarios (CU-00)
+
+**Revisión del 31/10/2026 según la jerarquía definida por el cliente.** La versión anterior era un árbol de generalización UML (quién hereda casos de uso de quién), que no mostraba el orden de autoridad. Ahora CU-00 es una escalera de seis niveles, de mayor a menor autoridad:
+
+| Nivel | Usuario | Rol en el sistema | Qué gestiona | Cuentas que crea |
+|---|---|---|---|---|
+| 1 | Super Administrador | `SUPERADMIN` | Toda la plataforma y la bitácora de auditoría | **Es el único que crea Administradores y otros Super Administradores** |
+| 2 | Administrador (Pastor) | `PASTOR` | PVA y Escuelas de Formación: usuarios, Áreas, Casas de Vida, participantes, ofrendas, reportes | Las de los niveles 3 a 5; autoriza al responsable de ofrendas |
+| 3 | Supervisor de Área | `SUPERVISOR_AREA` | Las Casas de Vida de su Área, en solo lectura; envía el reporte general | Ninguna |
+| 4 | Coordinador de Escuelas de Formación | `COORDINADOR_FORMACION` | Los procesos de formación que coordina | Ninguna |
+| 5 | Líder de Casa de Vida y su equipo de trabajo (Aprendiz, Anfitrión, Maestro de Niños) | `LIDER_CASA_VIDA`, `APOYO_CASA_VIDA` | Su Casa de Vida: asistencia y reporte semanal | Ninguna |
+| 6 | Miembro Asistente | sin cuenta | Solo la página pública | Ninguna |
+
+Diseño: los niveles se agrupan en «Administración del sistema» (1 y 2), «Operación del Plan Vida Abundante» (3 a 5) y «Sin cuenta en la plataforma» (6), con una flecha que baja de nivel en nivel. Cada nivel tiene su actor y una ficha con el rol del sistema, lo que gestiona y las cuentas que puede crear. El responsable de ofrendas no es un nivel sino un permiso, y se aclara en una nota.
+
+En los diagramas de casos de uso, «Pastor» pasa a llamarse «Administrador (Pastor)» y «Coordinador de Formación», «Coordinador de Escuelas de Formación», para usar los mismos nombres que la jerarquía. CU-03 incluye una nota con la regla de creación de administradores.
+
+> **Código alineado con la regla:** antes, el Administrador (Pastor) también podía asignar el rol Administrador. Se corrigió en `cuentas/forms.py` (`UsuarioForm.__init__`) con cinco pruebas nuevas; detalle en la observación O10.
+
 ### 3.2 Entidad-relación (Graphviz DOT, generado desde un único modelo)
 
 | Vista | Archivo | Contenido |
@@ -146,7 +165,7 @@ Decisiones:
 
 ### 4.1 Sintaxis
 
-Los diagramas se generan sin errores con PlantUML 1.2025.4 (CU-00) y Graphviz 12.2.1 (CU-01 a CU-05 con `neato -n2`, y DER-00 a DER-04 con `dot`). Se revisó visualmente cada PNG: sin texto recortado, sin símbolos faltantes, sin líneas que atraviesen óvalos o entidades y con los actores en la columna izquierda. Los SVG llevan incrustadas las figuras de actor, así que se abren solos.
+Los diagramas se generan sin errores con Graphviz 12.2.1 (CU-00 a CU-05 con `neato -n2`, y DER-00 a DER-04 con `dot`). Se revisó visualmente cada PNG: sin texto recortado, sin símbolos faltantes, sin líneas que atraviesen óvalos o entidades y con los actores en la columna izquierda. Los SVG llevan incrustadas las figuras de actor, así que se abren solos.
 
 ### 4.2 Modelo de datos contra la base de datos
 
@@ -256,7 +275,7 @@ Los 28 RF están cubiertos. Para que los óvalos lleven solo el nombre de la acc
 documentacion_ERS/
 ├── README.md                          índice y cómo regenerar
 ├── renderizar.sh                      regenera PNG y SVG en local
-├── 01_casos_de_uso/                   cu-00 (.puml) y cu-01 … cu-05 (.dot), con .png y .svg
+├── 01_casos_de_uso/                   cu-00 … cu-05 (.dot, .png, .svg)
 │   └── generar_cu.py                  posiciones fijas de actores y casos de uso → .dot
 ├── 02_entidad_relacion/               der-00 … der-04 (.dot, .png, .svg)
 │   ├── generar_der.py                 modelo único → .dot
