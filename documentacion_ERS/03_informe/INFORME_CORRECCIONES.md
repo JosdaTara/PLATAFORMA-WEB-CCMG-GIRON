@@ -84,24 +84,40 @@ El contenido de la v1 era correcto, pero la presentación no cumplía los criter
 
 ## Etapa 3. Correcciones realizadas
 
-### 3.1 Casos de uso (PlantUML, distribución con Graphviz)
+### 3.1 Casos de uso (Graphviz, distribución fija)
 
-| Figura | Archivo | Contenido | Decisiones |
+**Revisión del 31/10/2026 por indicación del profesor.** Sustituye a los seis diagramas anteriores, que tenían cuatro defectos: no había un diagrama general único, algunos actores quedaban a la derecha o abajo, había óvalos con dos acciones («Desactivar / reactivar», «Registrar actividad y asistencia», «Exportar a PDF / Excel») y no se veían el servidor ni los servicios de seguridad.
+
+| Figura | Archivo | Actores | Contenido |
 |---|---|---|---|
-| CU-00 | `cu-00-jerarquia-actores` | Generalización de actores | Separar la jerarquía libera a los demás diagramas de flechas de herencia. Reconcilia la ERS (Aprendiz, Anfitrión, Maestro de Niños) con el sistema (un rol `APOYO_CASA_VIDA`) |
-| CU-01 | `cu-01-acceso-pagina-publica` | Acceso y página pública | `Iniciar sesión` «include» `Visualizar panel` (CU01 paso 4); `Recuperar contraseña` «extend» `Iniciar sesión` |
-| CU-02 | `cu-02-administracion` | Usuarios, ofrendas, auditoría | `Gestionar usuarios` «include» `Asignar rol` (`id_rol` NOT NULL) |
-| CU-03 | `cu-03-casas-vida-pastor` | Gestión del Pastor en el módulo PVA | `Desactivar / reactivar` «extend» las tres gestiones (RF28) |
-| CU-04 | `cu-04-casas-vida-supervisor-equipo` | Supervisor y equipo de la Casa | Supervisor a la derecha y equipo a la izquierda: los casos de uso compartidos quedan en el centro y no se cruzan líneas. `Enviar reporte general` «include» `Consultar reportes` (CU03 paso 1) |
-| CU-05 | `cu-05-escuelas-formacion` | Escuelas de Formación | `Desactivar proceso` es un caso de uso solo del Pastor, no un «extend»: un «extend» lo heredaría el Coordinador, que no tiene ese permiso |
+| CU-00 | `cu-00-jerarquia-actores` | Todos | Generalización entre actores (quién hereda de quién) |
+| **CU-01** | `cu-01-general` | Todos | **Diagrama general único**: casos de uso principales de los cuatro módulos, servicios de seguridad, servidor web, servidor PostgreSQL y servidor SMTP |
+| CU-02 | `cu-02-acceso-seguridad` | Miembro Asistente, Usuario registrado | Acceso, página pública y los cinco servicios de seguridad |
+| CU-03 | `cu-03-administracion` | Super Administrador, Responsable de ofrendas, Pastor | Usuarios, ofrendas y bitácora |
+| CU-04 | `cu-04-casas-vida` | Pastor, Supervisor de Área, Líder, Equipo, Usuario de apoyo | Módulo PVA – Casas de Vida completo |
+| CU-05 | `cu-05-escuelas-formacion` | Pastor, Coordinador de Formación | Módulo Escuelas de Formación completo |
 
-Criterios de notación aplicados:
+Reglas de diseño aplicadas:
 
-- Asociaciones actor y caso de uso sin flecha (navegabilidad no relevante), «include» y «extend» punteadas con la flecha hacia el caso de uso correcto.
-- Actores abstractos en cursiva (UML 2.5).
-- Cada caso de uso muestra los RF o RN que lo respaldan, para la trazabilidad.
-- *Iniciar sesión* no se incluye en cada caso de uso: es una precondición.
-- *Enviar reporte semanal* no incluye *Registrar actividad y asistencia*: se registra durante la semana y se envía después (precondición, CU02).
+- **Actores humanos en una sola columna a la izquierda**, alineados y en el orden de los módulos que usan, para que las líneas no se crucen. Los **sistemas externos** (servidor PostgreSQL y servidor de correo SMTP) van a la derecha como actores secundarios con el estereotipo «sistema».
+- **El servidor es visible**: el límite del sistema se rotula «Servidor web · Plataforma PVA (Django 5.2)».
+- **Servicios de seguridad visibles** en un paquete propio, con estereotipo «seguridad» y color distinto. Todos existen en el código:
+
+  | Servicio | Dónde está | Relación |
+  |---|---|---|
+  | Validar credenciales | `cuentas/backends.py` (`CcmgAuthBackend`) | «include» desde *Iniciar sesión* |
+  | Bloquear acceso temporal | mismo backend: 5 intentos fallidos, 15 minutos | «extend» de *Validar credenciales* |
+  | Verificar permisos del rol | `nucleo/mixins.py`, `nucleo/permissions.py` | «include» desde *Visualizar panel principal* |
+  | Registrar en bitácora | `nucleo/utils.registrar_auditoria` (RNF18) | «include» desde cada caso de uso que crea, modifica o desactiva datos |
+  | Cifrar contraseña | `Usuario.set_password` (RNF05) | «include» desde *Cambiar contraseña* y *Gestionar usuarios* |
+
+- **No se usa ninguna API externa**: la plataforma no consume ni publica servicios web, así que no se dibuja ninguna. Los únicos sistemas externos son PostgreSQL y SMTP (`config/settings/production.py`).
+- **Un óvalo, una acción.** Los nombres dobles se separaron o se reemplazaron: «Desactivar registro», «Registrar asistencia» «include» «Registrar actividad», «Exportar reporte», «Retirar participante de un proceso».
+- **El diagrama general muestra los casos de uso principales** para que se pueda leer. El detalle de cada módulo (consultas, seguimiento, importación) está en CU-02 a CU-05. Una nota en el diagrama lo aclara.
+- **Distribución fija:** cada elemento tiene coordenadas asignadas en `generar_cu.py` y las líneas son rectas y ancladas a los costados de cada óvalo, para que no atraviesen otros casos de uso. La primera versión con distribución automática dejaba actores sueltos y líneas cruzadas.
+- **Generalizaciones solo donde aclaran:** en CU-04, Líder y Usuario de apoyo heredan de *Equipo de Casa de Vida* (actor abstracto, en cursiva); en CU-05, el Pastor hereda del Coordinador porque en ese módulo puede hacer todo lo que hace el Coordinador, más desactivar procesos.
+
+Notación UML: asociación = línea continua sin flecha; «include» = línea punteada con flecha hacia el caso incluido; «extend» = línea punteada con flecha hacia el caso base; generalización = triángulo hueco hacia el actor padre. *Iniciar sesión* no se incluye en cada caso de uso porque es una precondición, no un paso.
 
 ### 3.2 Entidad-relación (Graphviz DOT, generado desde un único modelo)
 
@@ -130,7 +146,7 @@ Decisiones:
 
 ### 4.1 Sintaxis
 
-Los 6 `.puml` y los 5 `.dot` se renderizan sin errores ni advertencias con PlantUML 1.2025.4 y Graphviz 12.2.1. Se revisó visualmente cada PNG: sin texto recortado, sin símbolos faltantes y sin líneas que atraviesen entidades.
+Los diagramas se generan sin errores con PlantUML 1.2025.4 (CU-00) y Graphviz 12.2.1 (CU-01 a CU-05 con `neato -n2`, y DER-00 a DER-04 con `dot`). Se revisó visualmente cada PNG: sin texto recortado, sin símbolos faltantes, sin líneas que atraviesen óvalos o entidades y con los actores en la columna izquierda. Los SVG llevan incrustadas las figuras de actor, así que se abren solos.
 
 ### 4.2 Modelo de datos contra la base de datos
 
@@ -172,17 +188,36 @@ Comprueba columnas, obligatoriedad (NOT NULL) y que cada FK tenga su relación c
 
 ### 4.5 Trazabilidad requisitos → casos de uso
 
-Los 28 RF están cubiertos. Comprobación automática sobre las etiquetas de los `.puml`:
+Los 28 RF están cubiertos. Para que los óvalos lleven solo el nombre de la acción, la trazabilidad está en esta tabla y no dentro de los diagramas:
 
-| RF | Diagramas | RF | Diagramas |
-|---|---|---|---|
-| RF01, RF02, RF23, RF24, RF25 | CU-01 | RF13, RF14 | CU-04 |
-| RF03, RF04, RF17 | CU-02 | RF15 | CU-03, CU-04, CU-05 |
-| RF05 | CU-03, CU-05 | RF16 | CU-03, CU-05 |
-| RF06, RF08 | CU-04 | RF18 a RF22 | CU-05 |
-| RF07, RF26 | CU-03 | RF27 | CU-02 a CU-05 |
-| RF09, RF12 | CU-04, CU-05 | RF28 | CU-02, CU-03, CU-05 |
-| RF10 | CU-03, CU-04 | RF11 | CU-03, CU-04, CU-05 |
+| Caso de uso | RF / RN | Diagramas |
+|---|---|---|
+| Consultar información pública | RF24 | CU-01, CU-02 |
+| Iniciar sesión | RF01 | CU-01, CU-02 |
+| Visualizar panel principal | RF23 | CU-01, CU-02 |
+| Recuperar contraseña; Cambiar contraseña | RF25 | CU-01, CU-02 |
+| Cerrar sesión | RF02 | CU-01, CU-02 |
+| Gestionar usuarios; Asignar rol | RF03; RF04 | CU-01, CU-03 |
+| Desactivar usuario; Desactivar registro; Desactivar proceso | RF28, RN24 | CU-01, CU-03, CU-04, CU-05 |
+| Gestionar ofrendas | RF17, RN14 | CU-01, CU-03 |
+| Consultar bitácora de auditoría | RNF18 | CU-01, CU-03 |
+| Gestionar Áreas | RN20 | CU-04 |
+| Gestionar Casas de Vida | RF07 | CU-01, CU-04 |
+| Gestionar participantes; Gestionar participantes de formación | RF05 | CU-01, CU-04, CU-05 |
+| Importar datos | RF26 | CU-04 |
+| Consultar participantes | RF06 | CU-04 |
+| Consultar Casas de Vida | RF08 | CU-01, CU-04 |
+| Registrar asistencia; Registrar asistencia de formación; Registrar actividad | RF09, RF12 | CU-01, CU-04, CU-05 |
+| Consultar asistencia | RF10 | CU-04 |
+| Gestionar seguimiento; Consultar seguimiento; Gestionar seguimiento de formación | RF11 | CU-04, CU-05 |
+| Enviar reporte general | RF13, RN07 | CU-01, CU-04 |
+| Enviar reporte semanal | RF14, RN06 | CU-01, CU-04 |
+| Consultar reportes | RF15 | CU-01, CU-04 |
+| Generar reporte consolidado; Generar reporte de formación | RF16 (y RF15) | CU-01, CU-04, CU-05 |
+| Exportar reporte | RF27 | CU-01, CU-03, CU-04, CU-05 |
+| Gestionar procesos de formación | RF18 a RF22 | CU-01, CU-05 |
+| Inscribir participante; Retirar participante de un proceso | RF19 a RF22 | CU-01, CU-05 |
+| Servicios de seguridad | RNF03, RNF04, RNF05, RNF18, RNF20 | CU-01, CU-02, CU-03, CU-04, CU-05 |
 
 ### 4.6 Actores y permisos contra el código
 
@@ -221,7 +256,8 @@ Los 28 RF están cubiertos. Comprobación automática sobre las etiquetas de los
 documentacion_ERS/
 ├── README.md                          índice y cómo regenerar
 ├── renderizar.sh                      regenera PNG y SVG en local
-├── 01_casos_de_uso/                   cu-00 … cu-05  (.puml, .png, .svg)
+├── 01_casos_de_uso/                   cu-00 (.puml) y cu-01 … cu-05 (.dot), con .png y .svg
+│   └── generar_cu.py                  posiciones fijas de actores y casos de uso → .dot
 ├── 02_entidad_relacion/               der-00 … der-04 (.dot, .png, .svg)
 │   ├── generar_der.py                 modelo único → .dot
 │   └── validar_der.py                 contraste con esquema.sql

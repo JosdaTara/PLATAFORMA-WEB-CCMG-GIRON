@@ -75,7 +75,7 @@ RN12 dice que cada proceso de formación "deberá estar asociado al **área** co
 
 RF09 no incluye al Pastor entre los actores de *Registrar asistencia*, pero RF12, HU-06 y el código (`RegistrarActividadView`) le permiten registrar actividades y su asistencia en Escuelas de Formación.
 
-**Diagrama actual:** el Pastor está asociado a *Registrar actividad y asistencia* en CU-05 (no en el módulo PVA, donde el código no se lo permite).
+**Diagrama actual:** el Pastor puede *Registrar asistencia de formación* en CU-05, porque ahí hereda del Coordinador, (no en el módulo PVA, donde el código no se lo permite).
 **Propuesta:** añadir al Pastor a RF09 para Escuelas de Formación.
 
 ### O9. Qué figuras van en la ERS
@@ -86,7 +86,7 @@ Existen tres versiones de los diagramas:
 2. La v1, que estaba en `DOCUMENTACION/03_diseno/uml/` (eliminada el 31/10/2026).
 3. Esta entrega (v2), en `documentacion_ERS/`.
 
-**Estado:** la v2 ya está insertada en `IEEE_PLATAFORMA_WEB_CCMG_diagramas_corregidos.docx` (generada desde el original sin modificar): CU-00 a CU-05 como Figuras 1a a 1f, y DER-00, DER-01, DER-02, DER-04 y DER-03 como Figuras 2a a 2e. Las cuatro primeras van en páginas apaisadas para que el texto se lea.
+**Estado:** los diagramas vigentes ya están insertados en `IEEE_PLATAFORMA_WEB_CCMG_diagramas_corregidos.docx` (generada desde el original sin modificar): CU-01 (general) como Figura 1a, CU-00 (jerarquía) como Figura 1b y CU-02 a CU-05 (por módulo) como Figuras 1c a 1f; DER-00, DER-01, DER-02, DER-04 y DER-03 como Figuras 2a a 2e. Los diagramas por módulo y los entidad-relación van en páginas apaisadas para que el texto se lea. El diagrama general ocupa todo el ancho de una página vertical; en papel su letra queda pequeña (unos 4,5 puntos), así que conviene revisarlo en el PDF o en el SVG.
 **Pendiente:** decidir si la copia corregida reemplaza al original.
 
 ---

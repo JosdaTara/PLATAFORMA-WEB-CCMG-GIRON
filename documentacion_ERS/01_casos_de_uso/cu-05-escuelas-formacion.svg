@@ -1,1 +1,248 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="DESCRIPTION" height="1022px" preserveAspectRatio="none" style="width:721px;height:1022px;background:#FFFFFF;" version="1.1" viewBox="0 0 721 1022" width="721px" zoomAndPan="magnify"><title>M&#243;dulo Escuelas de Formaci&#243;n</title><defs/><g><g class="title" data-source-line="18"><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="210.041" x="248.8345" y="24.5332">M&#243;dulo Escuelas de Formaci&#243;n</text></g><!--cluster M?dulo Escuelas de Formaci?n--><g class="cluster" data-entity="M.dulo Escuelas de Formaci.n" data-source-line="23" data-uid="ent0004" id="cluster_M.dulo Escuelas de Formaci.n"><rect fill="none" height="865" rx="2.5" ry="2.5" style="stroke:#2C3E50;stroke-width:1;" width="563.67" x="152.04" y="45.6094"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="195.0381" x="336.356" y="61.1045">M&#243;dulo Escuelas de Formaci&#243;n</text></g><!--entity UC16f--><g class="entity" data-entity="UC16f" data-source-line="24" data-uid="ent0005" id="entity_UC16f"><ellipse cx="293.2724" cy="113.6065" fill="#EAF4FB" rx="63.8024" ry="32.7671" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="92.4917" x="247.0266" y="107.1324">Generar reporte</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="75.1499" x="255.6975" y="123.4839">de formaci&#243;n</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="54.4629" x="266.041" y="136.7212">RF15, RF16</text></g><!--entity UC27--><g class="entity" data-entity="UC27" data-source-line="25" data-uid="ent0006" id="entity_UC27"><ellipse cx="612.5993" cy="113.614" fill="#EAF4FB" rx="87.1093" ry="21.4046" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="132.209" x="546.4948" y="115.0858">Exportar a PDF / Excel</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="24.4531" x="600.3728" y="128.3231">RF27</text></g><!--entity UC11f--><g class="entity" data-entity="UC11f" data-source-line="26" data-uid="ent0007" id="entity_UC11f"><ellipse cx="293.2734" cy="212.6091" fill="#EAF4FB" rx="85.3534" ry="31.6697" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="130.0698" x="228.2384" y="207.8722">Gestionar seguimiento</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="75.1499" x="255.6984" y="224.2237">de formaci&#243;n</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="24.4531" x="281.0468" y="237.461">RF11</text></g><!--entity UC18--><g class="entity" data-entity="UC18" data-source-line="27" data-uid="ent0008" id="entity_UC18"><ellipse cx="293.2655" cy="321.6101" fill="#EAF4FB" rx="125.2255" ry="42.3408" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="191.4834" x="197.5238" y="310.0067">Gestionar procesos de formaci&#243;n</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="181.3779" x="202.5766" y="326.3583">(Pasos de Vida, Escuelas Vida,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="190.7661" x="197.8825" y="342.7099">M&#243;dulos de Liderazgo, Misiones)</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="52.2363" x="267.1474" y="355.9472">RF18-RF22</text></g><!--entity UC28--><g class="entity" data-entity="UC28" data-source-line="28" data-uid="ent0009" id="entity_UC28"><ellipse cx="293.2739" cy="431.6071" fill="#EAF4FB" rx="81.9139" ry="32.2677" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="122.0908" x="232.2285" y="425.9114">Desactivar / reactivar</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="46.249" x="270.1494" y="442.2629">proceso</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="55.5762" x="265.4858" y="455.5002">RF28, RN24</text></g><!--entity UCRE--><g class="entity" data-entity="UCRE" data-source-line="29" data-uid="ent0010" id="entity_UCRE"><ellipse cx="293.2713" cy="530.6054" fill="#EAF4FB" rx="80.3513" ry="32.206" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="119.9263" x="233.3082" y="525.0072">Retirar / reincorporar</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="61.4136" x="262.5646" y="541.3588">inscripci&#243;n</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="52.2363" x="267.1532" y="554.5961">RF19-RF22</text></g><!--entity UC09f--><g class="entity" data-entity="UC09f" data-source-line="30" data-uid="ent0011" id="entity_UC09f"><ellipse cx="293.2654" cy="630.6101" fill="#EAF4FB" rx="72.9954" ry="32.4407" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="107.6563" x="239.4373" y="624.6426">Registrar actividad</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="67.9199" x="259.3054" y="640.9941">y asistencia</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="54.4629" x="266.0339" y="654.2314">RF09, RF12</text></g><!--entity UC05f--><g class="entity" data-entity="UC05f" data-source-line="31" data-uid="ent0012" id="entity_UC05f"><ellipse cx="293.2711" cy="729.6126" fill="#EAF4FB" rx="87.6211" ry="31.6633" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="133.6816" x="226.4303" y="724.8862">Gestionar participantes</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="75.1499" x="255.6962" y="741.2378">de formaci&#243;n</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="24.4531" x="281.0446" y="754.4751">RF05</text></g><!--entity UCIN--><g class="entity" data-entity="UCIN" data-source-line="32" data-uid="ent0013" id="entity_UCIN"><ellipse cx="293.268" cy="862.6074" fill="#EAF4FB" rx="78.138" ry="32.2481" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="116.3271" x="235.1044" y="856.9428">Inscribir participante</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="82.3926" x="252.0717" y="873.2943">en un proceso</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="52.2363" x="267.1498" y="886.5316">RF19-RF22</text></g><!--entity PA--><g class="entity" data-entity="PA" data-source-line="20" data-uid="ent0002" id="entity_PA"><ellipse cx="55.5215" cy="460.0094" fill="#F1F1F1" rx="8" ry="8" style="stroke:#2C3E50;stroke-width:0.5;"/><path d="M55.5215,468.0094 L55.5215,495.0094 M42.5215,476.0094 L68.5215,476.0094 M55.5215,495.0094 L42.5215,510.0094 M55.5215,495.0094 L68.5215,510.0094" fill="none" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="37.5718" x="6" y="525.0045">Pastor</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="99.043" x="6" y="539.2799">(todos los procesos)</text></g><!--entity CO--><g class="entity" data-entity="CO" data-source-line="21" data-uid="ent0003" id="entity_CO"><ellipse cx="612.6068" cy="935.0094" fill="#F1F1F1" rx="8" ry="8" style="stroke:#2C3E50;stroke-width:0.5;"/><path d="M612.6068,943.0094 L612.6068,970.0094 M599.6068,951.0094 L625.6068,951.0094 M612.6068,970.0094 L599.6068,985.0094 M612.6068,970.0094 L625.6068,985.0094" fill="none" style="stroke:#2C3E50;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="154.6353" x="533.12" y="1000.0045">Coordinador de Formaci&#243;n</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="158.9736" x="533.12" y="1014.2799">(solo los procesos que coordina)</text></g><!--link PA to UC16f--><g class="link" data-entity-1="PA" data-entity-2="UC16f" data-source-line="35" data-uid="lnk14" id="link_PA_UC16f"><path d="M63.05,451.1694 C75.54,370.1594 105.08,205.3294 144.04,163.6094 C166.47,139.5894 200.81,127.1094 230.79,120.6194" fill="none" id="PA-UC16f" style="stroke:#555555;stroke-width:1;"/></g><!--link PA to UC11f--><g class="link" data-entity-1="PA" data-entity-2="UC11f" data-source-line="36" data-uid="lnk15" id="link_PA_UC11f"><path d="M61.62,451.3194 C69.89,398.7194 91.06,312.6494 144.04,261.6094 C163.07,243.2694 189.11,231.7994 214.05,224.6094" fill="none" id="PA-UC11f" style="stroke:#555555;stroke-width:1;"/></g><!--link PA to UC18--><g class="link" data-entity-1="PA" data-entity-2="UC18" data-source-line="37" data-uid="lnk16" id="link_PA_UC18"><path d="M82.8,451.1894 C98.19,427.8394 119.42,400.4194 144.04,381.6094 C160.7,368.8794 180.42,358.4394 199.96,350.0494" fill="none" id="PA-UC18" style="stroke:#555555;stroke-width:1;"/></g><!--link PA to UC28--><g class="link" data-entity-1="PA" data-entity-2="UC28" data-source-line="38" data-uid="lnk17" id="link_PA_UC28"><path d="M105.37,483.1394 C140.16,473.5394 187.35,460.5294 225.6,449.9894" fill="none" id="PA-UC28" style="stroke:#555555;stroke-width:1;"/></g><!--link PA to UCRE--><g class="link" data-entity-1="PA" data-entity-2="UCRE" data-source-line="39" data-uid="lnk18" id="link_PA_UCRE"><path d="M105.37,503.6494 C137.6,508.2994 180.47,514.4794 217.02,519.7494" fill="none" id="PA-UCRE" style="stroke:#555555;stroke-width:1;"/></g><!--link PA to UC09f--><g class="link" data-entity-1="PA" data-entity-2="UC09f" data-source-line="40" data-uid="lnk19" id="link_PA_UC09f"><path d="M96.53,542.1794 C110.47,555.9894 126.93,570.2294 144.04,580.6094 C169.7,596.1694 200.83,607.6094 227.92,615.5894" fill="none" id="PA-UC09f" style="stroke:#555555;stroke-width:1;"/></g><!--link PA to UC05f--><g class="link" data-entity-1="PA" data-entity-2="UC05f" data-source-line="41" data-uid="lnk20" id="link_PA_UC05f"><path d="M67.21,542.1894 C79.22,583.7494 102.67,644.0894 144.04,680.6094 C163.45,697.7294 189.01,708.8994 213.42,716.1694" fill="none" id="PA-UC05f" style="stroke:#555555;stroke-width:1;"/></g><!--link PA to UCIN--><g class="link" data-entity-1="PA" data-entity-2="UCIN" data-source-line="42" data-uid="lnk21" id="link_PA_UCIN"><path d="M60.33,542.1994 C67.48,602.3094 87.69,708.6394 144.04,778.6094 C167.14,807.2894 202.83,827.9394 233.4,841.5894" fill="none" id="PA-UCIN" style="stroke:#555555;stroke-width:1;"/></g><!--link UC16f to CO--><g class="link" data-entity-1="UC16f" data-entity-2="CO" data-source-line="44" data-uid="lnk22" id="link_UC16f_CO"><path d="M352.77,126.0294 C375.84,133.5194 400.97,145.3094 418.49,163.6094 C489.57,237.8094 475.27,280.8594 495.49,381.6094 C518.67,497.0494 468.47,807.5894 525.49,910.6094 C528.6,916.2194 532.47,921.4294 536.83,926.2594" fill="none" id="UC16f-CO" style="stroke:#555555;stroke-width:1;"/></g><!--link UC11f to CO--><g class="link" data-entity-1="UC11f" data-entity-2="CO" data-source-line="45" data-uid="lnk23" id="link_UC11f_CO"><path d="M367,228.9694 C385.87,236.2594 404.74,246.6994 418.49,261.6094 C498.2,347.9894 473.81,399.0894 495.49,514.6094 C511.77,601.3394 482.02,833.7994 525.49,910.6094 C528.65,916.1894 532.56,921.3794 536.94,926.1894" fill="none" id="UC11f-CO" style="stroke:#555555;stroke-width:1;"/></g><!--link UC18 to CO--><g class="link" data-entity-1="UC18" data-entity-2="CO" data-source-line="46" data-uid="lnk24" id="link_UC18_CO"><path d="M381.52,351.8594 C395.37,359.7794 408.42,369.5794 418.49,381.6094 C499.73,478.5694 470.92,531.5194 495.49,655.6094 C517.67,767.5494 467.24,812.4794 525.49,910.6094 C528.77,916.1194 532.76,921.2694 537.2,926.0394" fill="none" id="UC18-CO" style="stroke:#555555;stroke-width:1;"/></g><!--link UCRE to CO--><g class="link" data-entity-1="UCRE" data-entity-2="CO" data-source-line="47" data-uid="lnk25" id="link_UCRE_CO"><path d="M362.2,547.4494 C382.18,554.9994 402.85,565.6794 418.49,580.6094 C477.92,637.2994 470.72,670.2994 495.49,748.6094 C517.58,818.4194 486.06,848.9094 525.49,910.6094 C529.05,916.1594 533.3,921.3594 537.99,926.1994" fill="none" id="UCRE-CO" style="stroke:#555555;stroke-width:1;"/></g><!--link UC09f to CO--><g class="link" data-entity-1="UC09f" data-entity-2="CO" data-source-line="48" data-uid="lnk26" id="link_UC09f_CO"><path d="M357.72,646.2394 C378.94,653.8794 401.49,664.9294 418.49,680.6094 C474.75,732.4794 464.3,764.7294 495.49,834.6094 C510.3,867.7694 503.08,882.0294 525.49,910.6094 C529.79,916.0794 534.71,921.2794 539.97,926.1594" fill="none" id="UC09f-CO" style="stroke:#555555;stroke-width:1;"/></g><!--link UC05f to CO--><g class="link" data-entity-1="UC05f" data-entity-2="CO" data-source-line="49" data-uid="lnk27" id="link_UC05f_CO"><path d="M338.82,757.0294 C363.01,772.4994 393.09,792.6694 418.49,812.6094 C469.23,852.4094 475.31,870.1094 525.49,910.6094 C531.91,915.7794 538.73,921.0294 545.62,926.1494" fill="none" id="UC05f-CO" style="stroke:#555555;stroke-width:1;"/></g><!--link UCIN to CO--><g class="link" data-entity-1="UCIN" data-entity-2="CO" data-source-line="50" data-uid="lnk28" id="link_UCIN_CO"><path d="M354.33,883.2394 C404.91,900.6094 477.64,925.5894 532.88,944.5694" fill="none" id="UCIN-CO" style="stroke:#555555;stroke-width:1;"/></g><!--link UC05f to UCIN--><g class="link" data-entity-1="UC05f" data-entity-2="UCIN" data-source-line="52" data-uid="lnk29" id="link_UC05f_UCIN"><path d="M293.27,761.3494 C293.27,782.1094 293.27,803.1494 293.27,824.0694" fill="none" id="UC05f-to-UCIN" style="stroke:#555555;stroke-width:1;stroke-dasharray:7,7;"/><polygon fill="#555555" points="293.27,830.0694,297.27,821.0694,293.27,825.0694,289.27,821.0694,293.27,830.0694" style="stroke:#555555;stroke-width:1;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="47.0938" x="252.7031" y="793.7283">&#171;include&#187;</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="51.96" x="250.27" y="807.5643">al registrar</text></g><!--reverse link UC16f to UC27--><g class="link" data-entity-1="UC16f" data-entity-2="UC27" data-source-line="53" data-uid="lnk30" id="link_UC16f_UC27"><path d="M363.34,113.6094 C411.42,113.6094 472.17,113.6094 525.22,113.6094" fill="none" id="UC16f-backto-UC27" style="stroke:#555555;stroke-width:1;stroke-dasharray:7,7;"/><polygon fill="#555555" points="357.34,113.6094,366.34,117.6094,362.34,113.6094,366.34,109.6094,357.34,113.6094" style="stroke:#555555;stroke-width:1;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="45.2622" x="449.49" y="111.0283">&#171;extend&#187;</text></g><!--SRC=[ZLLjRzem4FwUNt6Y7zfABILqh9GX99gHgTBQ8hRkovWcanpKgcipsw4lqtxLVaB_sCucG98nDAGUr_FTa-UUSuvzYFaiqmoYs-D6gmuHCyf0Yf0PrO67rzzf9XGCJ9AXOFuWLlg19Vprjmps8SvGMZGT6CMDrf6pvyw6eRTDRtqyVEjj-tWKDtsuUUPjc-nrUEfiyyqxGbn_fildA7cIQM7gy-UZGcZ1yR4QOo9XCa6Ami5SgmIfa-yBRlX4e3aaw4Z91KfFtJMIScCrdsG-q06MMANH00F1WB_yo3Zgb06QH7DBcjJwqUUR4HmVarGrnxHKaAB6vAwO7jswN5zKgyD74e-aJRZdIbLIWH2uO1AcmbNM0tFFvPnfzW0JbjpFjCfa6YcXD3pUSOk5StF7KlN8vGocJ9ZYIOfJbWaRAsa_yHU4yBHmsDTQFIuHzrh-KptSr8M58z_eXTBKOrxTZ4u7hKOX9JEOC8CN5U9xWtxy9hxOahWJZQIqJCx4_wPvslPP84oKI0E1KmjMWUQpEqjZTdaaUX1ORYddQlUb3doxK1ioGzzZsJKaI2SCUmTMfJHOGN-hwtNOFN6dlHhD5eRzLMcaY3UND2HT1Y-Y6Ugg10O_CeGaBoqXHpT1i6uMQhiRgC7F05OwG-q3IjHCarXpfIsE9ILF_oRKw6tUrEAZRwFmxRI8DtXoE0J8OFW-XXCOF2KeIZZDip92ywnCoBXf48B1MSOVE6qGjPDMM24KJhVZhOMiO1qCLqlj2q_PqKOt_-zOvdhwZ8-SBXnxcQaZkABLuLxLmpARvGghK6eN6Rr7GnU1BuZI2UcU-sEPyojhrLwklefY9RmHMgvpC2uJfMa23ezBjspcMnGxty9nD2XZpjpwStDqz4Y8T2oVAPEYRaUo4c2-rIk8ZVD_3O9fonC-P-wtOTTe6wqAOgk4UEaRdF0oubYYX4p2DZctTdvv7VmAWc7VxUFbVLxxOS5lhztcnYNLLgvhT-stDZx11nxM_pRS11vsuxVNxcYmTWbhuxSs_kLrxkRn-bT9ivRtt-ez_oJeGBTBTq1aAVPwOya4tObyaZc9RhtktpcVYayqpRJN-mC0]--></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 12.2.1 (20241206.2353)
+ -->
+<!-- Title: CU Pages: 1 -->
+<svg width="1027pt" height="621pt"
+ viewBox="0.00 0.00 1027.03 620.75" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(18 602.75)">
+<title>CU</title>
+<polygon fill="white" stroke="none" points="-18,18 -18,-602.75 1009.03,-602.75 1009.03,18 -18,18"/>
+<text text-anchor="start" x="345.14" y="-566.55" font-family="Arial" font-weight="bold" font-size="16.00">CU&#45;05 · Módulo Escuelas de Formación</text>
+<!-- sistema -->
+<g id="node1" class="node">
+<title>sistema</title>
+<polygon fill="#ffffff" stroke="#2c3e50" stroke-width="1.6" points="832.23,-558 159.03,-558 159.03,0 832.23,0 832.23,-558"/>
+<text text-anchor="start" x="355.75" y="-544.7" font-family="Arial" font-weight="bold" font-size="14.00" fill="#2c3e50">Servidor web · Plataforma PVA (Django 5.2)</text>
+</g>
+<!-- p_for -->
+<g id="node2" class="node">
+<title>p_for</title>
+<polygon fill="#fafbfc" stroke="#8a9ba8" points="630.62,-525.6 192.63,-525.6 192.63,-529.6 180.63,-529.6 180.63,-21.6 630.62,-21.6 630.62,-525.6"/>
+<polyline fill="none" stroke="#8a9ba8" points="180.63,-525.6 192.63,-525.6"/>
+<text text-anchor="start" x="315.63" y="-514.2" font-family="Arial" font-weight="bold" font-size="12.00" fill="#2c3e50">Módulo Escuelas de Formación</text>
+</g>
+<!-- p_seg -->
+<g id="node3" class="node">
+<title>p_seg</title>
+<polygon fill="#fafbfc" stroke="#8a9ba8" points="814.22,-525.6 660.62,-525.6 660.62,-529.6 648.62,-529.6 648.62,-21.6 814.22,-21.6 814.22,-525.6"/>
+<polyline fill="none" stroke="#8a9ba8" points="648.62,-525.6 660.62,-525.6"/>
+<text text-anchor="start" x="665.8" y="-514.2" font-family="Arial" font-weight="bold" font-size="12.00" fill="#2c3e50">Servicios de seguridad</text>
+</g>
+<!-- dproc -->
+<g id="node4" class="node">
+<title>dproc</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="310.22" cy="-482.4" rx="88.2" ry="16.56"/>
+<text text-anchor="start" x="258.85" y="-478.12" font-family="Arial" font-size="12.00">Desactivar proceso</text>
+</g>
+<!-- proc -->
+<g id="node5" class="node">
+<title>proc</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="310.22" cy="-421.2" rx="88.2" ry="22.68"/>
+<text text-anchor="start" x="258.47" y="-424.05" font-family="Arial" font-size="12.00">Gestionar procesos</text>
+<text text-anchor="start" x="275.72" y="-409.8" font-family="Arial" font-size="12.00">de formación</text>
+</g>
+<!-- ret -->
+<g id="node6" class="node">
+<title>ret</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="310.22" cy="-360" rx="88.2" ry="22.68"/>
+<text text-anchor="start" x="259.6" y="-362.85" font-family="Arial" font-size="12.00">Retirar participante</text>
+<text text-anchor="start" x="272.35" y="-348.6" font-family="Arial" font-size="12.00">de un proceso</text>
+</g>
+<!-- sfor -->
+<g id="node7" class="node">
+<title>sfor</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="310.22" cy="-298.8" rx="88.2" ry="22.68"/>
+<text text-anchor="start" x="250.22" y="-301.65" font-family="Arial" font-size="12.00">Gestionar seguimiento</text>
+<text text-anchor="start" x="275.72" y="-287.4" font-family="Arial" font-size="12.00">de formación</text>
+</g>
+<!-- pfor -->
+<g id="node8" class="node">
+<title>pfor</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="310.22" cy="-237.6" rx="88.2" ry="22.68"/>
+<text text-anchor="start" x="248.72" y="-240.45" font-family="Arial" font-size="12.00">Gestionar participantes</text>
+<text text-anchor="start" x="275.72" y="-226.2" font-family="Arial" font-size="12.00">de formación</text>
+</g>
+<!-- afor -->
+<g id="node9" class="node">
+<title>afor</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="310.22" cy="-176.4" rx="88.2" ry="22.68"/>
+<text text-anchor="start" x="257.35" y="-179.25" font-family="Arial" font-size="12.00">Registrar asistencia</text>
+<text text-anchor="start" x="275.72" y="-165" font-family="Arial" font-size="12.00">de formación</text>
+</g>
+<!-- rfor -->
+<g id="node10" class="node">
+<title>rfor</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="310.22" cy="-115.2" rx="88.2" ry="22.68"/>
+<text text-anchor="start" x="268.22" y="-118.05" font-family="Arial" font-size="12.00">Generar reporte</text>
+<text text-anchor="start" x="275.72" y="-103.8" font-family="Arial" font-size="12.00">de formación</text>
+</g>
+<!-- ins -->
+<g id="node11" class="node">
+<title>ins</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="544.23" cy="-237.6" rx="72" ry="16.56"/>
+<text text-anchor="start" x="490.6" y="-233.32" font-family="Arial" font-size="12.00">Inscribir participante</text>
+</g>
+<!-- act -->
+<g id="node12" class="node">
+<title>act</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="544.23" cy="-176.4" rx="72" ry="16.56"/>
+<text text-anchor="start" x="494.35" y="-172.12" font-family="Arial" font-size="12.00">Registrar actividad</text>
+</g>
+<!-- exp -->
+<g id="node13" class="node">
+<title>exp</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="544.23" cy="-115.2" rx="72" ry="16.56"/>
+<text text-anchor="start" x="501.48" y="-110.92" font-family="Arial" font-size="12.00">Exportar reporte</text>
+</g>
+<!-- bit -->
+<g id="node14" class="node">
+<title>bit</title>
+<ellipse fill="#fdecec" stroke="#8e2c2c" cx="731.42" cy="-460.8" rx="75.6" ry="21.6"/>
+<text text-anchor="start" x="705.55" y="-463.75" font-family="Arial" font-size="9.00" fill="#8e2c2c">«seguridad»</text>
+<text text-anchor="start" x="675.92" y="-451.9" font-family="Arial" font-size="12.00">Registrar en bitácora</text>
+</g>
+<!-- PA -->
+<g id="node15" class="node">
+<title>PA</title>
+<image xlink:href="data:image/png;base64,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" width="25.2px" height="42px" preserveAspectRatio="xMinYMin meet" x="60.025" y="-507.85"/>
+<text text-anchor="start" x="55.38" y="-452.45" font-family="Arial" font-size="12.00">Pastor</text>
+<text text-anchor="start" x="19" y="-438.2" font-family="Arial" font-size="12.00">(todos los procesos)</text>
+</g>
+<!-- CO -->
+<g id="node16" class="node">
+<title>CO</title>
+<image xlink:href="data:image/png;base64,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" width="25.2px" height="42px" preserveAspectRatio="xMinYMin meet" x="60.025" y="-302.65"/>
+<text text-anchor="start" x="1" y="-247.25" font-family="Arial" font-size="12.00">Coordinador de Formación</text>
+<text text-anchor="start" x="8.12" y="-233" font-family="Arial" font-size="12.00">(procesos que coordina)</text>
+</g>
+<!-- DB -->
+<g id="node17" class="node">
+<title>DB</title>
+<text text-anchor="start" x="910.53" y="-494.55" font-family="Arial" font-size="10.00" fill="#7a4e00">«sistema»</text>
+<image xlink:href="data:image/png;base64,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" width="25.2px" height="42px" preserveAspectRatio="xMinYMin meet" x="920.425" y="-490.05"/>
+<text text-anchor="start" x="887.65" y="-434.65" font-family="Arial" font-size="12.00">Servidor de base</text>
+<text text-anchor="start" x="876.03" y="-420.4" font-family="Arial" font-size="12.00">de datos PostgreSQL</text>
+</g>
+<!-- n1 -->
+<g id="node18" class="node">
+<title>n1</title>
+<polygon fill="#fffde7" stroke="#b0a060" points="981.02,-81 792.62,-81 792.62,-27 987.02,-27 987.02,-75 981.02,-81"/>
+<polyline fill="none" stroke="#b0a060" points="981.02,-81 981.02,-75"/>
+<polyline fill="none" stroke="#b0a060" points="987.02,-75 981.02,-75"/>
+<text text-anchor="start" x="800.62" y="-62.5" font-family="Arial" font-size="10.00">El Pastor hereda todos los casos de uso</text>
+<text text-anchor="start" x="800.62" y="-50.5" font-family="Arial" font-size="10.00">del Coordinador en este módulo y,</text>
+<text text-anchor="start" x="800.62" y="-38.5" font-family="Arial" font-size="10.00">además, puede desactivar procesos.</text>
+</g>
+<!-- dproc&#45;&gt;bit -->
+<g id="edge11" class="edge">
+<title>dproc:e&#45;&gt;bit:w</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M398.8,-482.4C398.8,-482.4 600.64,-465.42 646.37,-461.57"/>
+<polygon fill="#555555" stroke="#555555" points="654.29,-460.9 646.62,-465.16 651.52,-461.14 646.32,-461.57 646.32,-461.57 646.32,-461.57 651.52,-461.14 646.02,-457.99 654.29,-460.9"/>
+<text text-anchor="middle" x="502.33" y="-463.43" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- proc&#45;&gt;bit -->
+<g id="edge12" class="edge">
+<title>proc:e&#45;&gt;bit:w</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M398.8,-421.2C398.8,-421.2 601.53,-452.47 646.67,-459.44"/>
+<polygon fill="#555555" stroke="#555555" points="654.3,-460.61 645.85,-462.95 651.55,-460.19 646.4,-459.39 646.4,-459.39 646.4,-459.39 651.55,-460.19 646.95,-455.84 654.3,-460.61"/>
+<text text-anchor="middle" x="502.48" y="-442.27" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- ret&#45;&gt;bit -->
+<g id="edge14" class="edge">
+<title>ret:e&#45;&gt;bit:w</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M398.8,-360C398.8,-360 602.42,-439.96 646.97,-457.45"/>
+<polygon fill="#555555" stroke="#555555" points="654.37,-460.35 645.61,-460.78 651.78,-459.34 646.93,-457.43 646.93,-457.43 646.93,-457.43 651.78,-459.34 648.24,-454.08 654.37,-460.35"/>
+<text text-anchor="middle" x="502.63" y="-400.17" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- sfor&#45;&gt;bit -->
+<g id="edge16" class="edge">
+<title>sfor:e&#45;&gt;bit:w</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M398.8,-298.8C398.8,-298.8 605.11,-429 647.82,-455.95"/>
+<polygon fill="#555555" stroke="#555555" points="654.48,-460.15 645.79,-458.92 652.12,-458.67 647.71,-455.88 647.71,-455.88 647.71,-455.88 652.12,-458.67 649.63,-452.84 654.48,-460.15"/>
+<text text-anchor="middle" x="543.56" y="-379.33" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- pfor&#45;&gt;ins -->
+<g id="edge9" class="edge">
+<title>pfor:e&#45;&gt;ins:w</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M398.8,-237.6C398.8,-237.6 443.43,-237.6 462.96,-237.6"/>
+<polygon fill="#555555" stroke="#555555" points="470.7,-237.6 462.7,-241.2 467.92,-237.6 462.7,-237.6 462.7,-237.6 462.7,-237.6 467.92,-237.6 462.7,-234 470.7,-237.6"/>
+<text text-anchor="middle" x="451.13" y="-229.05" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- pfor&#45;&gt;bit -->
+<g id="edge13" class="edge">
+<title>pfor:e&#45;&gt;bit:w</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M398.8,-237.6C398.8,-237.6 607.82,-419.33 648.64,-454.83"/>
+<polygon fill="#555555" stroke="#555555" points="654.59,-460 646.19,-457.47 652.49,-458.18 648.55,-454.75 648.55,-454.75 648.55,-454.75 652.49,-458.18 650.91,-452.03 654.59,-460"/>
+<text text-anchor="middle" x="503.47" y="-348.16" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- afor&#45;&gt;act -->
+<g id="edge10" class="edge">
+<title>afor:e&#45;&gt;act:w</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M398.8,-176.4C398.8,-176.4 443.43,-176.4 462.96,-176.4"/>
+<polygon fill="#555555" stroke="#555555" points="470.7,-176.4 462.7,-180 467.92,-176.4 462.7,-176.4 462.7,-176.4 462.7,-176.4 467.92,-176.4 462.7,-172.8 470.7,-176.4"/>
+<text text-anchor="middle" x="451.13" y="-178.35" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- afor&#45;&gt;bit -->
+<g id="edge15" class="edge">
+<title>afor:e&#45;&gt;bit:w</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M398.8,-176.4C398.8,-176.4 610.54,-410.98 649.41,-454.05"/>
+<polygon fill="#555555" stroke="#555555" points="654.69,-459.9 646.66,-456.37 652.83,-457.83 649.33,-453.96 649.33,-453.96 649.33,-453.96 652.83,-457.83 652,-451.54 654.69,-459.9"/>
+<text text-anchor="middle" x="544.36" y="-317.18" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- exp&#45;&gt;rfor -->
+<g id="edge17" class="edge">
+<title>exp:w&#45;&gt;rfor:e</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M471.92,-115.2C471.92,-115.2 427.29,-115.2 407.76,-115.2"/>
+<polygon fill="#555555" stroke="#555555" points="400.01,-115.2 408.01,-111.6 402.8,-115.2 408.01,-115.2 408.01,-115.2 408.01,-115.2 402.8,-115.2 408.01,-118.8 400.01,-115.2"/>
+<text text-anchor="middle" x="420.72" y="-117.15" font-family="Arial" font-size="9.00" fill="#444444">«extend»</text>
+</g>
+<!-- bit&#45;&gt;DB -->
+<g id="edge18" class="edge">
+<title>bit:e&#45;&gt;DB:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M807.34,-460.8C807.34,-460.8 875.08,-460.8 875.08,-460.8"/>
+</g>
+<!-- PA&#45;&gt;dproc -->
+<g id="edge1" class="edge">
+<title>PA:e&#45;&gt;dproc:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M127.2,-471.6C127.2,-471.6 221.65,-482.4 221.65,-482.4"/>
+</g>
+<!-- PA&#45;&gt;CO -->
+<g id="edge8" class="edge">
+<title>PA:s&#45;&gt;CO:n</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M72.62,-434.53C72.62,-434.53 72.62,-348.85 72.62,-316.05"/>
+<polygon fill="none" stroke="#555555" stroke-width="1.1" points="76.48,-316.15 72.63,-305.15 68.78,-316.15 76.48,-316.15"/>
+</g>
+<!-- CO&#45;&gt;proc -->
+<g id="edge2" class="edge">
+<title>CO:e&#45;&gt;proc:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M145.18,-266.4C145.18,-266.4 221.65,-421.2 221.65,-421.2"/>
+</g>
+<!-- CO&#45;&gt;ret -->
+<g id="edge4" class="edge">
+<title>CO:e&#45;&gt;ret:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M145.18,-266.4C145.18,-266.4 221.65,-360 221.65,-360"/>
+</g>
+<!-- CO&#45;&gt;sfor -->
+<g id="edge6" class="edge">
+<title>CO:e&#45;&gt;sfor:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M145.18,-266.4C145.18,-266.4 221.65,-298.8 221.65,-298.8"/>
+</g>
+<!-- CO&#45;&gt;pfor -->
+<g id="edge3" class="edge">
+<title>CO:e&#45;&gt;pfor:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M145.18,-266.4C145.18,-266.4 221.65,-237.6 221.65,-237.6"/>
+</g>
+<!-- CO&#45;&gt;afor -->
+<g id="edge5" class="edge">
+<title>CO:e&#45;&gt;afor:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M145.18,-266.4C145.18,-266.4 221.65,-176.4 221.65,-176.4"/>
+</g>
+<!-- CO&#45;&gt;rfor -->
+<g id="edge7" class="edge">
+<title>CO:e&#45;&gt;rfor:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M145.18,-266.4C145.18,-266.4 221.65,-115.2 221.65,-115.2"/>
+</g>
+</g>
+</svg>

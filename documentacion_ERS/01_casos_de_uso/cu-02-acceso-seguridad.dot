@@ -1,0 +1,39 @@
+// CU-02 · Acceso a la plataforma y servicios de seguridad. Generado por generar_cu.py: editar ese archivo, no este.
+digraph CU {
+  graph [label=<<B>CU-02 · Acceso a la plataforma y servicios de seguridad</B>>, labelloc=t, fontsize=16, fontname="Arial", splines=line, outputorder=nodesfirst, bgcolor=white, pad=0.25, bb="0,0,979,619"];
+  node [fontname="Arial"];
+  edge [fontname="Arial"];
+  sistema [shape=box, label=<<B>Servidor web · Plataforma PVA (Django 5.2)</B>>, labelloc=t, labeljust=l, fontsize=14, fontcolor="#2C3E50", style=filled, fillcolor="#FFFFFF", color="#2C3E50", penwidth=1.6, fixedsize=true, width=9.10, height=7.75, pos="464.4,300.6!"];
+  p_acc [shape=tab, label=<<B>Acceso</B>>, labelloc=t, labeljust=l, fontsize=12, fontcolor="#2C3E50", style=filled, fillcolor="#FAFBFC", color="#8A9BA8", penwidth=1.0, fixedsize=true, width=5.85, height=7.00, pos="369.0,295.2!"];
+  p_seg [shape=tab, label=<<B>Servicios de seguridad</B>>, labelloc=t, labeljust=l, fontsize=12, fontcolor="#2C3E50", style=filled, fillcolor="#FAFBFC", color="#8A9BA8", penwidth=1.0, fixedsize=true, width=2.40, height=7.00, pos="684.0,295.2!"];
+  pub [shape=ellipse, label=<Consultar información<BR/>pública>, fontsize=12, style=filled, fillcolor="#EAF4FB", color="#2C3E50", fixedsize=true, width=2.29, height=0.63, pos="280.8,493.2!"];
+  login [shape=ellipse, label=<Iniciar sesión>, fontsize=12, style=filled, fillcolor="#EAF4FB", color="#2C3E50", fixedsize=true, width=1.90, height=0.46, pos="280.8,388.8!"];
+  cpass [shape=ellipse, label=<Cambiar contraseña>, fontsize=12, style=filled, fillcolor="#EAF4FB", color="#2C3E50", fixedsize=true, width=2.04, height=0.46, pos="280.8,273.6!"];
+  logout [shape=ellipse, label=<Cerrar sesión>, fontsize=12, style=filled, fillcolor="#EAF4FB", color="#2C3E50", fixedsize=true, width=1.90, height=0.46, pos="280.8,172.8!"];
+  rpass [shape=ellipse, label=<Recuperar contraseña>, fontsize=12, style=filled, fillcolor="#EAF4FB", color="#2C3E50", fixedsize=true, width=2.21, height=0.46, pos="482.4,453.6!"];
+  panel [shape=ellipse, label=<Visualizar panel<BR/>principal>, fontsize=12, style=filled, fillcolor="#EAF4FB", color="#2C3E50", fixedsize=true, width=1.90, height=0.63, pos="482.4,338.4!"];
+  val [shape=ellipse, label=<<FONT POINT-SIZE="9" COLOR="#8E2C2C">«seguridad»</FONT><BR/>Validar credenciales>, fontsize=12, style=filled, fillcolor="#FDECEC", color="#8E2C2C", fixedsize=true, width=2.20, height=0.60, pos="680.4,388.8!"];
+  blq [shape=ellipse, label=<<FONT POINT-SIZE="9" COLOR="#8E2C2C">«seguridad»</FONT><BR/>Bloquear acceso<BR/>temporal>, fontsize=12, style=filled, fillcolor="#FDECEC", color="#8E2C2C", fixedsize=true, width=2.20, height=0.77, pos="680.4,306.0!"];
+  perm [shape=ellipse, label=<<FONT POINT-SIZE="9" COLOR="#8E2C2C">«seguridad»</FONT><BR/>Verificar permisos<BR/>del rol>, fontsize=12, style=filled, fillcolor="#FDECEC", color="#8E2C2C", fixedsize=true, width=2.20, height=0.77, pos="680.4,226.8!"];
+  bit [shape=ellipse, label=<<FONT POINT-SIZE="9" COLOR="#8E2C2C">«seguridad»</FONT><BR/>Registrar en bitácora>, fontsize=12, style=filled, fillcolor="#FDECEC", color="#8E2C2C", fixedsize=true, width=2.20, height=0.60, pos="680.4,151.2!"];
+  cif [shape=ellipse, label=<<FONT POINT-SIZE="9" COLOR="#8E2C2C">«seguridad»</FONT><BR/>Cifrar contraseña>, fontsize=12, style=filled, fillcolor="#FDECEC", color="#8E2C2C", fixedsize=true, width=2.20, height=0.60, pos="680.4,82.8!"];
+  MA [shape=plain, label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1"><TR><TD FIXEDSIZE="TRUE" WIDTH="26" HEIGHT="44"><IMG SRC="actor.png" SCALE="TRUE"/></TD></TR><TR><TD><FONT POINT-SIZE="12">Miembro<BR/>Asistente</FONT></TD></TR></TABLE>>, pos="57.6,493.2!"];
+  UR [shape=plain, label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1"><TR><TD FIXEDSIZE="TRUE" WIDTH="26" HEIGHT="44"><IMG SRC="actor.png" SCALE="TRUE"/></TD></TR><TR><TD><FONT POINT-SIZE="12">Usuario registrado<BR/>(cualquier rol)</FONT></TD></TR></TABLE>>, pos="57.6,273.6!"];
+  SMTP [shape=plain, label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1"><TR><TD><FONT POINT-SIZE="10" COLOR="#7A4E00">«sistema»</FONT></TD></TR><TR><TD FIXEDSIZE="TRUE" WIDTH="26" HEIGHT="44"><IMG SRC="actor_sistema.png" SCALE="TRUE"/></TD></TR><TR><TD><FONT POINT-SIZE="12">Servidor de<BR/>correo SMTP</FONT></TD></TR></TABLE>>, pos="896.4,511.2!"];
+  DB [shape=plain, label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1"><TR><TD><FONT POINT-SIZE="10" COLOR="#7A4E00">«sistema»</FONT></TD></TR><TR><TD FIXEDSIZE="TRUE" WIDTH="26" HEIGHT="44"><IMG SRC="actor_sistema.png" SCALE="TRUE"/></TD></TR><TR><TD><FONT POINT-SIZE="12">Servidor de base<BR/>de datos PostgreSQL</FONT></TD></TR></TABLE>>, pos="896.4,226.8!"];
+  MA:e -> pub:w [dir=none, color="#555555", penwidth=1.1];
+  UR:e -> login:w [dir=none, color="#555555", penwidth=1.1];
+  UR:e -> cpass:w [dir=none, color="#555555", penwidth=1.1];
+  UR:e -> logout:w [dir=none, color="#555555", penwidth=1.1];
+  login:e -> val:w [style=dashed, arrowhead=vee, arrowsize=0.8, color="#555555", label="«include»", fontsize=9, fontcolor="#444444"];
+  login:e -> panel:w [style=dashed, arrowhead=vee, arrowsize=0.8, color="#555555", label="«include»", fontsize=9, fontcolor="#444444"];
+  login:e -> bit:w [style=dashed, arrowhead=vee, arrowsize=0.8, color="#555555", label="«include»", fontsize=9, fontcolor="#444444"];
+  panel:e -> perm:w [style=dashed, arrowhead=vee, arrowsize=0.8, color="#555555", label="«include»", fontsize=9, fontcolor="#444444"];
+  cpass:e -> cif:w [style=dashed, arrowhead=vee, arrowsize=0.8, color="#555555", label="«include»", fontsize=9, fontcolor="#444444"];
+  rpass:w -> login:e [style=dashed, arrowhead=vee, arrowsize=0.8, color="#555555", label="«extend»\nolvidó la contraseña", fontsize=9, fontcolor="#444444"];
+  blq:n -> val:s [style=dashed, arrowhead=vee, arrowsize=0.8, color="#555555", label="«extend»\n5 intentos fallidos", fontsize=9, fontcolor="#444444"];
+  rpass:e -> SMTP:w [dir=none, color="#555555", penwidth=1.1];
+  val:e -> DB:w [dir=none, color="#555555", penwidth=1.1];
+  bit:e -> DB:w [dir=none, color="#555555", penwidth=1.1];
+  cif:e -> DB:w [dir=none, color="#555555", penwidth=1.1];
+}
