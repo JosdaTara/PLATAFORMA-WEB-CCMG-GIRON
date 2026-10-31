@@ -1,8 +1,12 @@
 ﻿/* Paleta institucional. Los tokens de superficie y texto cambian en modo oscuro (ver final del archivo). */
 :root{--verde:#00674F;--verde-osc:#004d3b;--blanco:#FFFFFF;--arena:#F4F5F2;--oro:#CBB279;--carbon:#2B2D2F;
  --fondo:var(--arena);--superficie:#FFFFFF;--superficie-2:#FAFBF9;--borde:#E3E5E0;--texto:var(--carbon);--texto-suave:#6B706E;
- --titulo:var(--verde);--pie:var(--carbon);--sombra:rgba(0,0,0,.07)}
-body{font-family:'Montserrat','Segoe UI',system-ui,sans-serif;color:var(--texto);background:var(--superficie)}
+ --titulo:var(--verde);--pie:var(--carbon);--sombra:rgba(0,0,0,.07);
+ /* Tipografía: Fraunces (serif con carácter) para títulos y cifras; Figtree para la interfaz */
+ --font-display:'Fraunces',Georgia,'Times New Roman',serif;--font-ui:'Figtree','Segoe UI',system-ui,sans-serif;
+ --oro-texto:#8a7439;--radio:14px;--radio-sm:10px;
+ --sombra-card:0 1px 2px rgba(15,32,28,.05),0 4px 16px rgba(15,32,28,.06)}
+body{font-family:var(--font-ui);color:var(--texto);background:var(--superficie)}
 h1,h2,h3,h4,h5{color:var(--titulo);font-weight:700}
 a{color:var(--titulo)}
 .btn-ccmg{background:var(--verde);color:#fff;border:0}.btn-ccmg:hover{background:var(--verde-osc);color:#fff}
@@ -12,8 +16,8 @@ a{color:var(--titulo)}
 .navbar-ccmg .nav-link,.navbar-ccmg .navbar-brand{color:#fff}.navbar-ccmg .nav-link:hover{color:var(--oro)}
 .hero{background:linear-gradient(135deg,var(--verde),var(--verde-osc));color:#fff;padding:5rem 0}
 .hero h1{color:#fff}.acento{color:var(--oro)}.bg-arena{background:var(--fondo)}
-.card-ccmg{border:0;border-top:4px solid var(--oro);box-shadow:0 2px 10px var(--sombra);background:var(--superficie);height:100%;transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;will-change:transform}
-.card-ccmg:hover{transform:translateY(-6px);box-shadow:0 16px 38px rgba(0,77,59,.12);border-top-color:#b9a06c}
+.card-ccmg{border:1px solid var(--borde);box-shadow:0 2px 10px var(--sombra);background:var(--superficie);height:100%;transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;will-change:transform}
+.card-ccmg:hover{transform:translateY(-6px);box-shadow:0 16px 38px rgba(0,77,59,.12);border-color:rgba(203,178,121,.6)}
 .card-ccmg .icono{transition:none}
 .card-ccmg:hover .icono{transform:none !important}
 .icono{font-size:2rem;color:var(--oro)}
@@ -26,7 +30,7 @@ footer{background:var(--pie);color:#ddd}footer a{color:var(--oro)}
 .sidebar .marca{padding:1.2rem;color:var(--oro);font-weight:700;font-size:1.1rem}
 .contenido{margin-left:250px;background:var(--fondo);min-height:100vh}
 .topbar{background:var(--superficie);border-bottom:1px solid var(--borde)}
-.stat{border:0;border-left:5px solid var(--oro);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.stat{border:0;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .stat .num{font-size:1.9rem;font-weight:700;color:var(--titulo)}
 .table thead{background:var(--verde);color:#fff}
 @media(max-width:991px){.sidebar{transform:translateX(-100%)}.sidebar.abierto{transform:none}.contenido{margin-left:0}}
@@ -52,8 +56,10 @@ footer{background:var(--pie);color:#ddd}footer a{color:var(--oro)}
 }
 
 body{font-weight:400;line-height:1.6}
-h1,h2,h3,h4,h5,h6,.navbar-brand,.btn{font-family:'Montserrat',sans-serif}
-h2{font-weight:700}
+.navbar-brand,.btn{font-family:var(--font-ui)}
+h1,h2,h3,h4,h5{font-family:var(--font-display);font-optical-sizing:auto;font-weight:600;letter-spacing:-.015em;line-height:1.2}
+h6{font-family:var(--font-ui)}
+h2{font-weight:600}
 .hero-contenido{max-width:1140px}
 .hero-titulo{font-weight:800;font-size:clamp(1.9rem,4.5vw,3.2rem);line-height:1.15;color:#fff;margin-bottom:1rem;text-shadow:0 2px 8px rgba(0,0,0,.25)}
 .hero-sub{font-size:clamp(1rem,2vw,1.2rem);font-weight:500;max-width:560px;margin-bottom:1.5rem;color:#f4f5f2}
@@ -83,9 +89,11 @@ h2{font-weight:700}
   mask-image:linear-gradient(to bottom,transparent 0%,#000 45%)}
 }
 
-.text-justify { text-align: justify; }
-.section-lead { text-align: justify; max-width: 860px; margin: 0 auto 2.5rem; }
-.text-start-justify { text-align: justify; }
+/* Las clases conservan su nombre, pero el texto va alineado a la izquierda: justificar sin
+   guiones abre ríos de espacio en columnas estrechas. */
+.text-justify { text-align: left; }
+.section-lead { text-align: left; max-width: 60ch; margin: 0 auto 2.5rem; }
+.text-start-justify { text-align: left; }
 .table-horarios td { padding-top: .5rem; padding-bottom: .5rem; vertical-align: middle; word-break: break-word; }
 .table-horarios tr + tr td { border-top: 1px solid rgba(0,0,0,.08); }
 .table-horarios td:last-child { white-space: normal !important; text-align: right; }
@@ -214,6 +222,120 @@ section[id], header[id] { scroll-margin-top: 84px; }
   .modulo-card:hover,.card-ccmg:hover,.stat:hover,.btn:hover{transform:none !important}
 }
 
+/* ===================== JERARQUÍA Y ACABADO =====================
+   Tres niveles claros sin tocar la paleta: títulos en serif con presencia, cuerpo en sans
+   legible y etiquetas pequeñas en mayúsculas espaciadas. Superficies con borde fino y
+   sombra corta; todo usa los tokens, así que el modo oscuro hereda el mismo sistema. */
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+.eyebrow,.stat small.text-muted,.table thead th,.contenido .card h6{
+ font-family:var(--font-ui);font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+
+/* --- Sitio público --- */
+.navbar-ccmg .navbar-brand{font-family:var(--font-display);font-weight:600;font-size:1.3rem;letter-spacing:-.01em}
+.navbar-ccmg .nav-link{font-weight:500}
+.hero-titulo{font-family:var(--font-display);font-weight:700;font-size:clamp(2.3rem,5.2vw,4rem);line-height:1.04;letter-spacing:-.03em}
+.hero-titulo .acento{font-weight:700}
+.hero-sub{font-size:clamp(1.05rem,1.8vw,1.25rem);line-height:1.55}
+section h2{font-size:clamp(2rem,3.6vw,2.8rem);font-weight:600}
+section h2::after{content:"";display:block;width:56px;height:3px;border-radius:3px;background:var(--oro);margin-top:.8rem}
+section h2.text-center::after,section .text-center h2::after{margin-left:auto;margin-right:auto}
+section h3{font-size:clamp(1.5rem,2.4vw,1.9rem)}
+h1,h2,h3,h4{text-wrap:balance}
+p,li{text-wrap:pretty}
+section p{max-width:60ch}
+section .text-center p,section p.text-center{margin-left:auto;margin-right:auto}
+.card-ccmg{border-radius:var(--radio)}
+.card-ccmg :is(h4,h5).h5,.card-ccmg h5{font-size:1.2rem}
+.card-ccmg :is(h3.h6,h6){font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--titulo);margin-bottom:0}
+footer h5,footer h6{color:#fff}
+
+/* --- Acceso y selector de módulo --- */
+.login-form-side .card-ccmg{border-radius:18px;padding:2.25rem !important}
+.login-form-side .card-ccmg:hover{transform:none}
+.login-form-side h4{font-size:2rem;font-weight:600;margin-bottom:.25rem}
+.login-form-side h4 + small{display:block;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--oro-texto)}
+.selector-header h1{font-size:clamp(2rem,3.4vw,2.6rem);font-weight:600}
+.modulo-card :is(h2,h3){font-size:1.7rem}
+
+/* --- Barra lateral --- */
+.sidebar{background:linear-gradient(180deg,var(--verde) 0%,var(--verde-osc) 100%)}
+.sidebar .marca{padding:1.3rem 1.2rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:.6rem}
+.sidebar .logo-side{height:68px}
+.sidebar .marca > div{font-family:var(--font-display);font-size:1.35rem;font-weight:600;color:#fff;letter-spacing:-.01em}
+.sidebar .marca-sub{color:var(--oro);font-weight:700;font-size:.68rem;letter-spacing:.18em}
+.sidebar nav a{position:relative;margin:.1rem .75rem;padding:.5rem .9rem;border-left:0;border-radius:var(--radio-sm);
+ color:rgba(255,255,255,.8);font-weight:500;font-size:.94rem;transition:background-color .2s ease,color .2s ease}
+.sidebar nav a i{opacity:.85}
+.sidebar nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+.sidebar nav a.active{background:rgba(255,255,255,.16);color:#fff;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.sidebar nav a.active i{opacity:1;color:var(--oro)}
+
+/* --- Barra superior --- */
+.topbar{position:sticky;top:0;z-index:1030;min-height:64px;padding-left:1.5rem !important;padding-right:1.5rem !important;
+ background:var(--superficie)}
+.topbar .text-end{line-height:1.25}
+.topbar .text-end strong{font-weight:700;font-size:.92rem}
+.topbar .text-end small{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
+/* --- Encabezado de cada vista --- */
+.contenido main{padding:2rem 2.25rem !important}
+@media(max-width:767px){.contenido main{padding:1.25rem 1rem !important}}
+.contenido main h3{font-size:2rem;font-weight:600;line-height:1.15}
+@media(max-width:575px){.contenido main h3{font-size:1.65rem}}
+.contenido main .d-flex:has(> h3),.contenido main .d-flex:has(> div > h3){
+ margin-bottom:1.5rem !important;padding-bottom:1.1rem;border-bottom:1px solid var(--borde)}
+.contenido main h3 ~ .text-muted,.contenido main h3 + .badge{margin-top:.35rem}
+.contenido main h5{font-size:1.25rem;font-weight:600}
+
+/* --- Tarjetas e indicadores --- */
+.contenido .card{border:1px solid var(--borde) !important;border-radius:var(--radio);box-shadow:var(--sombra-card) !important;background:var(--superficie)}
+.contenido .card.p-3{padding:1.25rem !important}
+.contenido .card h6{color:var(--titulo);margin-bottom:1rem}
+.contenido .card h6.m-0{margin-bottom:0}
+.stat{position:relative;overflow:hidden}
+.stat small.text-muted{display:block;font-size:.68rem}
+.stat .num{font-family:var(--font-ui);font-size:2rem;font-weight:700;line-height:1.1;margin-top:.4rem;
+ letter-spacing:-.02em;font-variant-numeric:lining-nums tabular-nums}
+.stat .num small{font-family:var(--font-ui);font-size:.85rem !important;letter-spacing:0;text-transform:none;font-weight:500}
+.stat .icono{flex:none;width:44px;height:44px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;
+ font-size:1.3rem;background:rgba(203,178,121,.2);color:var(--oro-texto)}
+@media(max-width:575px){.stat .icono{display:none}.topbar{padding-left:1rem !important;padding-right:1rem !important}}
+
+/* --- Tablas --- */
+.table{font-variant-numeric:tabular-nums;--bs-table-hover-bg:rgba(0,103,79,.04)}
+.table thead th{--bs-table-bg:var(--superficie-2);--bs-table-color:var(--texto-suave);font-size:.68rem;white-space:nowrap;
+ padding-top:.85rem;padding-bottom:.85rem;border-bottom:1px solid var(--borde)}
+.table>tbody>tr>td{padding-top:.75rem;padding-bottom:.75rem;border-color:var(--borde)}
+.table-sm>tbody>tr>td{padding-top:.55rem;padding-bottom:.55rem}
+.table>tbody>tr:last-child>td{border-bottom:0}
+.table td > a:not(.btn){font-weight:600;text-decoration:none}
+.table td > a:not(.btn):hover{text-decoration:underline;text-underline-offset:3px}
+.table-responsive.rounded{border-radius:var(--radio) !important;border:1px solid var(--borde);box-shadow:var(--sombra-card) !important}
+.card .table-responsive.rounded{border:0;border-radius:var(--radio-sm) !important;box-shadow:none !important}
+
+/* --- Controles --- */
+.btn{border-radius:var(--radio-sm);font-weight:600;letter-spacing:.005em}
+.btn-sm{border-radius:8px}
+.btn-ccmg{box-shadow:0 1px 2px rgba(0,77,59,.3),inset 0 1px 0 rgba(255,255,255,.08)}
+.form-label{font-weight:600;font-size:.86rem;margin-bottom:.35rem}
+.form-control,.form-select{border-radius:var(--radio-sm);padding-top:.55rem;padding-bottom:.55rem}
+.form-control-sm,.form-select-sm{padding-top:.3rem;padding-bottom:.3rem;border-radius:8px}
+.form-text{font-size:.8rem}
+.badge{font-weight:600;letter-spacing:.02em;padding:.42em .78em}
+.alert{border-radius:var(--radio)}
+.pagination{--bs-pagination-border-radius:var(--radio-sm);--bs-pagination-active-bg:var(--verde);--bs-pagination-active-border-color:var(--verde);--bs-pagination-color:var(--titulo)}
+.modulo-tag{font-weight:700;letter-spacing:.02em}
+.empty-state p{font-family:var(--font-display);font-size:1.15rem;color:var(--texto)}
+
+/* --- Superficies del navegador: también llevan la paleta --- */
+:root{accent-color:var(--verde);caret-color:var(--verde);scrollbar-color:rgba(0,103,79,.35) transparent}
+::selection{background:rgba(203,178,121,.45);color:var(--carbon)}
+:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
+.btn:focus-visible,.form-control:focus-visible,.form-select:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
+.sidebar{scrollbar-color:rgba(255,255,255,.28) transparent}
+.sidebar a:focus-visible,.sidebar .btn:focus-visible{outline-color:var(--oro);outline-offset:-2px}
+a{text-underline-offset:3px}
+
 /* ===================== MODO OSCURO =====================
    Misma identidad que el modo claro: el verde institucional y el oro se conservan en
    barra lateral, navbar, botones y acentos; las superficies pasan a un carbón con tinte verde
@@ -223,6 +345,7 @@ section[id], header[id] { scroll-margin-top: 84px; }
  color-scheme:dark;
  --fondo:#0F1714;--superficie:#17221E;--superficie-2:#1E2C27;--borde:#2B3B35;--borde-pie:#2B3B35;
  --texto:#E3E9E6;--texto-suave:#9DB0A8;--texto-lista:#C9D4CF;--titulo:#5CC9A7;--pie:#0A100E;--sombra:rgba(0,0,0,.35);
+ --oro-texto:var(--oro);--sombra-card:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.22);
  /* Bootstrap usa la misma paleta en tablas, formularios, alertas y badges */
  --bs-body-bg:#0F1714;--bs-body-bg-rgb:15,23,20;--bs-body-color:#E3E9E6;--bs-body-color-rgb:227,233,230;
  --bs-emphasis-color:#FFFFFF;--bs-emphasis-color-rgb:255,255,255;--bs-heading-color:#5CC9A7;
@@ -259,7 +382,10 @@ section[id], header[id] { scroll-margin-top: 84px; }
 [data-theme="dark"] .selector-card{box-shadow:0 30px 80px rgba(0,0,0,.55)}
 [data-theme="dark"] .table-horarios tr + tr td,[data-theme="dark"] .table.horarios tr + tr td{border-top-color:rgba(255,255,255,.08)}
 [data-theme="dark"] .toast-ccmg{background:var(--superficie-2);border:1px solid var(--borde)}
-/* El logo verde se pierde sobre superficies oscuras: se aclara (el blanco ya se usa sobre el verde) */
+[data-theme="dark"] .stat .icono{background:rgba(203,178,121,.14)}
+[data-theme="dark"]{accent-color:#5CC9A7;caret-color:#5CC9A7;scrollbar-color:rgba(92,201,167,.3) transparent}
+[data-theme="dark"] ::selection{background:rgba(203,178,121,.4);color:#fff}
+[data-theme="dark"] .pagination{--bs-pagination-color:#5CC9A7;--bs-pagination-bg:var(--superficie);--bs-pagination-border-color:var(--borde)}/* El logo verde se pierde sobre superficies oscuras: se aclara (el blanco ya se usa sobre el verde) */
 [data-theme="dark"] img[src*="/img/logo."]:not([src*="blanco"]){filter:brightness(0) invert(1) opacity(.92)}
 
 /* Botón de tema (luna/sol) */
