@@ -45,7 +45,7 @@ class BloqueATests(TestCase):
         from django.conf import settings
 
         revisados = 0
-        for base, extension in ((settings.BASE_DIR / "templates", ".html"), (settings.BASE_DIR / "static" / "js", ".js")):
+        for base, extension in ((settings.FRONTEND_DIR / "templates", ".html"), (settings.FRONTEND_DIR / "static" / "js", ".js")):
             for root, dirs, files in os.walk(base):
                 for fn in files:
                     if fn.endswith(extension):

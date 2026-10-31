@@ -1,10 +1,8 @@
 import os
-from pathlib import Path
 from .base import *
 from dotenv import load_dotenv
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-load_dotenv(BASE_DIR.parent / ".env")
+load_dotenv(REPO_DIR / ".env")  # el .env vive en la raíz del repositorio
 
 DEBUG = False
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")

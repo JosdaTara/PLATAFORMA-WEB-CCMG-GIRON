@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from pva.tests.test_casas_vida import BaseCasasVida
 
-PLANTILLAS = settings.BASE_DIR / "templates"
+PLANTILLAS = settings.FRONTEND_DIR / "templates"
 
 
 def plantillas_con_head():
@@ -34,7 +34,7 @@ class ModoOscuroTests(BaseCasasVida):
                 self.assertIn("js/comun/theme.js", texto, ruta)
 
     def test_estilos_definen_el_modo_oscuro(self):
-        css = (settings.BASE_DIR / "static" / "css" / "styles.css").read_text(encoding="utf-8")
+        css = (settings.FRONTEND_DIR / "static" / "css" / "styles.css").read_text(encoding="utf-8")
         self.assertIn('[data-theme="dark"]{', css)
         bloque = css[css.index('[data-theme="dark"]{'):]
         for token in ("--fondo:", "--superficie:", "--texto:", "--titulo:", "--bs-body-bg:"):

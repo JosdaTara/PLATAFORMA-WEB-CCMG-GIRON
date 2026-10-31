@@ -8,7 +8,7 @@
 ![Django](https://img.shields.io/badge/Django-5.2-092E20?logo=django&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white)
-![Pruebas](https://img.shields.io/badge/pruebas-184%20pasando-00674F)
+![Pruebas](https://img.shields.io/badge/pruebas-187%20pasando-00674F)
 ![Requisitos](https://img.shields.io/badge/requisitos%20funcionales-28%2F28-CBB279)
 
 Proyecto de grado · Tecnología en Desarrollo de Sistemas Informáticos · Unidades Tecnológicas de Santander (UTS)
@@ -44,7 +44,7 @@ La plataforma se organiza en **módulos independientes** (RN21):
 | **Administración** | Usuarios, roles, asignaciones e importación de datos. |
 
 ## Funcionalidades
-Están implementados los **28 requisitos funcionales** de la [Especificación de Requisitos (ERS)](DOCUMENTACION/02_requerimientos/ERS_PVA.md).
+Están implementados los **28 requisitos funcionales** de la [Especificación de Requisitos (ERS)](DOCUMENTACION/ERS_PVA.md).
 
 **Acceso y usuarios**
 - Inicio de sesión por correo o usuario, bloqueo tras 5 intentos fallidos y sesión que expira por inactividad (RF01, RF02).
@@ -84,8 +84,8 @@ Están implementados los **28 requisitos funcionales** de la [Especificación de
 ## Roles y permisos
 | Rol | Alcance |
 |---|---|
-| **Super Administrador** (desarrollador) | Todo lo del Pastor en ambos módulos, más la bitácora de auditoría y la gestión de otros Super Administradores. El Pastor no ve ni modifica estas cuentas. |
-| **Pastor** (administrador) | Toda la información de ambos módulos. Gestiona usuarios, Áreas, Casas de Vida y ofrendas. Recibe los reportes generales y genera los consolidados. |
+| **Super Administrador** | Todo lo del Pastor en ambos módulos, más la bitácora de auditoría. Es el **único** que crea, edita, desactiva o reactiva Administradores (Pastor) y otros Super Administradores. |
+| **Pastor** (Administrador) | Toda la información de ambos módulos. Gestiona las cuentas de Supervisores, Coordinadores, Líderes y su equipo, las Áreas, las Casas de Vida y las ofrendas. No ve ni modifica a otros Administradores ni puede cambiar su propio rol. Recibe los reportes generales y genera los consolidados. |
 | **Supervisor de Área** | Solo las Casas de Vida de su Área, en modo de consulta. Recibe los reportes semanales y envía el general al Pastor. |
 | **Líder de Casa de Vida** | Solo su Casa de Vida. Registra la asistencia y envía el reporte semanal. |
 | **Apoyo** (Aprendiz, Anfitrión, Maestro de Niños) | Igual que el Líder para la asistencia y el reporte de su casa. |
@@ -101,30 +101,32 @@ Los permisos se validan **en el servidor**. Una página fuera del alcance respon
 - **Pruebas:** el framework de pruebas de Django, sobre PostgreSQL.
 
 ## Arquitectura y estructura
-Arquitectura cliente-servidor con el patrón MVT de Django. Cada módulo del ERS es una app de Django.
+Arquitectura cliente-servidor con el patrón MVT de Django. Cada módulo del ERS es una app de Django. La carpeta `ccmg` separa el **backend** (código Django y base de datos) del **frontend** (plantillas HTML y archivos estáticos).
 
 ```
 PLATAFORMA-WEB-CCMG-GIRON/
-├── ccmg/                          # Aplicación Django
-│   ├── apps/
-│   │   ├── cuentas/               # Autenticación, usuarios, roles, contraseñas
-│   │   ├── nucleo/                # Permisos, auditoría, exportación PDF/Excel, utilidades
-│   │   ├── publico/               # Página pública
-│   │   ├── pva/                   # Casas de Vida: áreas, participantes, asistencia, reportes, importación
-│   │   ├── formacion/             # Escuelas de Formación
-│   │   └── ofrendas/              # Ofrendas
-│   ├── config/settings/           # base · development · demo · production
-│   ├── templates/                 # Plantillas por módulo
-│   ├── static/                    # css · img · js (comun, cuentas, pva, formacion)
-│   ├── manage.py
-│   └── requirements.txt
-├── DOCUMENTACION/                 # Organizada por etapas del proyecto
-│   ├── 01_propuesta/
-│   ├── 02_requerimientos/         # ERS (formato IEEE)
-│   ├── 03_diseno/base_datos/      # esquema.sql, datos_iniciales.sql, cambios/
-│   ├── 04_pruebas/
-│   └── 05_informe_final/
-├── .env.example                   # Variables de entorno de ejemplo
+├── ccmg/                              # Plataforma web
+│   ├── backend/                       # Django: lógica, permisos, modelos y base de datos
+│   │   ├── apps/
+│   │   │   ├── cuentas/               # Autenticación, usuarios, roles, contraseñas
+│   │   │   ├── nucleo/                # Permisos, auditoría, exportación PDF/Excel, utilidades
+│   │   │   ├── publico/               # Página pública
+│   │   │   ├── pva/                   # Casas de Vida: áreas, participantes, asistencia, reportes, importación
+│   │   │   ├── formacion/             # Escuelas de Formación
+│   │   │   └── ofrendas/              # Ofrendas
+│   │   ├── config/settings/           # base · development · demo · production
+│   │   ├── base_datos/                # esquema.sql, datos_iniciales.sql, cambios/
+│   │   ├── manage.py
+│   │   └── requirements.txt
+│   └── frontend/                      # Interfaz de usuario
+│       ├── templates/                 # Plantillas HTML por módulo
+│       └── static/                    # css · img · js (comun, cuentas, pva, formacion)
+├── DOCUMENTACION/
+│   ├── ERS_PVA.md                     # Especificación de requisitos para leer en GitHub
+│   ├── IEEE_PLATAFORMA_WEB_CCMG.pdf   # La misma especificación en formato IEEE (PDF)
+│   └── diagramas/                     # Casos de uso y entidad-relación (PNG y SVG)
+├── .env.example                       # Variables de entorno de ejemplo
+├── .gitignore
 └── README.md
 ```
 
@@ -141,16 +143,17 @@ git clone https://github.com/JosdaTara/PLATAFORMA-WEB-CCMG-GIRON.git
 cd PLATAFORMA-WEB-CCMG-GIRON/ccmg
 python -m venv venv
 venv\Scripts\activate          # Windows  (en Linux/macOS: source venv/bin/activate)
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
+cd backend                     # los comandos siguientes se ejecutan desde ccmg/backend
 ```
 
 ### 2. Crear la base de datos
 ```bash
 createdb -U postgres CCMG_GIRON
-psql -U postgres -d CCMG_GIRON -f ../DOCUMENTACION/03_diseno/base_datos/esquema.sql
-psql -U postgres -d CCMG_GIRON -f ../DOCUMENTACION/03_diseno/base_datos/datos_iniciales.sql
+psql -U postgres -d CCMG_GIRON -f base_datos/esquema.sql
+psql -U postgres -d CCMG_GIRON -f base_datos/datos_iniciales.sql
 ```
-`esquema.sql` ya incluye todos los cambios de [`cambios/`](DOCUMENTACION/03_diseno/base_datos/cambios). Esos scripts solo hacen falta para actualizar una base creada con una versión anterior.
+`esquema.sql` ya incluye todos los cambios de [`cambios/`](ccmg/backend/base_datos/cambios). Esos scripts solo hacen falta para actualizar una base creada con una versión anterior.
 
 ### 3. Configurar las variables de entorno
 Copie [`.env.example`](.env.example) como `.env` en la raíz del proyecto y complete los datos de conexión.
@@ -162,26 +165,26 @@ python manage.py crear_pastor       # cuenta del Pastor (mínimo 15 caracteres e
 python manage.py runserver
 ```
 Para convertir una cuenta existente en Super Administrador, sin cambiar su contraseña: `python manage.py crear_superadmin --promover correo@dominio`.
-Abra http://127.0.0.1:8000. Desde la cuenta del Pastor se crean los demás usuarios, las Áreas y las Casas de Vida, o se importan desde Excel.
+Abra http://127.0.0.1:8000. Desde la cuenta del Super Administrador se crean los Administradores; desde la del Pastor, los demás usuarios, las Áreas y las Casas de Vida, o se importan desde Excel.
 
 ## Entorno de demostración
 Una base aparte con usuarios de cada rol y datos de ejemplo, útil para presentaciones:
 ```bash
 createdb -U postgres CCMG_GIRON_demo
-psql -U postgres -d CCMG_GIRON_demo -f ../DOCUMENTACION/03_diseno/base_datos/esquema.sql
-psql -U postgres -d CCMG_GIRON_demo -f ../DOCUMENTACION/03_diseno/base_datos/datos_iniciales.sql
+psql -U postgres -d CCMG_GIRON_demo -f base_datos/esquema.sql
+psql -U postgres -d CCMG_GIRON_demo -f base_datos/datos_iniciales.sql
 python manage.py sembrar_demo --settings=config.settings.demo
 python manage.py runserver 8001 --settings=config.settings.demo
 ```
 La demo corre en http://127.0.0.1:8001, aparte de la plataforma real (puerto 8000): **cada una usa su propia base de datos**, así que las cuentas de una no sirven en la otra.
-Los usuarios de demostración usan el dominio `demo.test` (`superadmin@`, `pastor@`, `supervisor@`, `lider@`, `apoyo@`, `coordinador@`). Su contraseña es la constante `CLAVE_DEMO` de [`sembrar_demo.py`](ccmg/apps/nucleo/management/commands/sembrar_demo.py). El comando se niega a ejecutarse sobre una base cuyo nombre no contenga «demo».
+Los usuarios de demostración usan el dominio `demo.test` (`superadmin@`, `pastor@`, `supervisor@`, `lider@`, `apoyo@`, `coordinador@`). Su contraseña es la constante `CLAVE_DEMO` de [`sembrar_demo.py`](ccmg/backend/apps/nucleo/management/commands/sembrar_demo.py). El comando se niega a ejecutarse sobre una base cuyo nombre no contenga «demo».
 
 ## Pruebas
 ```bash
-cd ccmg
+cd ccmg/backend
 python manage.py test --noinput
 ```
-Son **184 pruebas automatizadas** sobre PostgreSQL. Cubren:
+Son **187 pruebas automatizadas** sobre PostgreSQL. Cubren:
 - los permisos y el alcance de cada rol;
 - las reglas de negocio del ERS;
 - los flujos de reportes;
@@ -192,9 +195,11 @@ Son **184 pruebas automatizadas** sobre PostgreSQL. Cubren:
 ## Documentación
 | Documento | Contenido |
 |---|---|
-| [ERS_PVA.md](DOCUMENTACION/02_requerimientos/ERS_PVA.md) | Especificación de requisitos (IEEE / ISO 29148): 28 RF, 21 RNF, 25 reglas de negocio, 44 historias de usuario y casos de uso. |
-| [esquema.sql](DOCUMENTACION/03_diseno/base_datos/esquema.sql) | Modelo relacional completo de PostgreSQL. |
-| [cambios/](DOCUMENTACION/03_diseno/base_datos/cambios) | Scripts de cambio de esquema aplicados durante el desarrollo, con su motivo. |
+| [ERS_PVA.md](DOCUMENTACION/ERS_PVA.md) | Especificación de requisitos (IEEE / ISO 29148): 28 RF, 21 RNF, 25 reglas de negocio, 44 historias de usuario, casos de uso y diagramas. |
+| [IEEE_PLATAFORMA_WEB_CCMG.pdf](DOCUMENTACION/IEEE_PLATAFORMA_WEB_CCMG.pdf) | La misma especificación en el formato IEEE, en PDF. |
+| [diagramas/](DOCUMENTACION/diagramas) | Diagrama general y por módulo de casos de uso, jerarquía de usuarios y modelo entidad-relación (PNG y SVG). |
+| [esquema.sql](ccmg/backend/base_datos/esquema.sql) | Modelo relacional completo de PostgreSQL. |
+| [cambios/](ccmg/backend/base_datos/cambios) | Scripts de cambio de esquema aplicados durante el desarrollo, con su motivo. |
 
 ## Seguridad y protección de datos
 - **Contraseñas:**

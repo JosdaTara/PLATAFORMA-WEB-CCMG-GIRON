@@ -493,13 +493,55 @@ Estas funcionalidades estarán orientadas a facilitar la administración del Pla
 
 ## Diagrama UML
 
-La Figura 1 presenta el diagrama de casos de uso de la plataforma, con los actores descritos en la sección 2.4 y las funcionalidades que cada uno puede realizar según su rol.
+La Figura 1a es el diagrama general de casos de uso de la plataforma. Los actores humanos están a la izquierda y los sistemas externos, el servidor de base de datos PostgreSQL y el servidor de correo SMTP, a la derecha. El límite del sistema representa el servidor web Django, y el paquete de servicios de seguridad muestra la validación de credenciales, el bloqueo tras cinco intentos fallidos, la verificación de permisos por rol y la bitácora de auditoría. La Figura 1b muestra la jerarquía de usuarios y las Figuras 1c a 1f detallan cada módulo con los actores que participan en él. Las relaciones «include» señalan un comportamiento que siempre forma parte del caso de uso base, y las «extend», un comportamiento opcional.
 
-*Figura 1. Diagrama de casos de uso de la plataforma web PVA*
+![Figura 1a](diagramas/casos_de_uso/cu-01-general.png)
 
-La Figura 2 presenta un modelo conceptual preliminar de las clases principales y sus relaciones, derivado de los requisitos y las reglas de negocio; podrá ajustarse durante el diseño de la base de datos.
+*Figura 1a. Diagrama general de casos de uso de la plataforma web PVA*
 
-*Figura 2. Modelo conceptual de clases de la plataforma web PVA (preliminar)*
+![Figura 1b](diagramas/casos_de_uso/cu-00-jerarquia-actores.png)
+
+*Figura 1b. Jerarquía de usuarios: el Super Administrador es el único que crea y gestiona Administradores y otros Super Administradores; el Administrador gestiona las cuentas de los niveles 3 a 5*
+
+![Figura 1c](diagramas/casos_de_uso/cu-02-acceso-seguridad.png)
+
+*Figura 1c. Casos de uso: acceso a la plataforma y servicios de seguridad*
+
+![Figura 1d](diagramas/casos_de_uso/cu-03-administracion.png)
+
+*Figura 1d. Casos de uso: administración, ofrendas y auditoría*
+
+![Figura 1e](diagramas/casos_de_uso/cu-04-casas-vida.png)
+
+*Figura 1e. Casos de uso: módulo PVA – Casas de Vida*
+
+![Figura 1f](diagramas/casos_de_uso/cu-05-escuelas-formacion.png)
+
+*Figura 1f. Casos de uso: módulo Escuelas de Formación*
+
+Las Figuras 2a a 2e presentan el modelo entidad-relación de la base de datos, en notación de pata de gallo. La Figura 2a muestra las quince entidades por módulo con sus claves (PK, FK y UK); las Figuras 2b a 2e detallan cada módulo. La negrita indica atributo obligatorio, las restricciones aparecen al pie de cada tabla y el borde punteado, una entidad detallada en otra figura. Las relaciones de muchos a muchos se resuelven con entidades asociativas. El esquema completo está en [`ccmg/backend/base_datos/esquema.sql`](../ccmg/backend/base_datos/esquema.sql).
+
+![Figura 2a](diagramas/entidad_relacion/der-00-general.png)
+
+*Figura 2a. Modelo entidad-relación general de la plataforma web PVA*
+
+![Figura 2b](diagramas/entidad_relacion/der-01-seguridad-auditoria.png)
+
+*Figura 2b. Modelo entidad-relación: seguridad, usuarios y auditoría*
+
+![Figura 2c](diagramas/entidad_relacion/der-02-casas-vida-estructura.png)
+
+*Figura 2c. Modelo entidad-relación: Áreas, Casas de Vida, participantes y ofrendas*
+
+![Figura 2d](diagramas/entidad_relacion/der-04-escuelas-formacion.png)
+
+*Figura 2d. Modelo entidad-relación: Escuelas de Formación*
+
+![Figura 2e](diagramas/entidad_relacion/der-03-casas-vida-operacion.png)
+
+*Figura 2e. Modelo entidad-relación: actividades, asistencia, seguimiento y reportes*
+
+La versión en PDF de esta especificación es [`IEEE_PLATAFORMA_WEB_CCMG.pdf`](IEEE_PLATAFORMA_WEB_CCMG.pdf).
 
 ## Características de los usuarios
 
@@ -1669,7 +1711,7 @@ Cada usuario deberá acceder únicamente a las funcionalidades que correspondan 
 
 ### RN02 — Administración de usuarios
 
-La creación, actualización, desactivación y administración de roles de los usuarios estará a cargo del Pastor como Administrador del Sistema.
+La creación, actualización, desactivación y administración de roles de los usuarios estará a cargo del Pastor como Administrador del Sistema, excepto las cuentas de Administrador y de Super Administrador: solo el Super Administrador las crea, edita, desactiva o reactiva, y el Pastor no puede cambiar su propio rol.
 
 ### RN03 — Acceso del Supervisor de Área
 

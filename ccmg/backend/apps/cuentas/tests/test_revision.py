@@ -10,7 +10,7 @@ from pva.tests.test_casas_vida import BaseCasasVida
 class RevisionNavegadorTests(BaseCasasVida):
     def test_funciones_js_que_usan_los_paneles_estan_definidas(self):
         """panel-comun.js y los paneles llaman a funciones de auth.js; si faltan, el inicio queda en blanco."""
-        js = settings.BASE_DIR / "static" / "js"
+        js = settings.FRONTEND_DIR / "static" / "js"
         auth = (js / "cuentas" / "auth.js").read_text(encoding="utf-8")
         definidas = set(re.findall(r"function (\w+)\s*\(", auth)) | set(re.findall(r"const (\w+)\s*=", auth))
         for nombre in ("requiereSesion", "sesionActual", "ROLES_INFO", "cerrarSesion"):
