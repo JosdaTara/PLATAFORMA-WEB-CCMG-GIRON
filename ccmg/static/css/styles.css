@@ -12,8 +12,12 @@ a{color:var(--titulo)}
 .btn-ccmg{background:var(--verde);color:#fff;border:0}.btn-ccmg:hover{background:var(--verde-osc);color:#fff}
 .btn-oro{background:var(--oro);color:var(--carbon);border:0;font-weight:600}.btn-oro:hover{background:#b99f63}
 .form-control:focus,.form-select:focus{border-color:var(--verde);box-shadow:0 0 0 .2rem rgba(0,103,79,.2)}
-.navbar-ccmg{background:var(--verde)}
-.navbar-ccmg .nav-link,.navbar-ccmg .navbar-brand{color:#fff}.navbar-ccmg .nav-link:hover{color:var(--oro)}
+.navbar-ccmg{background:var(--verde);transition:background-color .3s ease}
+/* Bootstrap pinta en negro el enlace activo o con foco (scrollspy); en esta barra siempre van en blanco/oro */
+.navbar-ccmg{--bs-navbar-color:#fff;--bs-navbar-hover-color:var(--oro);--bs-navbar-active-color:#fff;--bs-navbar-brand-color:#fff;--bs-navbar-brand-hover-color:#fff;
+ --bs-nav-link-color:#fff;--bs-nav-link-hover-color:var(--oro)}
+.navbar-ccmg .nav-link,.navbar-ccmg .navbar-brand,.navbar-ccmg .nav-link:focus,.navbar-ccmg .nav-link.active,.navbar-ccmg .nav-link.show{color:#fff}
+.navbar-ccmg .nav-link:hover,.navbar-ccmg .nav-link:focus-visible{color:var(--oro)}
 .hero{background:linear-gradient(135deg,var(--verde),var(--verde-osc));color:#fff;padding:5rem 0}
 .hero h1{color:#fff}.acento{color:var(--oro)}.bg-arena{background:var(--fondo)}
 .card-ccmg{border:1px solid var(--borde);box-shadow:0 2px 10px var(--sombra);background:var(--superficie);height:100%;transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;will-change:transform}
@@ -89,11 +93,10 @@ h2{font-weight:600}
   mask-image:linear-gradient(to bottom,transparent 0%,#000 45%)}
 }
 
-/* Las clases conservan su nombre, pero el texto va alineado a la izquierda: justificar sin
-   guiones abre ríos de espacio en columnas estrechas. */
-.text-justify { text-align: left; }
-.section-lead { text-align: left; max-width: 60ch; margin: 0 auto 2.5rem; }
-.text-start-justify { text-align: left; }
+/* Texto justificado con división silábica en español (lang="es"): sin guiones, las columnas
+   estrechas abren huecos entre palabras. */
+.text-justify, .section-lead, .text-start-justify { text-align: justify; -webkit-hyphens: auto; hyphens: auto; hyphenate-limit-chars: 6 3 2; }
+.section-lead { max-width: 60ch; margin: 0 auto 2.5rem; }
 .table-horarios td { padding-top: .5rem; padding-bottom: .5rem; vertical-align: middle; word-break: break-word; }
 .table-horarios tr + tr td { border-top: 1px solid rgba(0,0,0,.08); }
 .table-horarios td:last-child { white-space: normal !important; text-align: right; }
@@ -383,6 +386,11 @@ a{text-underline-offset:3px}
 [data-theme="dark"] .table-horarios tr + tr td,[data-theme="dark"] .table.horarios tr + tr td{border-top-color:rgba(255,255,255,.08)}
 [data-theme="dark"] .toast-ccmg{background:var(--superficie-2);border:1px solid var(--borde)}
 [data-theme="dark"] .stat .icono{background:rgba(203,178,121,.14)}
+/* Barra pública y portada: mismo verde, llevado a la profundidad de las superficies oscuras */
+[data-theme="dark"] .navbar-ccmg{background:#0B1F19;border-bottom:1px solid var(--borde)}
+[data-theme="dark"] .hero-fondo{background:linear-gradient(135deg,#0B2A21 0%,#0F1714 100%)}
+[data-theme="dark"] .hero-fondo::before{filter:brightness(.72) saturate(.9)}
+[data-theme="dark"] .hero-sub{color:var(--texto)}
 [data-theme="dark"]{accent-color:#5CC9A7;caret-color:#5CC9A7;scrollbar-color:rgba(92,201,167,.3) transparent}
 [data-theme="dark"] ::selection{background:rgba(203,178,121,.4);color:#fff}
 [data-theme="dark"] .pagination{--bs-pagination-color:#5CC9A7;--bs-pagination-bg:var(--superficie);--bs-pagination-border-color:var(--borde)}/* El logo verde se pierde sobre superficies oscuras: se aclara (el blanco ya se usa sobre el verde) */
