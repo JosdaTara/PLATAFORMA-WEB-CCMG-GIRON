@@ -15,7 +15,8 @@
   <h6 class="mb-3">Datos de la cuenta</h6>
   <div class="row g-3">
     {% for campo in form %}
-      {% if campo.widget_type == "checkbox" %}
+      {% if campo.name in form.CAMPOS_CLAVE %}{# se muestran en la sección «Contraseña» #}
+      {% elif campo.widget_type == "checkbox" %}
         <div class="col-12">
           <div class="form-check">
             {{ campo }}
@@ -50,7 +51,34 @@
     </div>
   </div>
 
-  {% if not object %}<p class="small text-muted mt-3 mb-0">Se generará una contraseña temporal que el usuario deberá cambiar al iniciar sesión.</p>{% endif %}
+  {% if not object %}
+  <h6 class="mt-4 mb-1">Contraseña</h6>
+  <p class="small text-muted">Asigna la contraseña con la que el usuario entrará por primera vez. Entrégasela por un medio seguro.</p>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label" for="{{ form.clave1.id_for_label }}">{{ form.clave1.label }} *</label>
+      <div class="input-group">
+        {{ form.clave1 }}
+        <button type="button" class="btn btn-outline-secondary" data-ver-clave aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+      </div>
+      {% for e in form.clave1.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+      <div class="form-text small">{{ form.clave1.help_text|safe }}</div>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="{{ form.clave2.id_for_label }}">{{ form.clave2.label }} *</label>
+      {{ form.clave2 }}
+      {% for e in form.clave2.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+      <button type="button" class="btn btn-link btn-sm px-0 mt-1" id="generarClave"><i class="bi bi-magic me-1"></i>Generar una contraseña segura</button>
+    </div>
+    <div class="col-12">
+      <div class="form-check">
+        {{ form.debe_cambiar }}
+        <label class="form-check-label" for="{{ form.debe_cambiar.id_for_label }}">{{ form.debe_cambiar.label }}</label>
+        <div class="form-text">{{ form.debe_cambiar.help_text }}</div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
   <div class="mt-3 d-flex gap-2">
     <button class="btn btn-ccmg"><i class="bi bi-check-lg me-1"></i>Guardar</button>
     <a href="{% url 'cuentas:usuarios_list' %}" class="btn btn-light">Cancelar</a>
@@ -77,6 +105,31 @@
     }
     rol.addEventListener('change', actualizar);
     actualizar();
+  })();
+
+  /* Contraseña inicial: mostrar/ocultar y generar una aleatoria (solo al crear) */
+  (function () {
+    const c1 = document.getElementById('{{ form.clave1.id_for_label }}');
+    const c2 = document.getElementById('{{ form.clave2.id_for_label }}');
+    const ver = document.querySelector('[data-ver-clave]');
+    const generar = document.getElementById('generarClave');
+    if (!c1 || !c2) return;
+    function mostrar(visible) {
+      c1.type = c2.type = visible ? 'text' : 'password';
+      ver.innerHTML = '<i class="bi bi-eye' + (visible ? '-slash' : '') + '"></i>';
+      ver.setAttribute('aria-label', visible ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      ver.title = ver.getAttribute('aria-label');
+    }
+    ver.addEventListener('click', function () { mostrar(c1.type === 'password'); });
+    generar.addEventListener('click', function () {
+      const letras = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*-_+=';
+      const azar = new Uint32Array(18);
+      crypto.getRandomValues(azar);
+      const clave = Array.from(azar, function (n) { return letras[n % letras.length]; }).join('');
+      c1.value = c2.value = clave;
+      mostrar(true);  // visible para que quien crea la cuenta pueda copiarla y entregarla
+      c1.select();
+    });
   })();
 </script>
 {% endblock %}

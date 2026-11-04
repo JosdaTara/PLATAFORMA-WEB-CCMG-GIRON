@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.forms import PasswordResetForm as DjangoPasswordResetForm
 
@@ -95,6 +96,51 @@ class UsuarioForm(EstiloBootstrapMixin, forms.ModelForm):
             user.correo = user.correo.strip().lower()
         if user.username:
             user.username = user.username.strip()
+        if commit:
+            user.save()
+        return user
+
+
+class UsuarioCrearForm(UsuarioForm):
+    """Alta de usuario: el Administrador o el Super Administrador le asigna la contraseña inicial."""
+
+    clave1 = forms.CharField(
+        label="Contraseña", strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+        help_text=password_validation.password_validators_help_text_html(),
+    )
+    clave2 = forms.CharField(
+        label="Confirmar contraseña", strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+    )
+    debe_cambiar = forms.BooleanField(
+        label="Pedir que la cambie al iniciar sesión por primera vez", required=False, initial=True,
+        help_text="Recomendado: así solo el usuario conoce su contraseña definitiva.",
+    )
+
+    CAMPOS_CLAVE = ("clave1", "clave2", "debe_cambiar")
+
+    def clean(self):
+        datos = super().clean()
+        clave1, clave2 = datos.get("clave1"), datos.get("clave2")
+        if clave1 and clave2 and clave1 != clave2:
+            self.add_error("clave2", "Las dos contraseñas no coinciden.")
+        elif clave1:
+            # Las reglas de contraseña (RNF19) se validan contra los datos del usuario que se está creando.
+            provisional = Usuario(
+                correo=datos.get("correo") or "", nombre_completo=datos.get("nombre_completo") or "",
+                username=datos.get("username"),
+            )
+            try:
+                password_validation.validate_password(clave1, provisional)
+            except forms.ValidationError as error:
+                self.add_error("clave1", error)
+        return datos
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["clave1"])
+        user.debe_cambiar_password = self.cleaned_data.get("debe_cambiar", False)
         if commit:
             user.save()
         return user

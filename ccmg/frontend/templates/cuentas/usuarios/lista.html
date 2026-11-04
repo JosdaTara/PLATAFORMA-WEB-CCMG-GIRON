@@ -8,14 +8,6 @@
   <a href="{% url 'cuentas:usuarios_crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-person-plus me-1"></i>Crear usuario</a>
 </div>
 
-{% if password_generada %}
-  <div class="alert alert-warning">
-    <strong><i class="bi bi-key me-1"></i>Contraseña temporal de {{ usuario_creado }}</strong> (se muestra una sola vez):
-    <code class="fs-6 ms-1 user-select-all">{{ password_generada }}</code>
-    <div class="small mt-1">Entréguela al usuario por un medio seguro. Deberá cambiarla al iniciar sesión por primera vez.</div>
-  </div>
-{% endif %}
-
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table table-hover align-middle mb-0">
     <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Último acceso</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>

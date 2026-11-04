@@ -4,6 +4,7 @@ import re
 from django.conf import settings
 from django.urls import reverse
 
+from cuentas.models import Usuario
 from pva.tests.test_casas_vida import BaseCasasVida
 
 
@@ -25,18 +26,48 @@ class RevisionNavegadorTests(BaseCasasVida):
         self.entrar(self.supervisor)
         self.assertNotIn("usuarios", [m["id"] for m in self.client.get(reverse("pva:casas")).context["menu"]])
 
-    def test_contrasena_temporal_visible_tras_crear(self):
+    def crear(self, clave1="ClaveInicial-Giron-2026", clave2=None, debe_cambiar=True, follow=False):
+        datos = {"nombre_completo": "Nueva Persona", "correo": "nueva@ccmg.org", "username": "",
+                 "rol": self.rol["COORDINADOR_FORMACION"].pk, "clave1": clave1, "clave2": clave1 if clave2 is None else clave2}
+        if debe_cambiar:
+            datos["debe_cambiar"] = "on"
+        return self.client.post(reverse("cuentas:usuarios_crear"), datos, follow=follow)
+
+    def test_quien_crea_la_cuenta_asigna_la_contrasena(self):
+        for creador in (self.pastor, self.superadmin):
+            Usuario.objects.filter(correo="nueva@ccmg.org").delete()
+            self.entrar(creador)
+            self.assertContains(self.client.get(reverse("cuentas:usuarios_crear")), "Generar una contraseña segura")
+            resp = self.crear(follow=True)
+            self.assertEqual(resp.request["PATH_INFO"], reverse("cuentas:usuarios_list"))
+            nueva = Usuario.objects.get(correo="nueva@ccmg.org")
+            self.assertTrue(nueva.check_password("ClaveInicial-Giron-2026"))
+            self.assertTrue(nueva.debe_cambiar_password)
+            self.assertNotContains(resp, "ClaveInicial-Giron-2026")  # la contraseña nunca se vuelve a mostrar
+        self.client.logout()
+        self.assertTrue(self.client.login(username="nueva@ccmg.org", password="ClaveInicial-Giron-2026"))
+
+    def test_sin_pedir_cambio_al_primer_ingreso(self):
         self.entrar(self.pastor)
-        resp = self.client.post(
-            reverse("cuentas:usuarios_crear"),
-            {"nombre_completo": "Nueva Persona", "correo": "nueva@ccmg.org", "username": "", "rol": self.rol["COORDINADOR_FORMACION"].pk},
-            follow=True,
-        )
-        self.assertEqual(resp.request["PATH_INFO"], reverse("cuentas:usuarios_list"))
-        self.assertTrue(resp.context["password_generada"])
-        self.assertContains(resp, "Contraseña temporal de nueva@ccmg.org")
-        # Se muestra una sola vez.
-        self.assertIsNone(self.client.get(reverse("cuentas:usuarios_list")).context["password_generada"])
+        self.crear(debe_cambiar=False)
+        self.assertFalse(Usuario.objects.get(correo="nueva@ccmg.org").debe_cambiar_password)
+
+    def test_contrasenas_distintas_o_debiles_se_rechazan(self):
+        self.entrar(self.pastor)
+        for clave1, clave2, campo in (
+            ("ClaveInicial-Giron-2026", "OtraClaveDistinta-2026", "clave2"),
+            ("corta", "corta", "clave1"),
+            ("", "", "clave1"),
+        ):
+            resp = self.crear(clave1, clave2)
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(campo, resp.context["form"].errors)
+            self.assertFalse(Usuario.objects.filter(correo="nueva@ccmg.org").exists())
+
+    def test_editar_no_pide_contrasena(self):
+        self.entrar(self.pastor)
+        form = self.client.get(reverse("cuentas:usuarios_editar", args=[self.lider.pk])).context["form"]
+        self.assertNotIn("clave1", form.fields)
 
     def test_editar_usuario_precarga_su_asignacion(self):
         self.entrar(self.pastor)

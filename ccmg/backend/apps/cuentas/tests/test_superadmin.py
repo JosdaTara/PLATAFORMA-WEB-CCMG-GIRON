@@ -9,6 +9,9 @@ from cuentas.models import Usuario
 from nucleo.models import Auditoria
 from pva.tests.test_casas_vida import CLAVE, BaseCasasVida
 
+# Contraseña inicial que asigna quien crea la cuenta.
+CLAVES_NUEVAS = {"clave1": "ClaveInicial-Giron-2026", "clave2": "ClaveInicial-Giron-2026", "debe_cambiar": "on"}
+
 
 class SuperAdminHeredaPastorTests(BaseCasasVida):
     def test_accede_a_todo_lo_del_pastor(self):
@@ -53,7 +56,7 @@ class ProteccionSuperAdminTests(BaseCasasVida):
         self.assertNotIn("SUPERADMIN", [r.nombre for r in form.fields["rol"].queryset])
         resp = self.client.post(
             reverse("cuentas:usuarios_crear"),
-            {"nombre_completo": "Intruso", "correo": "intruso@ccmg.org", "username": "", "rol": self.rol["SUPERADMIN"].pk},
+            {"nombre_completo": "Intruso", "correo": "intruso@ccmg.org", "username": "", **CLAVES_NUEVAS, "rol": self.rol["SUPERADMIN"].pk},
         )
         self.assertIn("rol", resp.context["form"].errors)
         self.assertFalse(Usuario.objects.filter(correo="intruso@ccmg.org").exists())
@@ -63,7 +66,7 @@ class ProteccionSuperAdminTests(BaseCasasVida):
         self.assertIn(self.superadmin, self.client.get(reverse("cuentas:usuarios_list")).context["usuarios"])
         self.client.post(
             reverse("cuentas:usuarios_crear"),
-            {"nombre_completo": "Otro Dev", "correo": "dev2@ccmg.org", "username": "", "rol": self.rol["SUPERADMIN"].pk},
+            {"nombre_completo": "Otro Dev", "correo": "dev2@ccmg.org", "username": "", **CLAVES_NUEVAS, "rol": self.rol["SUPERADMIN"].pk},
         )
         self.assertEqual(Usuario.objects.get(correo="dev2@ccmg.org").rol.nombre, "SUPERADMIN")
 
@@ -91,7 +94,7 @@ class CreacionDeAdministradoresTests(BaseCasasVida):
         self.assertNotIn("PASTOR", [r.nombre for r in form.fields["rol"].queryset])
         resp = self.client.post(
             reverse("cuentas:usuarios_crear"),
-            {"nombre_completo": "Otro Pastor", "correo": "pastor2@ccmg.org", "username": "", "rol": self.rol["PASTOR"].pk},
+            {"nombre_completo": "Otro Pastor", "correo": "pastor2@ccmg.org", "username": "", **CLAVES_NUEVAS, "rol": self.rol["PASTOR"].pk},
         )
         self.assertIn("rol", resp.context["form"].errors)
         self.assertFalse(Usuario.objects.filter(correo="pastor2@ccmg.org").exists())
@@ -107,7 +110,7 @@ class CreacionDeAdministradoresTests(BaseCasasVida):
         self.entrar(self.pastor)
         self.client.post(
             reverse("cuentas:usuarios_crear"),
-            {"nombre_completo": "Nuevo Coord", "correo": "coord2@ccmg.org", "username": "",
+            {"nombre_completo": "Nuevo Coord", "correo": "coord2@ccmg.org", "username": "", **CLAVES_NUEVAS,
              "rol": self.rol["COORDINADOR_FORMACION"].pk},
         )
         self.assertEqual(Usuario.objects.get(correo="coord2@ccmg.org").rol.nombre, "COORDINADOR_FORMACION")
@@ -160,7 +163,7 @@ class CreacionDeAdministradoresTests(BaseCasasVida):
         self.assertIn("PASTOR", [r.nombre for r in form.fields["rol"].queryset])
         self.client.post(
             reverse("cuentas:usuarios_crear"),
-            {"nombre_completo": "Otro Pastor", "correo": "pastor2@ccmg.org", "username": "", "rol": self.rol["PASTOR"].pk},
+            {"nombre_completo": "Otro Pastor", "correo": "pastor2@ccmg.org", "username": "", **CLAVES_NUEVAS, "rol": self.rol["PASTOR"].pk},
         )
         self.assertEqual(Usuario.objects.get(correo="pastor2@ccmg.org").rol.nombre, "PASTOR")
 
@@ -181,7 +184,7 @@ class AuditoriaTests(BaseCasasVida):
         self.assertTrue(Auditoria.objects.filter(accion="INICIAR_SESION", id_usuario=self.pastor).exists())
         self.client.post(
             reverse("cuentas:usuarios_crear"),
-            {"nombre_completo": "Nueva", "correo": "nueva@ccmg.org", "username": "", "rol": self.rol["COORDINADOR_FORMACION"].pk},
+            {"nombre_completo": "Nueva", "correo": "nueva@ccmg.org", "username": "", **CLAVES_NUEVAS, "rol": self.rol["COORDINADOR_FORMACION"].pk},
         )
         nueva = Usuario.objects.get(correo="nueva@ccmg.org")
         self.assertTrue(Auditoria.objects.filter(accion="CREAR", entidad="usuario", id_entidad=nueva.pk).exists())
@@ -220,7 +223,7 @@ class CrearUsuarioConErroresTests(BaseCasasVida):
         self.entrar(self.pastor)
         resp = self.client.post(
             reverse("cuentas:usuarios_crear"),
-            {"nombre_completo": "Repetido", "correo": self.lider.correo, "username": "", "rol": self.rol["LIDER_CASA_VIDA"].pk},
+            {"nombre_completo": "Repetido", "correo": self.lider.correo, "username": "", **CLAVES_NUEVAS, "rol": self.rol["LIDER_CASA_VIDA"].pk},
         )
         self.assertEqual(resp.status_code, 200)
         self.assertIn("correo", resp.context["form"].errors)

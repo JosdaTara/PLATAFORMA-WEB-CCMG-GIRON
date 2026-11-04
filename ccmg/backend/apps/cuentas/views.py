@@ -10,8 +10,6 @@ from django.views.generic import ListView, CreateView, UpdateView, View
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Q
-import secrets
-import string
 
 from nucleo import exportar
 from nucleo.exportar import ExportableMixin
@@ -21,7 +19,7 @@ from nucleo.permissions import pastor_required
 from nucleo.utils import ROLES_PASTOR, ROLES_SUPERADMIN, es_superadmin, registrar_auditoria, rol_efectivo, sesion_js
 
 from .correos import enviar_aviso_cambio
-from .forms import CcmgPasswordChangeForm, CcmgSetPasswordForm, LoginForm, UsuarioForm, UsuarioAsignacionForm
+from .forms import CcmgPasswordChangeForm, CcmgSetPasswordForm, LoginForm, UsuarioAsignacionForm, UsuarioCrearForm, UsuarioForm
 from .models import Usuario, Rol
 from pva.models import Area, CasaVida, CasaVidaEquipo
 
@@ -163,17 +161,10 @@ class UsuarioListView(AdminUsuariosMixin, PastorRequiredMixin, ListView):
     def get_queryset(self):
         return usuarios_gestionables(self.request.user).select_related("rol").order_by("-activo", "rol__id_rol", "nombre_completo")
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        # La contraseña temporal se muestra una sola vez, justo después de crear el usuario.
-        ctx["password_generada"] = self.request.session.pop("password_generada", None)
-        ctx["usuario_creado"] = self.request.session.pop("usuario_creado", None)
-        return ctx
-
 
 class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
     model = Usuario
-    form_class = UsuarioForm
+    form_class = UsuarioCrearForm
     template_name = "cuentas/usuarios/formulario.html"
     success_url = reverse_lazy("cuentas:usuarios_list")
 
@@ -190,18 +181,14 @@ class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None  # CreateView lo necesita para volver a mostrar el formulario con errores
-        form = UsuarioForm(request.POST, editor=request.user)
+        form = UsuarioCrearForm(request.POST, editor=request.user)
         form_asig = UsuarioAsignacionForm(request.POST)
         if form.is_valid() and form_asig.is_valid():
             try:
                 with transaction.atomic():
-                    user = form.save(commit=False)
+                    user = form.save(commit=False)  # ya trae la contraseña asignada por quien lo crea
                     user.creado_por = request.user
                     user.activo = True
-                    user.debe_cambiar_password = True
-                    alphabet = string.ascii_letters + string.digits + "!@#$%^&*()-_=+"
-                    pwd = "".join(secrets.choice(alphabet) for _ in range(20))
-                    user.set_password(pwd)
                     user.save()
 
                     rol = user.rol
@@ -244,8 +231,6 @@ class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
                         CasaVidaEquipo.objects.filter(id_usuario=user, activo=True).update(activo=False)
                         CasaVidaEquipo.objects.create(id_casa_vida=casa, id_usuario=user, funcion=funcion, activo=True)
 
-                    request.session["password_generada"] = pwd
-                    request.session["usuario_creado"] = user.correo
                     registrar_auditoria(request, "CREAR", user)
                     messages.success(request, "Usuario creado correctamente.")
                     return redirect(self.success_url)
