@@ -46,3 +46,4 @@ DOCUMENTACION/**/*.docx
 
 # Configuración local del entorno de Claude Code
 .claude/
+.impeccable/
