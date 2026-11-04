@@ -1,0 +1,23 @@
+{% autoescape off %}CCMG GIRÓN · PLAN VIDA ABUNDANTE
+
+Tu contraseña fue cambiada
+
+Hola, {{ nombre }}:
+
+Te confirmamos que la contraseña de tu cuenta en la Plataforma Plan Vida Abundante se cambió correctamente. Desde ahora debes usar la contraseña nueva para iniciar sesión.
+
+Tu cuenta
+  Nombre: {{ nombre }}
+  Correo: {{ correo }}
+  Fecha del cambio: {{ fecha|date:"j \d\e F \d\e Y, g:i a" }}
+
+Iniciar sesión: {{ login }}
+
+¿No fuiste tú? Restablece tu contraseña ahora en {{ recuperar }} y avisa al administrador de la plataforma para proteger tu cuenta.
+
+Bendiciones,
+Equipo de la Plataforma PVA
+Centro Cristiano Misión Global · Girón
+
+Este es un mensaje automático; por favor no lo respondas.
+{% endautoescape %}

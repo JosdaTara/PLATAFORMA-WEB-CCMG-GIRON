@@ -23,6 +23,13 @@ class CcmgPasswordResetForm(EstiloBootstrapMixin, DjangoPasswordResetForm):
         # El correo está en «correo» (EMAIL_FIELD), no en «email».
         return (u for u in active_users if u.has_usable_password() and getattr(u, email_field_name, None))
 
+    def send_mail(self, subject_template_name, email_template_name, context, from_email, to_email,
+                  html_email_template_name=None):
+        """Envía el correo con la identidad de la iglesia en lugar del texto plano de Django."""
+        from .correos import enviar_recuperacion
+
+        enviar_recuperacion(context)
+
 
 class CcmgPasswordChangeForm(EstiloBootstrapMixin, PasswordChangeForm):
     pass

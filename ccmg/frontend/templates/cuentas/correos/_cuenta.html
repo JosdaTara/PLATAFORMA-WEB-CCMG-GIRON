@@ -1,0 +1,11 @@
+{% comment %}Recuadro con los datos de la cuenta. Recibe: nombre, correo y, opcional, fecha.{% endcomment %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F4F5F2;border:1px solid #E3E5E0;border-radius:10px;margin:8px 0 24px;">
+  <tr>
+    <td style="padding:16px 20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.7;color:#2B2D2F;">
+      <span style="display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#00674F;margin-bottom:4px;">Tu cuenta</span>
+      <strong>Nombre:</strong> {{ nombre }}<br>
+      <strong>Correo:</strong> <span style="color:#2B2D2F;text-decoration:none;">{{ correo }}</span>
+      {% if fecha %}<br><strong>Fecha del cambio:</strong> {{ fecha|date:"j \d\e F \d\e Y, g:i a" }}{% endif %}
+    </td>
+  </tr>
+</table>

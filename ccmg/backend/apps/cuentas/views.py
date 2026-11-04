@@ -3,7 +3,7 @@ import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import PasswordChangeView, PasswordResetConfirmView
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, View
@@ -16,10 +16,12 @@ import string
 from nucleo import exportar
 from nucleo.exportar import ExportableMixin
 from nucleo.mixins import PastorRequiredMixin, SuperAdminRequiredMixin
+from nucleo.models import Auditoria
 from nucleo.permissions import pastor_required
 from nucleo.utils import ROLES_PASTOR, ROLES_SUPERADMIN, es_superadmin, registrar_auditoria, rol_efectivo, sesion_js
 
-from .forms import CcmgPasswordChangeForm, LoginForm, UsuarioForm, UsuarioAsignacionForm
+from .correos import enviar_aviso_cambio
+from .forms import CcmgPasswordChangeForm, CcmgSetPasswordForm, LoginForm, UsuarioForm, UsuarioAsignacionForm
 from .models import Usuario, Rol
 from pva.models import Area, CasaVida, CasaVidaEquipo
 
@@ -35,6 +37,28 @@ class CambiarPasswordView(PasswordChangeView):
         if getattr(self.request.user, "debe_cambiar_password", False):
             self.request.user.debe_cambiar_password = False
             self.request.user.save(update_fields=["debe_cambiar_password"])
+        registrar_auditoria(self.request, "CAMBIAR_CONTRASENA", form.user)
+        enviar_aviso_cambio(self.request, form.user)
+        return response
+
+
+class RestablecerPasswordView(PasswordResetConfirmView):
+    """Página a la que lleva el enlace del correo: crea la contraseña nueva y avisa por correo."""
+    template_name = "cuentas/password_reset_confirm.html"
+    form_class = CcmgSetPasswordForm
+    success_url = reverse_lazy("cuentas:password_reset_complete")  # Django lo busca sin el espacio «cuentas:»
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Quien restablece no ha iniciado sesión: la bitácora se atribuye al dueño de la cuenta.
+        Auditoria.objects.create(
+            id_usuario=form.user, accion="RESTABLECER_CONTRASENA", entidad=form.user._meta.db_table,
+            id_entidad=form.user.pk, ip=(self.request.META.get("REMOTE_ADDR") or "")[:45] or None,
+        )
+        if getattr(form.user, "debe_cambiar_password", False):
+            form.user.debe_cambiar_password = False
+            form.user.save(update_fields=["debe_cambiar_password"])
+        enviar_aviso_cambio(self.request, form.user)
         return response
 
 
@@ -399,8 +423,6 @@ class AuditoriaListView(AdminUsuariosMixin, SuperAdminRequiredMixin, ExportableM
     paginate_by = 50
 
     def get_queryset(self):
-        from nucleo.models import Auditoria
-
         qs = Auditoria.objects.select_related("id_usuario", "id_usuario__rol")
         g = self.request.GET
         if g.get("usuario", "").isdigit():
@@ -417,8 +439,6 @@ class AuditoriaListView(AdminUsuariosMixin, SuperAdminRequiredMixin, ExportableM
         return qs.order_by("-fecha", "-id_auditoria")
 
     def get_context_data(self, **kwargs):
-        from nucleo.models import Auditoria
-
         ctx = super().get_context_data(**kwargs)
         ctx["usuarios_filtro"] = Usuario.objects.filter(
             pk__in=Auditoria.objects.values("id_usuario")

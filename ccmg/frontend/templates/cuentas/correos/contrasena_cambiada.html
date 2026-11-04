@@ -1,0 +1,11 @@
+{% extends "cuentas/correos/_base.html" %}
+{% block titulo %}Tu contraseña fue cambiada{% endblock %}
+{% block resumen %}Te confirmamos que la contraseña de tu cuenta en la Plataforma PVA se cambió.{% endblock %}
+{% block contenido %}
+<h1 style="font-family:'Fraunces',Georgia,'Times New Roman',serif;font-size:26px;line-height:1.25;font-weight:600;color:#00674F;margin:0 0 18px;">Tu contraseña fue cambiada</h1>
+<p style="margin:0 0 14px;">Hola, <strong>{{ nombre }}</strong>:</p>
+<p style="margin:0 0 18px;">Te confirmamos que la contraseña de tu cuenta en la Plataforma Plan Vida Abundante se cambió correctamente. Desde ahora debes usar la contraseña nueva para iniciar sesión.</p>
+{% include "cuentas/correos/_cuenta.html" %}
+{% include "cuentas/correos/_boton.html" with url=login texto="Iniciar sesión" %}
+<p style="margin:0 0 8px;padding-top:18px;border-top:1px solid #E3E5E0;font-size:14px;color:#6B706E;">¿No fuiste tú? <a href="{{ recuperar }}" style="color:#00674F;font-weight:700;">Restablece tu contraseña ahora</a> y avisa al administrador de la plataforma para proteger tu cuenta.</p>
+{% endblock %}

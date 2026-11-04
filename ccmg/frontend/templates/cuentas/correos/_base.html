@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>{% block titulo %}{% endblock %}</title>
+</head>
+{% comment %}
+  Plantilla base de los correos. Los clientes de correo ignoran las hojas de estilo y las fuentes
+  web, por eso todo va en tablas con estilos en línea y fuentes de respaldo (Georgia / Arial).
+  Colores de la iglesia: verde #00674F, verde oscuro #004d3b, oro #CBB279, arena #F4F5F2.
+{% endcomment %}
+<body style="margin:0;padding:0;background:#F4F5F2;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#F4F5F2;">{% block resumen %}{% endblock %}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F4F5F2;">
+  <tr>
+    <td align="center" style="padding:32px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:14px;overflow:hidden;border:1px solid #E3E5E0;">
+        <tr>
+          <td align="center" bgcolor="#004d3b" style="background:#004d3b;padding:32px 24px 26px;">
+            <img src="cid:{{ logo_cid }}" alt="CCMG" width="56" height="67" style="display:block;margin:0 auto;border:0;width:56px;height:67px;">
+            <div style="font-family:'Fraunces',Georgia,'Times New Roman',serif;font-size:24px;font-weight:600;color:#FFFFFF;margin-top:12px;letter-spacing:-0.2px;">CCMG Girón</div>
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#CBB279;margin-top:6px;">Plan Vida Abundante</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:36px 40px 12px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#2B2D2F;">
+            {% block contenido %}{% endblock %}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:8px 40px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#2B2D2F;">
+            Bendiciones,<br>
+            <strong style="color:#00674F;">Equipo de la Plataforma PVA</strong><br>
+            <span style="color:#6B706E;">Centro Cristiano Misión Global · Girón</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#FAFBF9;border-top:1px solid #E3E5E0;padding:18px 40px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#6B706E;" align="center">
+            Este es un mensaje automático de la Plataforma Plan Vida Abundante; por favor no lo respondas.<br>
+            © {{ anio }} Centro Cristiano Misión Global CCMG · Girón, Santander, Colombia
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

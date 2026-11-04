@@ -13,6 +13,8 @@ PLANTILLAS = settings.FRONTEND_DIR / "templates"
 
 def plantillas_con_head():
     for raiz, _, archivos in os.walk(PLANTILLAS):
+        if os.path.basename(raiz) == "correos":
+            continue  # los correos no son páginas: el cliente de correo no aplica el tema de la plataforma
         for nombre in archivos:
             if nombre.endswith(".html"):
                 ruta = os.path.join(raiz, nombre)

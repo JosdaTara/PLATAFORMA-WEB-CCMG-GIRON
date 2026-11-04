@@ -1,0 +1,25 @@
+{% autoescape off %}CCMG GIRÓN · PLAN VIDA ABUNDANTE
+
+Restablece tu contraseña
+
+Hola, {{ nombre }}:
+
+Recibimos una solicitud para restablecer la contraseña de tu cuenta en la Plataforma Plan Vida Abundante.
+
+Tu cuenta
+  Nombre: {{ nombre }}
+  Correo: {{ correo }}
+
+Abre este enlace para crear una contraseña nueva:
+{{ enlace }}
+
+El enlace vence en {{ minutos }} minutos y solo se puede usar una vez.
+
+¿No pediste este cambio? Puedes ignorar este correo: tu contraseña actual sigue funcionando y nadie podrá cambiarla sin este enlace.
+
+Bendiciones,
+Equipo de la Plataforma PVA
+Centro Cristiano Misión Global · Girón
+
+Este es un mensaje automático; por favor no lo respondas.
+{% endautoescape %}

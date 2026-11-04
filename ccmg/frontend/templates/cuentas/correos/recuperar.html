@@ -1,0 +1,13 @@
+{% extends "cuentas/correos/_base.html" %}
+{% block titulo %}Restablece tu contraseña{% endblock %}
+{% block resumen %}Usa este enlace en los próximos {{ minutos }} minutos para crear una contraseña nueva.{% endblock %}
+{% block contenido %}
+<h1 style="font-family:'Fraunces',Georgia,'Times New Roman',serif;font-size:26px;line-height:1.25;font-weight:600;color:#00674F;margin:0 0 18px;">Restablece tu contraseña</h1>
+<p style="margin:0 0 14px;">Hola, <strong>{{ nombre }}</strong>:</p>
+<p style="margin:0 0 18px;">Recibimos una solicitud para restablecer la contraseña de tu cuenta en la Plataforma Plan Vida Abundante. Para crear una contraseña nueva, haz clic en el botón:</p>
+{% include "cuentas/correos/_cuenta.html" %}
+{% include "cuentas/correos/_boton.html" with url=enlace texto="Crear nueva contraseña" %}
+<p style="margin:0 0 18px;font-size:14px;color:#6B706E;">El enlace vence en <strong style="color:#2B2D2F;">{{ minutos }} minutos</strong> y solo se puede usar una vez. Si el botón no funciona, copia y pega esta dirección en tu navegador:</p>
+<p style="margin:0 0 24px;font-size:13px;line-height:1.5;word-break:break-all;"><a href="{{ enlace }}" style="color:#00674F;">{{ enlace }}</a></p>
+<p style="margin:0 0 8px;padding-top:18px;border-top:1px solid #E3E5E0;font-size:14px;color:#6B706E;">¿No pediste este cambio? Puedes ignorar este correo: tu contraseña actual sigue funcionando y nadie podrá cambiarla sin este enlace.</p>
+{% endblock %}
