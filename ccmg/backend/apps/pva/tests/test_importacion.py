@@ -103,7 +103,7 @@ class ImportacionTests(BaseCasasVida):
         self.assertIn("ya está asignado", resultados[3]["mensajes"][0])
         self.client.post(reverse("pva:importar_vista_previa"))
         nueva = CasaVida.objects.get(nombre="Casa Nueva")
-        self.assertEqual((nueva.id_area, nueva.id_supervisor), (self.area, self.supervisor))
+        self.assertEqual((nueva.id_area, nueva.supervisor), (self.area, self.supervisor))
 
     def test_archivo_invalido(self):
         resp = self.subir("participantes", csv("hola,mundo\n1,2\n"))

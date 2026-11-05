@@ -111,15 +111,6 @@ class CasaVidaForm(EstiloBootstrapMixin, forms.ModelForm):
                 raise forms.ValidationError(f"Este Líder ya está asignado a la Casa de Vida «{otra}».")
         return lider
 
-    def save(self, commit=True):
-        casa = super().save(commit=False)
-        # El Supervisor de la casa es siempre el de su Área (RN03).
-        casa.id_supervisor = casa.id_area.id_supervisor if casa.id_area_id else None
-        if commit:
-            casa.save()
-        return casa
-
-
 class ParticipanteForm(EstiloBootstrapMixin, forms.ModelForm):
     """Datos mínimos del participante (RN09) y autorización de datos (RN23)."""
 

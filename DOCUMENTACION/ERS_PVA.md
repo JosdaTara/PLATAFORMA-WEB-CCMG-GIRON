@@ -519,7 +519,7 @@ La Figura 1a es el diagrama general de casos de uso de la plataforma. Los actore
 
 *Figura 1f. Casos de uso: módulo Escuelas de Formación*
 
-Las Figuras 2a a 2e presentan el modelo entidad-relación de la base de datos, en notación de pata de gallo. La Figura 2a muestra las quince entidades por módulo con sus claves (PK, FK y UK); las Figuras 2b a 2e detallan cada módulo. La negrita indica atributo obligatorio, las restricciones aparecen al pie de cada tabla y el borde punteado, una entidad detallada en otra figura. Las relaciones de muchos a muchos se resuelven con entidades asociativas. El esquema completo está en [`ccmg/backend/base_datos/esquema.sql`](../ccmg/backend/base_datos/esquema.sql).
+Las Figuras 2a a 2e presentan el modelo entidad-relación de la base de datos, en notación de pata de gallo. La Figura 2a muestra las quince entidades por módulo con sus claves (PK, FK y UK); las Figuras 2b a 2e detallan cada módulo. La negrita indica atributo obligatorio, las restricciones aparecen al pie de cada tabla y el borde punteado, una entidad detallada en otra figura. Cada relación une la clave primaria de la entidad del lado «uno» con la clave foránea de la entidad del lado «muchos», y se dibuja sin cruzar otras relaciones. Las relaciones de muchos a muchos se resuelven con entidades asociativas (CASA_VIDA_EQUIPO, CASA_VIDA_MIEMBRO, ASISTENCIA e INSCRIPCION_FORMACION). El modelo no guarda el Supervisor en la Casa de Vida: se obtiene de su Área (RN03), lo que evita una dependencia transitiva (casa → área → supervisor) y mantiene la tercera forma normal. El esquema completo está en [`ccmg/backend/base_datos/esquema.sql`](../ccmg/backend/base_datos/esquema.sql).
 
 ![Figura 2a](diagramas/entidad_relacion/der-00-general.png)
 

@@ -20,7 +20,7 @@ def es_pastor(user):
 def casas_visibles(user):
     """Casas de Vida que el usuario puede consultar."""
     rol = rol_de(user)
-    qs = CasaVida.objects.select_related("id_area", "id_lider", "id_supervisor")
+    qs = CasaVida.objects.select_related("id_area", "id_area__id_supervisor", "id_lider")
     if rol == ROLES_PASTOR:
         return qs
     if rol == ROLES_SUPERVISOR:

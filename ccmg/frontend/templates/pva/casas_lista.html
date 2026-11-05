@@ -19,7 +19,7 @@
         <td><a href="{% url 'pva:casa_detalle' c.pk %}" class="fw-semibold text-decoration-none">{{ c.nombre }}</a></td>
         <td>{{ c.id_area.nombre|default:"—" }}</td>
         <td>{{ c.id_lider.nombre_completo|default:"Sin asignar" }}</td>
-        <td>{{ c.id_supervisor.nombre_completo|default:"Sin asignar" }}</td>
+        <td>{{ c.supervisor.nombre_completo|default:"Sin asignar" }}</td>
         <td>{{ c.miembros }}</td>
         <td>{% if c.activa %}<span class="badge rounded-pill bg-success-subtle text-success-emphasis">Activa</span>{% else %}<span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Inactiva</span>{% endif %}</td>
         <td class="text-end text-nowrap">

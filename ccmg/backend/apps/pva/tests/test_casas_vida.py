@@ -54,10 +54,10 @@ class BaseCasasVida(TestCase):
         cls.area = Area.objects.create(nombre="Norte", id_supervisor=cls.supervisor)
         cls.area2 = Area.objects.create(nombre="Sur", id_supervisor=cls.supervisor2)
         cls.casa = CasaVida.objects.create(
-            nombre="Casa Norte", id_area=cls.area, id_lider=cls.lider, id_supervisor=cls.supervisor
+            nombre="Casa Norte", id_area=cls.area, id_lider=cls.lider
         )
         cls.casa2 = CasaVida.objects.create(
-            nombre="Casa Sur", id_area=cls.area2, id_lider=cls.lider2, id_supervisor=cls.supervisor2
+            nombre="Casa Sur", id_area=cls.area2, id_lider=cls.lider2
         )
         CasaVidaEquipo.objects.create(id_casa_vida=cls.casa, id_usuario=cls.apoyo, funcion="ANFITRION")
 
@@ -119,7 +119,7 @@ class GestionPastorTests(BaseCasasVida):
         )
         casa = CasaVida.objects.get(nombre="Casa Nueva")
         self.assertRedirects(resp, reverse("pva:casa_detalle", args=[casa.pk]))
-        self.assertEqual(casa.id_supervisor, self.supervisor)
+        self.assertEqual(casa.supervisor, self.supervisor)
         self.assertTrue(Auditoria.objects.filter(entidad="casa_vida", id_entidad=casa.pk, accion="CREAR").exists())
 
     def test_cambiar_supervisor_del_area_actualiza_sus_casas(self):
@@ -128,7 +128,7 @@ class GestionPastorTests(BaseCasasVida):
         )
         self.client.post(reverse("pva:area_editar", args=[self.area.pk]), {"nombre": "Norte", "id_supervisor": nuevo.pk})
         self.casa.refresh_from_db()
-        self.assertEqual(self.casa.id_supervisor, nuevo)
+        self.assertEqual(self.casa.supervisor, nuevo)
 
     def test_lider_no_puede_liderar_dos_casas_activas(self):
         resp = self.client.post(

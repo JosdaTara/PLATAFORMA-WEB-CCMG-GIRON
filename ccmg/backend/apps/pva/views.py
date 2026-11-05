@@ -204,8 +204,7 @@ class AreaFormMixin(PastorCasasMixin):
     def form_valid(self, form):
         with transaction.atomic():
             area = form.save()
-            # Las casas del Área heredan su Supervisor (RN03).
-            CasaVida.objects.filter(id_area=area).update(id_supervisor=area.id_supervisor)
+            # Las casas del Área toman su Supervisor del Área (CasaVida.supervisor, RN03).
             registrar_auditoria(self.request, self.accion, area)
         messages.success(self.request, self.mensaje)
         return redirect(self.success_url)

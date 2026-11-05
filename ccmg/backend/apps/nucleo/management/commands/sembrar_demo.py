@@ -56,7 +56,7 @@ class Command(BaseCommand):
         norte = Area.objects.create(nombre="Norte", id_supervisor=u["SUPERVISOR_AREA"])
         sur = Area.objects.create(nombre="Sur")
         esperanza = CasaVida.objects.create(
-            nombre="Casa Esperanza", id_area=norte, id_lider=u["LIDER_CASA_VIDA"], id_supervisor=u["SUPERVISOR_AREA"],
+            nombre="Casa Esperanza", id_area=norte, id_lider=u["LIDER_CASA_VIDA"],
             direccion="Calle 10 # 5-20, Girón",
         )
         fe = CasaVida.objects.create(nombre="Casa Fe", id_area=sur, direccion="Carrera 8 # 12-30, Girón")

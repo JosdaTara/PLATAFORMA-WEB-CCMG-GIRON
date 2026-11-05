@@ -62,7 +62,6 @@ class CcmgTestRunner(DiscoverRunner):
                     nombre varchar(100) NOT NULL,
                     id_area integer REFERENCES public.area(id_area),
                     id_lider integer REFERENCES public.usuario(id_usuario),
-                    id_supervisor integer REFERENCES public.usuario(id_usuario),
                     direccion text,
                     estado varchar(10) DEFAULT 'ACTIVO',
                     creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,

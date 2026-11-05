@@ -306,7 +306,6 @@ CREATE TABLE public.casa_vida (
     nombre character varying(100) NOT NULL,
     id_area integer,
     id_lider integer,
-    id_supervisor integer,
     direccion text,
     estado public.estado_general DEFAULT 'ACTIVO'::public.estado_general,
     creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -1484,14 +1483,6 @@ ALTER TABLE ONLY public.casa_vida
 
 ALTER TABLE ONLY public.casa_vida
     ADD CONSTRAINT casa_vida_id_lider_fkey FOREIGN KEY (id_lider) REFERENCES public.usuario(id_usuario);
-
-
---
--- Name: casa_vida casa_vida_id_supervisor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.casa_vida
-    ADD CONSTRAINT casa_vida_id_supervisor_fkey FOREIGN KEY (id_supervisor) REFERENCES public.usuario(id_usuario);
 
 
 --

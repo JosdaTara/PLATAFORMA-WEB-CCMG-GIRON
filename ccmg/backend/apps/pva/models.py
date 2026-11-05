@@ -31,7 +31,6 @@ class CasaVida(models.Model):
     nombre = models.CharField(max_length=100)
     id_area = models.ForeignKey("Area", models.DO_NOTHING, db_column="id_area", blank=True, null=True)
     id_lider = models.ForeignKey("cuentas.Usuario", models.DO_NOTHING, db_column="id_lider", blank=True, null=True)
-    id_supervisor = models.ForeignKey("cuentas.Usuario", models.DO_NOTHING, db_column="id_supervisor", blank=True, null=True, related_name="casavida_supervisor_set")
     direccion = models.TextField(blank=True, null=True)
     estado = models.CharField(max_length=10, choices=ESTADOS, default=ACTIVO)
     creado_en = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -48,6 +47,11 @@ class CasaVida(models.Model):
     @property
     def activa(self):
         return self.estado != INACTIVO
+
+    @property
+    def supervisor(self):
+        """El Supervisor de una Casa de Vida es siempre el de su Área (RN03); no se guarda en la casa."""
+        return self.id_area.id_supervisor if self.id_area_id else None
 
 
 class Area(models.Model):
