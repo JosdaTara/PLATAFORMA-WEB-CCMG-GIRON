@@ -1,0 +1,64 @@
+%%{init: {'flowchart': {'rankSpacing': 26, 'nodeSpacing': 26}}}%%
+flowchart TB
+  R(["Plataforma web CCMG Girón"]):::raiz
+  R --> M1["Sitio público"]:::modulo
+  R --> M2["Acceso y cuenta"]:::modulo
+  R --> M3["PVA – Casas de Vida"]:::modulo
+  R --> M4["Escuelas de Formación"]:::modulo
+  R --> M5["Ofrendas"]:::modulo
+  R --> M6["Administración"]:::modulo
+  P1["Portada"]:::publica
+  M1 --- P1
+  A1["Iniciar sesión"]:::publica
+  A2["Recuperar contraseña"]:::publica
+  A3["Panel por rol"]:::autenticada
+  A4["Selector de módulo<br/><i>Pastor</i>"]:::rol
+  A5["Mi perfil y contraseña"]:::autenticada
+  M2 --- A1
+  A1 --- A2
+  A2 --- A3
+  A3 --- A4
+  A4 --- A5
+  C1["Panel"]:::rol
+  C2["Participantes"]:::rol
+  C3["Casas de Vida"]:::rol
+  C4["Áreas<br/><i>Pastor</i>"]:::rol
+  C5["Asistencia"]:::rol
+  C6["Seguimiento"]:::rol
+  C7["Reportes"]:::rol
+  C8["Importar datos<br/><i>Pastor</i>"]:::rol
+  M3 --- C1
+  C1 --- C2
+  C2 --- C3
+  C3 --- C4
+  C4 --- C5
+  C5 --- C6
+  C6 --- C7
+  C7 --- C8
+  F1["Panel"]:::rol
+  F2["Procesos de formación"]:::rol
+  F3["Participantes"]:::rol
+  F4["Actividades y asistencia"]:::rol
+  F5["Seguimiento"]:::rol
+  F6["Reportes"]:::rol
+  M4 --- F1
+  F1 --- F2
+  F2 --- F3
+  F3 --- F4
+  F4 --- F5
+  F5 --- F6
+  O1["Ofrendas registradas"]:::rol
+  M5 --- O1
+  U1["Usuarios<br/><i>Pastor</i>"]:::admin
+  U2["Auditoría<br/><i>Super Administrador</i>"]:::admin
+  M6 --- U1
+  U1 --- U2
+  R ~~~ LT["Leyenda"]:::leyenda
+  LT ~~~ L1["Pública"]:::publica ~~~ L2["Requiere sesión"]:::autenticada ~~~ L3["Restringida por rol"]:::rol ~~~ L4["Administrativa"]:::admin
+  classDef raiz fill:#1F3A5F,stroke:#1F3A5F,color:#FFFFFF,font-weight:bold
+  classDef modulo fill:#2C3E50,stroke:#2C3E50,color:#FFFFFF,font-weight:bold
+  classDef publica fill:#D5EDD6,stroke:#3C8D40,color:#1B3D1D
+  classDef autenticada fill:#D6E4F0,stroke:#3A6EA5,color:#13304F
+  classDef rol fill:#FDEBD0,stroke:#C77C1E,color:#5A3608
+  classDef admin fill:#E8DAF5,stroke:#7B4BA8,color:#3A1F55
+  classDef leyenda fill:#FFFFFF,stroke:#999999,stroke-dasharray:4 3,color:#333333,font-weight:bold

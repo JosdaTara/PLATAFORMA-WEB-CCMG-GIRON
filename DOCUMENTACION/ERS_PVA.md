@@ -79,183 +79,185 @@ Contenido 3
 
 2.3 Diagrama UML 15
 
-2.4 Características de los usuarios 16
+2.4 Características de los usuarios 26
 
-2.4.1 Historia de Usuarios 18
+2.4.1 Historia de Usuarios 28
 
-2.5 Restricciones 25
+2.5 Restricciones 35
 
-2.6 Suposiciones y dependencias 26
+2.6 Suposiciones y dependencias 36
 
-2.7 Evolución previsible del sistema 27
+2.7 Evolución previsible del sistema 37
 
-3 Requisitos específicos. 28
+3 Requisitos específicos. 38
 
-3.1 Requisitos comunes de los interfaces 28
+3.1 Requisitos comunes de los interfaces 38
 
-3.1.1 Interfaces de usuario 29
+3.1.1 Interfaces de usuario 38
 
-3.1.2 Interfaces de hardware 29
+3.1.2 Mapa del sitio 39
 
-3.1.3 Interfaces de software 30
+3.1.3 Interfaces de hardware 49
 
-3.1.4 Interfaces de comunicación 30
+3.1.4 Interfaces de software 49
 
-3.2 Requisitos funcionales 30
+3.1.5 Interfaces de comunicación 49
 
-3.2.1 RF01 – Iniciar Sesión 30
+3.2 Requisitos funcionales 50
 
-3.2.2 RF02 – Cerrar Sesión 31
+3.2.1 RF01 – Iniciar Sesión 50
 
-3.2.3 RF03 – Gestionar Usuarios 31
+3.2.2 RF02 – Cerrar Sesión 50
 
-3.2.4 RF04 – Gestionar Roles y Permisos 31
+3.2.3 RF03 – Gestionar Usuarios 51
 
-3.2.5 RF05 – Gestionar Participantes 32
+3.2.4 RF04 – Gestionar Roles y Permisos 51
 
-3.2.6 RF06 – Consultar Participantes 32
+3.2.5 RF05 – Gestionar Participantes 51
 
-3.2.7 RF07 – Gestionar Casas de Vida 33
+3.2.6 RF06 – Consultar Participantes 52
 
-3.2.8 RF08 – Consultar Casas de Vida Asignadas 33
+3.2.7 RF07 – Gestionar Casas de Vida 52
 
-3.2.9 RF09 – Registrar Asistencia 33
+3.2.8 RF08 – Consultar Casas de Vida Asignadas 53
 
-3.2.10 RF10 – Consultar Asistencia 34
+3.2.9 RF09 – Registrar Asistencia 53
 
-3.2.11 RF11 – Realizar Seguimiento a Participantes 34
+3.2.10 RF10 – Consultar Asistencia 53
 
-3.2.12 RF12 – Gestionar Actividades 35
+3.2.11 RF11 – Realizar Seguimiento a Participantes 54
 
-3.2.13 RF13 – Enviar Reportes Casa Vida 35
+3.2.12 RF12 – Gestionar Actividades 54
 
-3.2.14 RF14 – Enviar Reporte al Supervisor de Área 35
+3.2.13 RF13 – Enviar Reportes Casa Vida 55
 
-3.2.15 RF15 – Consultar Reportes 36
+3.2.14 RF14 – Enviar Reporte al Supervisor de Área 55
 
-3.2.16 RF16 – Generar Reportes 36
+3.2.15 RF15 – Consultar Reportes 55
 
-3.2.17 RF17 – Gestionar Ofrendas 37
+3.2.16 RF16 – Generar Reportes 56
 
-3.2.18 RF18 – Gestionar Escuelas de Formación 37
+3.2.17 RF17 – Gestionar Ofrendas 56
 
-3.2.19 RF19 – Gestionar Pasos de Vida 37
+3.2.18 RF18 – Gestionar Escuelas de Formación 57
 
-3.2.20 RF20 – Gestionar Escuelas Vida 38
+3.2.19 RF19 – Gestionar Pasos de Vida 57
 
-3.2.21 RF21 – Gestionar Módulos de Liderazgo 38
+3.2.20 RF20 – Gestionar Escuelas Vida 57
 
-3.2.22 RF22 – Gestionar Misiones 39
+3.2.21 RF21 – Gestionar Módulos de Liderazgo 58
 
-3.2.23 RF23 – Visualizar Panel Principal por Rol 39
+3.2.22 RF22 – Gestionar Misiones 58
 
-3.2.24 RF24 – Consultar Información Pública de la Iglesia 39
+3.2.23 RF23 – Visualizar Panel Principal por Rol 58
 
-3.2.25 RF25 – Recuperar y Cambiar Contraseña 40
+3.2.24 RF24 – Consultar Información Pública de la Iglesia 59
 
-3.2.26 RF26 – Importar Datos Existentes 40
+3.2.25 RF25 – Recuperar y Cambiar Contraseña 59
 
-3.2.27 RF27 – Exportar Reportes 41
+3.2.26 RF26 – Importar Datos Existentes 60
 
-3.2.28 RF28 – Desactivar y Reactivar Registros 41
+3.2.27 RF27 – Exportar Reportes 60
 
-3.2.29 Matriz de trazabilidad 41
+3.2.28 RF28 – Desactivar y Reactivar Registros 61
 
-3.3 Requisitos no funcionales 42
+3.2.29 Matriz de trazabilidad 61
 
-3.3.1 RNF01 – Usabilidad 43
+3.3 Requisitos no funcionales 62
 
-3.3.2 RNF02 – Tiempo de Respuesta 43
+3.3.1 RNF01 – Usabilidad 62
 
-3.3.3 RNF03 – Autenticación 43
+3.3.2 RNF02 – Tiempo de Respuesta 62
 
-3.3.4 RNF04 – Control de Acceso 43
+3.3.3 RNF03 – Autenticación 63
 
-3.3.5 RNF05 – Protección de Credenciales 44
+3.3.4 RNF04 – Control de Acceso 63
 
-3.3.6 RNF06 – Confidencialidad 44
+3.3.5 RNF05 – Protección de Credenciales 63
 
-3.3.7 RNF07 – Integridad de la Información 44
+3.3.6 RNF06 – Confidencialidad 64
 
-3.3.8 RNF08 – Disponibilidad 44
+3.3.7 RNF07 – Integridad de la Información 64
 
-3.3.9 RNF09 – Compatibilidad 45
+3.3.8 RNF08 – Disponibilidad 64
 
-3.3.10 RNF10 – Diseño Adaptable 45
+3.3.9 RNF09 – Compatibilidad 64
 
-3.3.11 RNF11 – Mantenibilidad 45
+3.3.10 RNF10 – Diseño Adaptable 65
 
-3.3.12 RNF12 – Escalabilidad 46
+3.3.11 RNF11 – Mantenibilidad 65
 
-3.3.13 RNF13 – Validación de Datos 46
+3.3.12 RNF12 – Escalabilidad 65
 
-3.3.14 RNF14 – Recuperación ante Errores 46
+3.3.13 RNF13 – Validación de Datos 66
 
-3.3.15 RNF15 – Pruebas del Sistema 46
+3.3.14 RNF14 – Recuperación ante Errores 66
 
-3.3.16 RNF16 – Privacidad y Protección de Datos 47
+3.3.15 RNF15 – Pruebas del Sistema 66
 
-3.3.17 RNF17 – Respaldo y Recuperación 47
+3.3.16 RNF16 – Privacidad y Protección de Datos 67
 
-3.3.18 RNF18 – Trazabilidad 47
+3.3.17 RNF17 – Respaldo y Recuperación 67
 
-3.3.19 RNF19 – Política de Contraseñas 48
+3.3.18 RNF18 – Trazabilidad 67
 
-3.3.20 RNF20 – Seguridad de Sesión y Acceso 48
+3.3.19 RNF19 – Política de Contraseñas 68
 
-3.3.21 RNF21 – Comunicación Segura (HTTPS) 48
+3.3.20 RNF20 – Seguridad de Sesión y Acceso 68
 
-3.4 Reglas de Negocio 48
+3.3.21 RNF21 – Comunicación Segura (HTTPS) 68
 
-3.4.1 RN01 — Acceso según rol 48
+3.4 Reglas de Negocio 68
 
-3.4.2 RN02 — Administración de usuarios 49
+3.4.1 RN01 — Acceso según rol 68
 
-3.4.3 RN03 — Acceso del Supervisor de Área 49
+3.4.2 RN02 — Administración de usuarios 69
 
-3.4.4 RN04 — Acceso del Líder de Casa de Vida 49
+3.4.3 RN03 — Acceso del Supervisor de Área 69
 
-3.4.5 RN05 — Participación de usuarios de apoyo 49
+3.4.4 RN04 — Acceso del Líder de Casa de Vida 69
 
-3.4.6 RN06 — Envío de reportes al Supervisor 49
+3.4.5 RN05 — Participación de usuarios de apoyo 69
 
-3.4.7 RN07 — Envío de reportes al Pastor 49
+3.4.6 RN06 — Envío de reportes al Supervisor 69
 
-3.4.8 RN08 — Registro de asistencia 49
+3.4.7 RN07 — Envío de reportes al Pastor 69
 
-3.4.9 RN09 — Información de participantes 49
+3.4.8 RN08 — Registro de asistencia 69
 
-3.4.10 RN10 — Seguimiento de participantes 49
+3.4.9 RN09 — Información de participantes 69
 
-3.4.11 RN11 — Reportes 50
+3.4.10 RN10 — Seguimiento de participantes 69
 
-3.4.12 RN12 — Información de Escuelas de Formación 50
+3.4.11 RN11 — Reportes 70
 
-3.4.13 RN13 — Acceso a información de formación 50
+3.4.12 RN12 — Información de Escuelas de Formación 70
 
-3.4.14 RN14 — Registro de ofrendas 50
+3.4.13 RN13 — Acceso a información de formación 70
 
-3.4.15 RN15 — Actualización de información 50
+3.4.14 RN14 — Registro de ofrendas 70
 
-3.4.16 RN16 — Integridad de registros 50
+3.4.15 RN15 — Actualización de información 70
 
-3.4.17 RN17 — Información histórica 50
+3.4.16 RN16 — Integridad de registros 70
 
-3.4.18 RN18 — Generación de información 50
+3.4.17 RN17 — Información histórica 70
 
-3.4.19 RN19 — Generación de reportes por el Pastor 50
+3.4.18 RN18 — Generación de información 70
 
-3.4.20 RN20 — Administración exclusiva de Casas de Vida 50
+3.4.19 RN19 — Generación de reportes por el Pastor 70
 
-3.4.21 RN21 — Módulos independientes 51
+3.4.20 RN20 — Administración exclusiva de Casas de Vida 70
 
-3.4.22 RN22 — Acceso del Miembro Asistente 51
+3.4.21 RN21 — Módulos independientes 71
 
-3.4.23 RN23 — Protección de datos personales 51
+3.4.22 RN22 — Acceso del Miembro Asistente 71
 
-3.4.24 RN24 — Baja lógica de registros 51
+3.4.23 RN23 — Protección de datos personales 71
 
-3.4.25 RN25 — Datos importados 51
+3.4.24 RN24 — Baja lógica de registros 71
+
+3.4.25 RN25 — Datos importados 71
 
 # Introducción
 
@@ -962,6 +964,216 @@ Las principales interfaces contempladas serán:
 - **Página pública de la iglesia:** permitirá al Miembro Asistente ver la información de la iglesia, del Plan Vida Abundante y de contacto, sin iniciar sesión.
 
 Las opciones y funcionalidades visibles estarán condicionadas por el rol y los permisos asignados a cada usuario.
+
+### Mapa del sitio
+
+El mapa del sitio representa la estructura de navegación de la plataforma web: qué páginas existen, cómo se agrupan en módulos y quién puede entrar a cada una. Se construyó a partir de las rutas implementadas, de los menús que la plataforma muestra a cada rol y de los requisitos funcionales de esta especificación. No describe la arquitectura de servidores ni el modelo de datos.
+
+La plataforma se organiza en seis módulos de primer nivel: Sitio público, Acceso y cuenta, PVA – Casas de Vida, Escuelas de Formación, Ofrendas y Administración. Los roles que navegan por ella son el Miembro Asistente, que no inicia sesión (RN22); el Super Administrador; el Pastor (Administrador); el Supervisor de Área; el Coordinador de Escuelas de Formación; el Líder de Casa de Vida y los usuarios de apoyo de su equipo. El acceso a Ofrendas no depende de un rol sino de la autorización como responsable de ofrendas que el Pastor da a un usuario (RN14).
+
+Criterios de organización: cada página aparece una sola vez y en ella se indica qué roles pueden usarla, en lugar de repetir la estructura por rol; las acciones que no abren una vista propia (desactivar, reactivar, cambiar estado, exportar o descargar una plantilla) no se dibujan como páginas; y los colores distinguen el tipo de acceso: verde, página pública; azul, requiere sesión; naranja, restringida por rol o módulo; morado, administrativa.
+
+**Sitemap jerárquico:**
+
+- **Sitio público (/)**
+  - Portada: Inicio, Quiénes somos, Plan Vida Abundante, Escuelas de Formación y Contacto
+- **Acceso y cuenta (/cuentas/)**
+  - Iniciar sesión
+  - Recuperar contraseña
+    - Correo enviado → Nueva contraseña (enlace del correo) → Contraseña restablecida
+  - Panel por rol: lleva a cada usuario a su panel
+    - Selector de módulo (Pastor y Super Administrador)
+    - Panel Casas de Vida / Panel Escuelas de Formación
+  - Mi perfil y Cambiar contraseña; Cerrar sesión como acción del menú
+- **PVA – Casas de Vida (/pva/): Pastor, Supervisor de Área, Líder y usuarios de apoyo**
+  - Panel
+  - Participantes
+    - Detalle del participante · Nuevo / editar (Pastor)
+  - Casas de Vida
+    - Detalle de la Casa de Vida · Nueva / editar (Pastor)
+  - Áreas (Pastor)
+    - Nueva / editar
+  - Asistencia
+    - Detalle · Registrar asistencia (Líder y apoyo)
+  - Seguimiento (Pastor, Supervisor y Líder)
+    - Nuevo / editar
+  - Reportes
+    - Detalle y exportar · Enviar reporte de casa (Líder y apoyo) · Enviar reporte general (Supervisor) · Generar reporte (Pastor)
+  - Importar datos (Pastor)
+    - Vista previa → Resultado
+- **Escuelas de Formación (/formacion/): Pastor y Coordinador de Formación**
+  - Panel
+  - Procesos de formación (Pasos de Vida, Escuelas Vida, Módulos de Liderazgo y Misiones)
+    - Nuevo proceso · Detalle del proceso → Editar · Registrar actividad y asistencia
+  - Participantes
+    - Nuevo e inscribir · Inscribir existente · Detalle → Editar
+  - Actividades y asistencia
+    - Detalle de la actividad
+  - Seguimiento
+    - Nuevo / editar
+  - Reportes y exportar
+- **Ofrendas (/ofrendas/): Pastor o responsable de ofrendas**
+  - Ofrendas registradas y exportar
+    - Nueva ofrenda · Editar ofrenda
+- **Administración (/cuentas/)**
+  - Usuarios (Pastor; solo el Super Administrador gestiona a los Administradores)
+    - Crear usuario · Editar usuario
+  - Auditoría (Super Administrador)
+
+Las Figuras 3a a 3e presentan el mapa del sitio. La Figura 3a muestra la raíz y los seis módulos con sus páginas de segundo nivel; las Figuras 3b a 3e detallan cada módulo hasta sus subpáginas y se dibujan de izquierda a derecha para que se lean en una página. Debajo del nombre de cada página aparece, en cursiva, el rol que la restringe. Las fuentes Mermaid están en [`diagramas/sitemap/`](diagramas/sitemap/).
+
+```mermaid
+%%{init: {'flowchart': {'rankSpacing': 26, 'nodeSpacing': 26}}}%%
+flowchart TB
+  R(["Plataforma web CCMG Girón"]):::raiz
+  R --> M1["Sitio público"]:::modulo
+  R --> M2["Acceso y cuenta"]:::modulo
+  R --> M3["PVA – Casas de Vida"]:::modulo
+  R --> M4["Escuelas de Formación"]:::modulo
+  R --> M5["Ofrendas"]:::modulo
+  R --> M6["Administración"]:::modulo
+  P1["Portada"]:::publica
+  M1 --- P1
+  A1["Iniciar sesión"]:::publica
+  A2["Recuperar contraseña"]:::publica
+  A3["Panel por rol"]:::autenticada
+  A4["Selector de módulo<br/><i>Pastor</i>"]:::rol
+  A5["Mi perfil y contraseña"]:::autenticada
+  M2 --- A1
+  A1 --- A2
+  A2 --- A3
+  A3 --- A4
+  A4 --- A5
+  C1["Panel"]:::rol
+  C2["Participantes"]:::rol
+  C3["Casas de Vida"]:::rol
+  C4["Áreas<br/><i>Pastor</i>"]:::rol
+  C5["Asistencia"]:::rol
+  C6["Seguimiento"]:::rol
+  C7["Reportes"]:::rol
+  C8["Importar datos<br/><i>Pastor</i>"]:::rol
+  M3 --- C1
+  C1 --- C2
+  C2 --- C3
+  C3 --- C4
+  C4 --- C5
+  C5 --- C6
+  C6 --- C7
+  C7 --- C8
+  F1["Panel"]:::rol
+  F2["Procesos de formación"]:::rol
+  F3["Participantes"]:::rol
+  F4["Actividades y asistencia"]:::rol
+  F5["Seguimiento"]:::rol
+  F6["Reportes"]:::rol
+  M4 --- F1
+  F1 --- F2
+  F2 --- F3
+  F3 --- F4
+  F4 --- F5
+  F5 --- F6
+  O1["Ofrendas registradas"]:::rol
+  M5 --- O1
+  U1["Usuarios<br/><i>Pastor</i>"]:::admin
+  U2["Auditoría<br/><i>Super Administrador</i>"]:::admin
+  M6 --- U1
+  U1 --- U2
+  R ~~~ LT["Leyenda"]:::leyenda
+  LT ~~~ L1["Pública"]:::publica ~~~ L2["Requiere sesión"]:::autenticada ~~~ L3["Restringida por rol"]:::rol ~~~ L4["Administrativa"]:::admin
+  classDef raiz fill:#1F3A5F,stroke:#1F3A5F,color:#FFFFFF,font-weight:bold
+  classDef modulo fill:#2C3E50,stroke:#2C3E50,color:#FFFFFF,font-weight:bold
+  classDef publica fill:#D5EDD6,stroke:#3C8D40,color:#1B3D1D
+  classDef autenticada fill:#D6E4F0,stroke:#3A6EA5,color:#13304F
+  classDef rol fill:#FDEBD0,stroke:#C77C1E,color:#5A3608
+  classDef admin fill:#E8DAF5,stroke:#7B4BA8,color:#3A1F55
+  classDef leyenda fill:#FFFFFF,stroke:#999999,stroke-dasharray:4 3,color:#333333,font-weight:bold
+```
+
+![Figura 3a](diagramas/sitemap/sm-00-general.png)
+
+*Figura 3a. Mapa del sitio general de la plataforma web PVA*
+
+![Figura 3b](diagramas/sitemap/sm-01-publico-acceso.png)
+
+*Figura 3b. Mapa del sitio: sitio público y acceso a la cuenta*
+
+![Figura 3c](diagramas/sitemap/sm-02-pva-casas-vida.png)
+
+*Figura 3c. Mapa del sitio: módulo PVA – Casas de Vida*
+
+![Figura 3d](diagramas/sitemap/sm-03-escuelas-formacion.png)
+
+*Figura 3d. Mapa del sitio: módulo Escuelas de Formación*
+
+![Figura 3e](diagramas/sitemap/sm-04-ofrendas-administracion.png)
+
+*Figura 3e. Mapa del sitio: Ofrendas y Administración*
+
+**Matriz de navegación:**
+
+La matriz de navegación relaciona cada página con su ruta, los roles autorizados y los requisitos que atiende. Las rutas son las implementadas en la plataforma; «<id>» representa el identificador del registro. Las listas muestran a cada rol solo la información de su alcance (RN03, RN04 y RN05).
+
+| ID | Módulo | Página | Ruta implementada | Rol autorizado | Requisito |
+|---|---|---|---|---|---|
+| SM-01 | Sitio público | Portada (Inicio, Quiénes somos, PVA, Escuelas, Contacto) | `/` | Todos, sin sesión | RF24 |
+| SM-02 | Acceso y cuenta | Iniciar sesión | `/cuentas/login/` | Todos | RF01 |
+| SM-03 | Acceso y cuenta | Recuperar contraseña (formulario, enviado, nueva contraseña, completado) | `/cuentas/recuperar/…` | Usuarios registrados | RF25 |
+| SM-04 | Acceso y cuenta | Panel por rol | `/cuentas/panel/` | Usuario con sesión | RF23 |
+| SM-05 | Acceso y cuenta | Selector de módulo | `/cuentas/selector-modulo/` | Pastor, Super Administrador | RF23 |
+| SM-06 | Acceso y cuenta | Mi perfil (sección del panel) | `/pva/panel/#perfil, /formacion/panel/#perfil` | Usuario con sesión | RF23 |
+| SM-07 | Acceso y cuenta | Cambiar contraseña | `/cuentas/cambiar-password/` | Usuario con sesión | RF25 |
+| SM-08 | Acceso y cuenta | Cerrar sesión (acción del menú) | `/cuentas/logout/` | Usuario con sesión | RF02 |
+| SM-09 | PVA – Casas de Vida | Panel Casas de Vida | `/pva/panel/` | Pastor, Supervisor, Líder, apoyo | RF23 |
+| SM-10 | PVA – Casas de Vida | Participantes | `/pva/participantes/` | Pastor, Supervisor, Líder, apoyo | RF06 |
+| SM-11 | PVA – Casas de Vida | Detalle del participante | `/pva/participantes/<id>/` | Pastor, Supervisor, Líder, apoyo | RF06 |
+| SM-12 | PVA – Casas de Vida | Nuevo / editar participante | `/pva/participantes/nuevo/, …/<id>/editar/` | Pastor | RF05, RF28 |
+| SM-13 | PVA – Casas de Vida | Casas de Vida | `/pva/casas/` | Pastor, Supervisor, Líder, apoyo | RF07, RF08 |
+| SM-14 | PVA – Casas de Vida | Detalle de la Casa de Vida | `/pva/casas/<id>/` | Pastor, Supervisor, Líder, apoyo | RF08 |
+| SM-15 | PVA – Casas de Vida | Nueva / editar Casa de Vida | `/pva/casas/nueva/, …/<id>/editar/` | Pastor | RF07, RF28 |
+| SM-16 | PVA – Casas de Vida | Áreas | `/pva/areas/` | Pastor | RF07, RF28 |
+| SM-17 | PVA – Casas de Vida | Nueva / editar Área | `/pva/areas/nueva/, …/<id>/editar/` | Pastor | RF07 |
+| SM-18 | PVA – Casas de Vida | Asistencia | `/pva/asistencia/` | Pastor, Supervisor, Líder, apoyo | RF10 |
+| SM-19 | PVA – Casas de Vida | Detalle de asistencia | `/pva/asistencia/<id>/` | Pastor, Supervisor, Líder, apoyo | RF10 |
+| SM-20 | PVA – Casas de Vida | Registrar asistencia (crea la actividad) | `/pva/asistencia/registrar/` | Líder, apoyo | RF09, RF12 |
+| SM-21 | PVA – Casas de Vida | Seguimiento | `/pva/seguimiento/` | Pastor, Supervisor, Líder | RF11 |
+| SM-22 | PVA – Casas de Vida | Nuevo / editar seguimiento | `/pva/seguimiento/nuevo/, …/<id>/editar/` | Pastor, Supervisor, Líder | RF11 |
+| SM-23 | PVA – Casas de Vida | Reportes | `/pva/reportes/` | Pastor, Supervisor, Líder, apoyo | RF15 |
+| SM-24 | PVA – Casas de Vida | Detalle del reporte y exportar | `/pva/reportes/<id>/` | Pastor, Supervisor, Líder, apoyo | RF15, RF27 |
+| SM-25 | PVA – Casas de Vida | Enviar reporte de casa | `/pva/reportes/enviar/` | Líder, apoyo | RF13 |
+| SM-26 | PVA – Casas de Vida | Enviar reporte general | `/pva/reportes/enviar-general/` | Supervisor | RF14 |
+| SM-27 | PVA – Casas de Vida | Generar reporte y exportar | `/pva/reportes/generar/` | Pastor | RF16, RF27 |
+| SM-28 | PVA – Casas de Vida | Importar datos (subir, vista previa, resultado) | `/pva/importar/…` | Pastor | RF26 |
+| SM-29 | Escuelas de Formación | Panel Escuelas de Formación | `/formacion/panel/` | Pastor, Coordinador | RF23 |
+| SM-30 | Escuelas de Formación | Procesos de formación | `/formacion/procesos/` | Pastor, Coordinador | RF18–RF22 |
+| SM-31 | Escuelas de Formación | Nuevo / editar proceso | `/formacion/procesos/nuevo/, …/<id>/editar/` | Pastor, Coordinador | RF18, RF28 |
+| SM-32 | Escuelas de Formación | Detalle del proceso | `/formacion/procesos/<id>/` | Pastor, Coordinador | RF18 |
+| SM-33 | Escuelas de Formación | Registrar actividad y asistencia | `/formacion/procesos/<id>/actividad/` | Pastor, Coordinador | RF19–RF22 |
+| SM-34 | Escuelas de Formación | Participantes | `/formacion/participantes/` | Pastor, Coordinador | RF19–RF22 |
+| SM-35 | Escuelas de Formación | Nuevo e inscribir / inscribir existente | `/formacion/participantes/nuevo/, …/inscribir/` | Pastor, Coordinador | RF18 |
+| SM-36 | Escuelas de Formación | Detalle / editar participante | `/formacion/participantes/<id>/, …/editar/` | Pastor, Coordinador | RF18 |
+| SM-37 | Escuelas de Formación | Actividades y asistencia (lista y detalle) | `/formacion/actividades/, …/<id>/` | Pastor, Coordinador | RF19–RF22 |
+| SM-38 | Escuelas de Formación | Seguimiento (lista, nuevo, editar) | `/formacion/seguimiento/…` | Pastor, Coordinador | RF18, RF22 |
+| SM-39 | Escuelas de Formación | Reportes y exportar | `/formacion/reportes/` | Pastor, Coordinador | RF15, RF27 |
+| SM-40 | Ofrendas | Ofrendas registradas y exportar | `/ofrendas/` | Pastor o responsable de ofrendas | RF17, RF27 |
+| SM-41 | Ofrendas | Nueva / editar ofrenda | `/ofrendas/nueva/, /ofrendas/<id>/editar/` | Pastor o responsable de ofrendas | RF17 |
+| SM-42 | Administración | Usuarios | `/cuentas/usuarios/` | Pastor, Super Administrador | RF03, RF04, RF28 |
+| SM-43 | Administración | Crear / editar usuario (rol y asignación) | `/cuentas/usuarios/crear/, …/<id>/editar/` | Pastor, Super Administrador | RF03, RF04 |
+| SM-44 | Administración | Auditoría | `/cuentas/auditoria/` | Super Administrador | RNF18 |
+
+**Diferencias entre la especificación y la navegación implementada:**
+
+- **RF04 – Gestionar roles y permisos:** no tiene una página propia. Los roles son fijos y el rol, con su Área o Casa de Vida, se asigna en el formulario de creación o edición de usuario (SM-43).
+- **Perfil de usuario:** la interfaz descrita en «Interfaces de usuario» se implementa como la sección «Mi perfil» del panel y la página «Cambiar contraseña», no como una ruta independiente.
+- **RF19 a RF22:** Pasos de Vida, Escuelas Vida, Módulos de Liderazgo y Misiones no son páginas separadas: son tipos de proceso que se gestionan desde «Procesos de formación».
+- **RF12 – Gestionar actividades (Casas de Vida):** el módulo PVA no tiene un listado propio de actividades; la actividad se registra junto con la asistencia (SM-20).
+
+**Recomendaciones de navegación (propuestas, no requisitos):**
+
+- **Ruta propia para «Mi perfil»:** por ejemplo /cuentas/perfil/, para que el perfil sea el mismo desde ambos módulos y pueda enlazarse directamente.
+- **Migas de pan:** en las vistas de tercer nivel (detalle, edición, registro), para saber en qué parte del sitio se está y volver al listado en un clic.
+- **Mismo orden de menú en ambos módulos:** Panel, Participantes, actividades y asistencia, Seguimiento y Reportes, para que quien use los dos módulos encuentre las opciones en el mismo lugar.
+- **Página de acceso denegado con salida:** que explique por qué no puede entrar y ofrezca volver a su panel, en lugar de un error genérico.
+- **Accesibilidad:** conservar el orden de foco del menú lateral, nombres visibles en los íconos y contraste suficiente en los colores de estado.
 
 ### Interfaces de hardware
 

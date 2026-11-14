@@ -1,0 +1,27 @@
+flowchart LR
+  R(["Plataforma web CCMG Girón"]):::raiz
+  R --> M1["Sitio público<br/>/"]:::modulo
+  R --> M2["Acceso y cuenta<br/>/cuentas/"]:::modulo
+  M1 --> P1["Inicio"]:::publica
+  M1 --> P2["Quiénes somos"]:::publica
+  M1 --> P3["Plan Vida Abundante"]:::publica
+  M1 --> P4["Escuelas de Formación"]:::publica
+  M1 --> P5["Contacto"]:::publica
+  M2 --> A1["Iniciar sesión"]:::publica
+  M2 --> A2["Recuperar contraseña"]:::publica
+  M2 --> A3["Panel por rol"]:::autenticada
+  M2 --> A5["Cuenta"]:::autenticada
+  A2 --> A21["Correo enviado"]:::publica
+  A21 --> A22["Nueva contraseña<br/><i>enlace del correo</i>"]:::publica
+  A22 --> A23["Contraseña restablecida"]:::publica
+  A3 --> A31["Selector de módulo<br/><i>Pastor</i>"]:::rol
+  A3 --> A32["Panel Casas de Vida"]:::rol
+  A3 --> A33["Panel Escuelas"]:::rol
+  A5 --> A51["Mi perfil"]:::autenticada
+  A5 --> A52["Cambiar contraseña"]:::autenticada
+  classDef raiz fill:#1F3A5F,stroke:#1F3A5F,color:#FFFFFF,font-weight:bold
+  classDef modulo fill:#2C3E50,stroke:#2C3E50,color:#FFFFFF,font-weight:bold
+  classDef publica fill:#D5EDD6,stroke:#3C8D40,color:#1B3D1D
+  classDef autenticada fill:#D6E4F0,stroke:#3A6EA5,color:#13304F
+  classDef rol fill:#FDEBD0,stroke:#C77C1E,color:#5A3608
+  classDef admin fill:#E8DAF5,stroke:#7B4BA8,color:#3A1F55
