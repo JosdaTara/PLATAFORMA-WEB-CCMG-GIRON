@@ -1,0 +1,6 @@
+{% comment %}Campo numérico del reporte de asistencia. Recibe: campo.{% endcomment %}
+<div class="col-6 col-md-4 col-lg-3">
+  <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+  {{ campo }}
+  {% for e in campo.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+</div>

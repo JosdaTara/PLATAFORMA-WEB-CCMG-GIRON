@@ -13,3 +13,9 @@ def pesos(valor):
     except (InvalidOperation, TypeError, ValueError):
         return valor
     return "$" + f"{numero:,.0f}".replace(",", ".")
+
+
+@register.filter
+def get_item(diccionario, clave):
+    """Valor de un diccionario por clave variable: {{ fila|get_item:campo }}"""
+    return diccionario.get(clave, "") if hasattr(diccionario, "get") else ""

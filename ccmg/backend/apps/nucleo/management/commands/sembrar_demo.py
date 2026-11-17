@@ -14,7 +14,8 @@ from formacion.models import InscripcionFormacion, ProcesoFormacion
 from ofrendas.models import Ofrenda
 from pva import periodos
 from pva.models import (
-    Actividad, Area, Asistencia, CasaVida, CasaVidaEquipo, CasaVidaMiembro, Participante, Reporte, Seguimiento,
+    Actividad, Area, Asistencia, CasaVida, CasaVidaEquipo, CasaVidaMiembro, Participante, Reporte, ReporteAsistencia,
+    Seguimiento,
 )
 
 CLAVE_DEMO = "DemoCCMG-Revision-2026"
@@ -79,17 +80,22 @@ class Command(BaseCommand):
             CasaVidaMiembro.objects.create(id_casa_vida=casa, id_participante=p, fecha_ingreso=hoy - datetime.timedelta(days=60))
             participantes.append(p)
 
-        reunion = Actividad.objects.create(
-            id_casa_vida=esperanza, titulo="Reunión semanal", fecha=semana_pasada.inicio + datetime.timedelta(days=2),
-            id_responsable=u["LIDER_CASA_VIDA"], descripcion="Estudio y oración.",
-        )
-        for i, p in enumerate(participantes[:4]):
-            Asistencia.objects.create(id_actividad=reunion, id_participante=p, presente=i != 2, registrado_por=u["LIDER_CASA_VIDA"])
-        Reporte.objects.create(
+        # En las Casas de Vida la asistencia se reporta por totales de la reunión.
+        fecha_reunion = semana_pasada.inicio + datetime.timedelta(days=2)
+        reporte = Reporte.objects.create(
             tipo_modulo="CASA_VIDA", tipo_reporte="CASA_VIDA", id_usuario_envia=u["LIDER_CASA_VIDA"],
             id_usuario_destino=u["SUPERVISOR_AREA"], id_casa_vida=esperanza, id_area=norte,
             periodo=semana_pasada.etiqueta, fecha_inicio=semana_pasada.inicio, fecha_fin=semana_pasada.fin,
             observaciones="Buena participación. Lucía estuvo enferma; se programó una visita.",
+        )
+        ofrenda_casa = Ofrenda.objects.create(
+            fecha=fecha_reunion, concepto="Ofrenda Casa de Vida Casa Esperanza", valor=Decimal("185000"),
+            id_casa_vida=esperanza, id_usuario_registro=u["LIDER_CASA_VIDA"], observacion="Registrada desde el reporte de asistencia.",
+        )
+        ReporteAsistencia.objects.create(
+            id_reporte=reporte, fecha=fecha_reunion, id_lider=u["LIDER_CASA_VIDA"], lideres_servidores=3, asistentes=14,
+            ninos=4, nuevos=2, conversiones=1, reconciliaciones=0, ausentes=3, pasos_vida=2, ciclo_conexion=1,
+            modulo_liderazgo=1, seminario_biblico=0, vea=6, dominical=12, ofrenda=Decimal("185000"), id_ofrenda=ofrenda_casa,
         )
         Seguimiento.objects.create(
             id_participante=participantes[2], id_usuario=u["PASTOR"], tipo="VISITA", estado="ABIERTO",
@@ -110,5 +116,4 @@ class Command(BaseCommand):
         for i, p in enumerate(participantes[:3]):
             Asistencia.objects.create(id_actividad=clase, id_participante=p, presente=i < 2, registrado_por=u["COORDINADOR_FORMACION"])
 
-        Ofrenda.objects.create(fecha=semana_pasada.inicio, concepto="Ofrenda semanal", valor=Decimal("185000"), id_casa_vida=esperanza, id_usuario_registro=u["PASTOR"])
         Ofrenda.objects.create(fecha=hoy, concepto="Ofrenda especial de misiones", valor=Decimal("320500"), id_usuario_registro=u["PASTOR"])

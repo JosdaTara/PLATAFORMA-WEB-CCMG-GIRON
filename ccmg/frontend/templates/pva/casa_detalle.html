@@ -36,42 +36,50 @@
   <div class="col-lg-7">
     <div class="card p-3 border-0 shadow-sm h-100">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="m-0">Participantes ({{ miembros|length }})</h6>
-        {% if es_pastor %}<a href="{% url 'pva:participante_crear' %}" class="btn btn-sm btn-ccmg"><i class="bi bi-plus-lg me-1"></i>Nuevo participante</a>{% endif %}
+        <h6 class="m-0">Personas nuevas ({{ miembros|length }})</h6>
+        {% if puede_registrar_persona %}<a href="{% url 'pva:participante_crear' %}" class="btn btn-sm btn-ccmg"><i class="bi bi-person-plus me-1"></i>Registrar persona nueva</a>{% endif %}
       </div>
       <div class="table-responsive">
         <table class="table table-sm align-middle mb-0">
-          <thead><tr><th>Nombre</th><th>Teléfono</th></tr></thead>
+          <thead><tr><th>Nombre</th><th>Teléfono</th><th>Llegó</th></tr></thead>
           <tbody>
-            {% for p in miembros %}
-              <tr><td><a href="{% url 'pva:participante_detalle' p.pk %}" class="text-decoration-none">{{ p.nombres_apellidos }}</a></td><td>{{ p.telefono|default:"—" }}</td></tr>
+            {% for m in miembros|slice:":10" %}
+              <tr>
+                <td><a href="{% url 'pva:participante_detalle' m.id_participante.pk %}" class="text-decoration-none">{{ m.id_participante.nombres_apellidos }}</a></td>
+                <td>{{ m.id_participante.telefono|default:"—" }}</td>
+                <td class="text-nowrap">{{ m.fecha_ingreso|date:"d/m/Y"|default:"—" }}</td>
+              </tr>
             {% empty %}
-              <tr><td colspan="2" class="text-center text-muted py-3">Sin participantes activos.</td></tr>
+              <tr><td colspan="3" class="text-center text-muted py-3">Aún no se han registrado personas nuevas.</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
+      {% if miembros|length > 10 %}<a href="{% url 'pva:participantes' %}?casa={{ casa.pk }}" class="small text-decoration-none mt-2">Ver todas</a>{% endif %}
     </div>
   </div>
   <div class="col-12">
     <div class="card p-3 border-0 shadow-sm">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="m-0">Últimas actividades</h6>
+        <h6 class="m-0">Últimos reportes de asistencia</h6>
         <a href="{% url 'pva:asistencia' %}?casa={{ casa.pk }}" class="small text-decoration-none">Ver toda la asistencia</a>
       </div>
       <div class="table-responsive">
         <table class="table table-sm align-middle mb-0">
-          <thead><tr><th>Fecha</th><th>Actividad</th><th>Presentes</th><th>Registró</th></tr></thead>
+          <thead><tr><th>Fecha</th><th class="text-end">Asistentes</th><th class="text-end">Niños</th><th class="text-end">Nuevos</th><th class="text-end">Dominical</th><th>Envió</th><th></th></tr></thead>
           <tbody>
-            {% for a in actividades %}
+            {% for a in asistencias %}
               <tr>
                 <td>{{ a.fecha|date:"d/m/Y" }}</td>
-                <td><a href="{% url 'pva:asistencia_detalle' a.pk %}" class="text-decoration-none">{{ a.titulo }}</a></td>
-                <td>{{ a.presentes }} / {{ a.total }}</td>
-                <td>{{ a.id_responsable.nombre_completo|default:"—" }}</td>
+                <td class="text-end">{{ a.asistentes }}</td>
+                <td class="text-end">{{ a.ninos }}</td>
+                <td class="text-end">{{ a.nuevos }}</td>
+                <td class="text-end">{{ a.dominical }}</td>
+                <td>{{ a.id_reporte.id_usuario_envia.nombre_completo }}</td>
+                <td class="text-end"><a href="{% url 'pva:reporte_detalle' a.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i><span class="visually-hidden">Ver</span></a></td>
               </tr>
             {% empty %}
-              <tr><td colspan="4" class="text-center text-muted py-3">Aún no hay asistencia registrada.</td></tr>
+              <tr><td colspan="7" class="text-center text-muted py-3">Aún no hay reportes de asistencia.</td></tr>
             {% endfor %}
           </tbody>
         </table>

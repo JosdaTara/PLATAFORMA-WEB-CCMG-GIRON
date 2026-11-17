@@ -83,7 +83,7 @@ class CcmgTestRunner(DiscoverRunner):
                 CREATE TABLE IF NOT EXISTS public.participante (
                     id_participante serial PRIMARY KEY,
                     nombres_apellidos varchar(150) NOT NULL,
-                    documento_identidad varchar(50) NOT NULL UNIQUE,
+                    documento_identidad varchar(50) UNIQUE,
                     fecha_nacimiento date,
                     telefono varchar(20),
                     direccion text,
@@ -231,6 +231,29 @@ class CcmgTestRunner(DiscoverRunner):
                     creado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
                     actualizado_en timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
                     modificado_por integer REFERENCES public.usuario(id_usuario)
+                );
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS public.reporte_asistencia (
+                    id_reporte integer PRIMARY KEY REFERENCES public.reporte(id_reporte),
+                    fecha date NOT NULL,
+                    id_lider integer REFERENCES public.usuario(id_usuario),
+                    lideres_servidores integer NOT NULL DEFAULT 0,
+                    asistentes integer NOT NULL DEFAULT 0,
+                    ninos integer NOT NULL DEFAULT 0,
+                    nuevos integer NOT NULL DEFAULT 0,
+                    conversiones integer NOT NULL DEFAULT 0,
+                    reconciliaciones integer NOT NULL DEFAULT 0,
+                    ausentes integer NOT NULL DEFAULT 0,
+                    pasos_vida integer NOT NULL DEFAULT 0,
+                    ciclo_conexion integer NOT NULL DEFAULT 0,
+                    modulo_liderazgo integer NOT NULL DEFAULT 0,
+                    seminario_biblico integer NOT NULL DEFAULT 0,
+                    vea integer NOT NULL DEFAULT 0,
+                    sabado integer,
+                    dominical integer NOT NULL DEFAULT 0,
+                    ofrenda numeric(12,2) NOT NULL DEFAULT 0,
+                    id_ofrenda integer REFERENCES public.ofrenda(id_ofrenda)
                 );
             """)
             cursor.execute("""

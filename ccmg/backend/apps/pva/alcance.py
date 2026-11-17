@@ -5,7 +5,7 @@ funciones para que cada rol vea únicamente lo que le corresponde.
 """
 from nucleo.utils import ROLES_APOYO, ROLES_LIDER, ROLES_PASTOR, ROLES_SUPERVISOR, rol_efectivo
 
-from .models import ACTIVO, Actividad, Area, CasaVida, CasaVidaEquipo, Participante, Reporte, Seguimiento
+from .models import ACTIVO, Actividad, Area, CasaVida, CasaVidaEquipo, Participante, Reporte, ReporteAsistencia, Seguimiento
 
 
 def rol_de(user):
@@ -56,12 +56,11 @@ def participantes_visibles(user):
     ).distinct()
 
 
-def actividades_visibles(user):
-    """Actividades de Casas de Vida con su asistencia, según el alcance del usuario (RF10)."""
-    return Actividad.objects.filter(
-        tipo_modulo=Actividad.TIPO_CASA_VIDA,
-        id_casa_vida__in=casas_visibles(user),
-    ).select_related("id_casa_vida", "id_responsable")
+def asistencias_visibles(user):
+    """Reportes de asistencia (totales por reunión) de las Casas de Vida al alcance del usuario (RF10)."""
+    return ReporteAsistencia.objects.filter(
+        id_reporte__id_casa_vida__in=casas_visibles(user),
+    ).select_related("id_reporte", "id_reporte__id_casa_vida", "id_reporte__id_usuario_envia", "id_lider")
 
 
 def area_del_supervisor(user):

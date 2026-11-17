@@ -1,4 +1,5 @@
 {% extends "pva/base.html" %}
+{% load formato %}
 {% block titulo %}Generar reporte{% endblock %}
 {% block contenido %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
@@ -34,43 +35,46 @@
   {% endif %}
 
   <div class="row g-3 mb-3">
-    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Actividades</small><div class="num">{{ total.actividades }}</div></div></div>
-    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Asistencia</small><div class="num">{% if total.porcentaje is not None %}{{ total.porcentaje }}%{% else %}—{% endif %}</div></div></div>
-    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Participantes activos</small><div class="num">{{ total.participantes }}</div></div></div>
-    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Nuevos ingresos</small><div class="num">{{ total.nuevos }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Reuniones reportadas</small><div class="num">{{ total.reuniones }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Asistentes</small><div class="num">{{ total.asistentes }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Nuevos</small><div class="num">{{ total.nuevos }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Ofrenda</small><div class="num">{{ total.ofrenda|pesos }}</div></div></div>
   </div>
 
   <div class="table-responsive bg-white rounded shadow-sm mb-4">
-    <table class="table table-hover align-middle mb-0">
+    <table class="table table-hover align-middle mb-0 text-nowrap">
       <thead>
-        <tr><th>Área</th><th>Casa de Vida</th><th>Actividades</th><th>Presentes</th><th>Asistencia</th><th>Participantes</th><th>Nuevos</th><th>Seguimientos</th><th>Reportes enviados</th></tr>
+        <tr>
+          <th>Área</th><th>Casa de Vida</th><th class="text-end">Reuniones</th>
+          {% for campo, etiqueta in columnas %}<th class="text-end">{{ etiqueta }}</th>{% endfor %}
+          <th class="text-end">Ofrenda</th><th class="text-end">Personas nuevas registradas</th><th class="text-end">Seguimientos</th><th>Reportes enviados</th>
+        </tr>
       </thead>
       <tbody>
         {% for f in filas %}
           <tr>
             <td>{{ f.casa.id_area.nombre|default:"—" }}</td>
             <td><a href="{% url 'pva:casa_detalle' f.casa.pk %}" class="text-decoration-none">{{ f.casa.nombre }}</a></td>
-            <td>{{ f.actividades }}</td>
-            <td>{{ f.presentes }} / {{ f.registros }}</td>
-            <td>{% if f.porcentaje is not None %}{{ f.porcentaje }}%{% else %}—{% endif %}</td>
-            <td>{{ f.participantes }}</td>
-            <td>{{ f.nuevos }}</td>
-            <td>{{ f.seguimientos }}</td>
+            <td class="text-end">{{ f.reuniones }}</td>
+            {% for campo, etiqueta in columnas %}<td class="text-end">{{ f|get_item:campo }}</td>{% endfor %}
+            <td class="text-end">{{ f.ofrenda|pesos }}</td>
+            <td class="text-end">{{ f.personas }}</td>
+            <td class="text-end">{{ f.seguimientos }}</td>
             <td>
               {{ f.reportes }} de {{ semanas_esperadas }}
               {% if f.reportes < semanas_esperadas %}<i class="bi bi-exclamation-triangle text-warning" title="Faltan reportes semanales"></i>{% endif %}
             </td>
           </tr>
         {% empty %}
-          <tr><td colspan="9" class="text-center text-muted py-4">No hay Casas de Vida con estos filtros.</td></tr>
+          <tr><td colspan="{{ columnas|length|add:7 }}" class="text-center text-muted py-4">No hay Casas de Vida con estos filtros.</td></tr>
         {% endfor %}
       </tbody>
       {% if filas %}
       <tfoot>
         <tr class="fw-semibold">
-          <td colspan="2">Total</td><td>{{ total.actividades }}</td><td>{{ total.presentes }} / {{ total.registros }}</td>
-          <td>{% if total.porcentaje is not None %}{{ total.porcentaje }}%{% else %}—{% endif %}</td>
-          <td>{{ total.participantes }}</td><td>{{ total.nuevos }}</td><td>{{ total.seguimientos }}</td><td>{{ total.reportes }}</td>
+          <td colspan="2">Total</td><td class="text-end">{{ total.reuniones }}</td>
+          {% for campo, etiqueta in columnas %}<td class="text-end">{{ total|get_item:campo }}</td>{% endfor %}
+          <td class="text-end">{{ total.ofrenda|pesos }}</td><td class="text-end">{{ total.personas }}</td><td class="text-end">{{ total.seguimientos }}</td><td>{{ total.reportes }}</td>
         </tr>
       </tfoot>
       {% endif %}

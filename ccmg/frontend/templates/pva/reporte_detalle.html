@@ -1,10 +1,11 @@
 {% extends "pva/base.html" %}
+{% load formato %}
 {% block titulo %}{{ reporte }}{% endblock %}
 {% block contenido %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <div>
-    <h3 class="m-0">{% if reporte.es_general %}Reporte general · {{ reporte.id_area.nombre }}{% else %}Reporte semanal · {{ reporte.id_casa_vida.nombre }}{% endif %}</h3>
-    <span class="text-muted">{{ reporte.fecha_inicio|date:"d/m/Y" }} al {{ reporte.fecha_fin|date:"d/m/Y" }}</span>
+    <h3 class="m-0">{% if reporte.es_general %}Reporte general · {{ reporte.id_area.nombre }}{% else %}Reporte de asistencia · {{ reporte.id_casa_vida.nombre }}{% endif %}</h3>
+    <span class="text-muted">{% if asistencia %}Reunión del {{ asistencia.fecha|date:"d/m/Y" }} · {% endif %}Semana del {{ reporte.fecha_inicio|date:"d/m/Y" }} al {{ reporte.fecha_fin|date:"d/m/Y" }}</span>
   </div>
   <div class="d-flex gap-2">
     {% include "pva/_exportar.html" %}
@@ -14,6 +15,7 @@
 
 <div class="card p-3 border-0 shadow-sm mb-3">
   <dl class="row mb-0 small">
+    {% if asistencia %}<dt class="col-sm-3">Líder</dt><dd class="col-sm-9">{{ asistencia.id_lider.nombre_completo|default:"—" }}</dd>{% endif %}
     <dt class="col-sm-3">Enviado por</dt><dd class="col-sm-9">{{ reporte.id_usuario_envia.nombre_completo }}</dd>
     <dt class="col-sm-3">Enviado a</dt><dd class="col-sm-9">{% if reporte.es_general %}Pastor{% else %}{{ reporte.id_usuario_destino.nombre_completo|default:"Supervisor de Área" }}{% endif %}</dd>
     <dt class="col-sm-3">Fecha de envío</dt><dd class="col-sm-9">{{ reporte.enviado_en|date:"d/m/Y H:i" }}</dd>
@@ -27,28 +29,67 @@
 
 {% if reporte.es_general %}
   <div class="row g-3 mb-3">
-    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Reportes de Casas de Vida</small><div class="num">{{ filas|length }}</div></div></div>
-    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Asistencia</small><div class="num">{{ total.porcentaje }}%</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Reuniones reportadas</small><div class="num">{{ total.reuniones }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Asistentes</small><div class="num">{{ total.asistentes }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Nuevos</small><div class="num">{{ total.nuevos }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Ofrenda</small><div class="num">{{ total.ofrenda|pesos }}</div></div></div>
   </div>
   <div class="table-responsive bg-white rounded shadow-sm">
     <table class="table table-hover align-middle mb-0">
-      <thead><tr><th>Casa de Vida</th><th>Semana</th><th>Actividades</th><th>Presentes</th><th>Observaciones del equipo</th><th></th></tr></thead>
+      <thead><tr><th>Casa de Vida</th><th>Fecha</th><th class="text-end">Asistentes</th><th class="text-end">Niños</th><th class="text-end">Nuevos</th><th class="text-end">Conversiones</th><th class="text-end">Reconciliaciones</th><th class="text-end">Discípulos Escuelas</th><th class="text-end">Dominical</th><th class="text-end">Ofrenda</th><th></th></tr></thead>
       <tbody>
         {% for f in filas %}
           <tr>
             <td>{{ f.reporte.id_casa_vida.nombre }}</td>
-            <td class="text-nowrap">{{ f.reporte.fecha_inicio|date:"d/m" }} – {{ f.reporte.fecha_fin|date:"d/m" }}</td>
-            <td>{{ f.actividades|length }}</td>
-            <td>{{ f.presentes }} / {{ f.registros }} ({{ f.porcentaje }}%)</td>
-            <td>{{ f.reporte.observaciones|default:"—"|linebreaksbr }}</td>
+            {% if f.asistencia %}
+              <td class="text-nowrap">{{ f.asistencia.fecha|date:"d/m/Y" }}</td>
+              <td class="text-end">{{ f.asistencia.asistentes }}</td>
+              <td class="text-end">{{ f.asistencia.ninos }}</td>
+              <td class="text-end">{{ f.asistencia.nuevos }}</td>
+              <td class="text-end">{{ f.asistencia.conversiones }}</td>
+              <td class="text-end">{{ f.asistencia.reconciliaciones }}</td>
+              <td class="text-end">{{ f.asistencia.total_discipulos_escuelas }}</td>
+              <td class="text-end">{{ f.asistencia.dominical }}</td>
+              <td class="text-end">{{ f.asistencia.ofrenda|pesos }}</td>
+            {% else %}
+              <td colspan="9" class="text-muted small">Reporte sin totales de asistencia.</td>
+            {% endif %}
             <td class="text-end"><a href="{% url 'pva:reporte_detalle' f.reporte.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i><span class="visually-hidden">Ver</span></a></td>
           </tr>
         {% endfor %}
       </tbody>
+      {% if filas %}
+      <tfoot><tr class="fw-semibold"><td colspan="2">Total</td><td class="text-end">{{ total.asistentes }}</td><td class="text-end">{{ total.ninos }}</td><td class="text-end">{{ total.nuevos }}</td><td class="text-end">{{ total.conversiones }}</td><td class="text-end">{{ total.reconciliaciones }}</td><td class="text-end">{{ total.discipulos }}</td><td class="text-end">{{ total.dominical }}</td><td class="text-end">{{ total.ofrenda|pesos }}</td><td></td></tr></tfoot>
+      {% endif %}
     </table>
   </div>
+{% elif asistencia %}
+  <div class="row g-3">
+    {% for titulo, filas in grupos %}
+      <div class="col-md-6 col-xl-4">
+        <div class="card p-3 border-0 shadow-sm h-100">
+          <h6 class="mb-3">{{ titulo }}</h6>
+          <table class="table table-sm align-middle mb-0">
+            <tbody>
+              {% for etiqueta, valor in filas %}
+                <tr{% if forloop.last and titulo == "Asistencia Escuelas de Formación" %} class="fw-semibold"{% endif %}><td>{{ etiqueta }}</td><td class="text-end">{{ valor }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+    <div class="col-md-6 col-xl-4">
+      <div class="card p-3 border-0 shadow-sm h-100">
+        <h6 class="mb-3">Informe financiero</h6>
+        <div class="d-flex justify-content-between align-items-baseline">
+          <span>Ofrenda</span><span class="fs-4 fw-bold">{{ asistencia.ofrenda|pesos }}</span>
+        </div>
+        {% if asistencia.id_ofrenda_id %}<p class="small text-muted mt-2 mb-0"><i class="bi bi-check2 me-1"></i>Registrada en el módulo de Ofrendas.</p>{% endif %}
+      </div>
+    </div>
+  </div>
 {% else %}
-  <h6 class="mb-2">Actividades y asistencia de la semana</h6>
-  {% include "pva/_tabla_actividades.html" %}
+  <div class="alert alert-secondary">Este reporte se envió antes de que la asistencia se reportara por totales.</div>
 {% endif %}
 {% endblock %}

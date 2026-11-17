@@ -1,15 +1,16 @@
 """Reportes del módulo Casas de Vida.
 
-Flujo (RN06, RN07, RN19): el Líder o su equipo envían el reporte semanal de la Casa de Vida
-al Supervisor de Área; el Supervisor envía al Pastor un reporte general mensual de su Área;
-el Pastor, último receptor, consulta los reportes y genera reportes consolidados.
+Flujo (RN06, RN07, RN19): el Líder o su equipo llenan el reporte de asistencia de la semana con los
+totales de la reunión y queda enviado al Supervisor de Área; el Supervisor envía al Pastor un reporte
+general mensual de su Área; el Pastor, último receptor, consulta los reportes y genera consolidados.
 """
 import datetime
+from decimal import Decimal
 
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Count, F
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import DetailView, FormView, TemplateView
@@ -25,39 +26,57 @@ from .alcance import (
     reportes_generales_visibles,
     rol_de,
 )
-from .forms import EnviarReporteCasaForm, EnviarReporteGeneralForm, GenerarReporteForm, reportes_casa_pendientes
-from .models import ACTIVO, Actividad, CasaVida, CasaVidaMiembro, Reporte, Seguimiento
+from .forms import EnviarReporteGeneralForm, GenerarReporteForm, reportes_casa_pendientes
+from .models import ACTIVO, Actividad, CasaVida, CasaVidaMiembro, Reporte, ReporteAsistencia, Seguimiento
 from .views import PanelCasasMixin
 
-
-def resumen_actividades(casa, inicio, fin):
-    """Actividades de la casa en el rango con su asistencia."""
-    actividades = list(
-        Actividad.objects.filter(id_casa_vida=casa, fecha__range=(inicio, fin))
-        .annotate(presentes=Count("asistencia", filter=Q(asistencia__presente=True)), total=Count("asistencia"))
-        .select_related("id_responsable")
-        .order_by("fecha", "id_actividad")
-    )
-    presentes = sum(a.presentes for a in actividades)
-    registros = sum(a.total for a in actividades)
-    return {
-        "actividades": actividades,
-        "presentes": presentes,
-        "registros": registros,
-        "porcentaje": round(presentes * 100 / registros) if registros else 0,
-    }
+# Columnas que se suman en los consolidados, en el orden del formato de la iglesia.
+COLUMNAS_SUMA = [
+    ("asistentes", "Asistentes"),
+    ("lideres_servidores", "Líderes servidores"),
+    ("ninos", "Niños"),
+    ("nuevos", "Nuevos"),
+    ("conversiones", "Conversiones"),
+    ("reconciliaciones", "Reconciliaciones"),
+    ("ausentes", "Ausentes"),
+    ("discipulos", "Discípulos Escuelas"),
+    ("vea", "VEA"),
+    ("sabado", "Sábado"),
+    ("dominical", "Dominical"),
+]
 
 
-def _tabla_actividades(ctx):
-    return exportar.Tabla(
-        "Actividades y asistencia",
-        [("Fecha", exportar.FECHA), ("Actividad", exportar.TEXTO), ("Presentes", exportar.ENTERO),
-         ("Registros", exportar.ENTERO), ("Registró", exportar.TEXTO)],
-        [[a.fecha, a.titulo, a.presentes, a.total, a.id_responsable.nombre_completo if a.id_responsable else ""]
-         for a in ctx["actividades"]],
-        total=["Total", f"Asistencia {ctx['porcentaje']}%", ctx["presentes"], ctx["registros"], ""] if ctx["actividades"] else None,
-        vacio="No hay asistencia registrada en esta semana.",
-    )
+def asistencia_de(reporte):
+    """Totales de la reunión de un reporte semanal (None en reportes anteriores al cambio)."""
+    try:
+        return reporte.asistencia
+    except ReporteAsistencia.DoesNotExist:
+        return None
+
+
+def sumar(asistencias):
+    """Suma los totales de varias reuniones; el sábado solo cuenta donde se reporta."""
+    asistencias = [a for a in asistencias if a is not None]
+    total = {"reuniones": len(asistencias), "ofrenda": sum((a.ofrenda for a in asistencias), Decimal(0))}
+    for campo, _ in COLUMNAS_SUMA:
+        if campo == "discipulos":
+            total[campo] = sum(a.total_discipulos_escuelas for a in asistencias)
+        else:
+            total[campo] = sum(getattr(a, campo) or 0 for a in asistencias)
+    total["hay_sabado"] = any(a.sabado is not None for a in asistencias)
+    return total
+
+
+def filas_detalle(asistencia):
+    """Filas (indicador, valor) del reporte de asistencia, agrupadas como en el formato de la iglesia."""
+    grupos = [
+        ("Asistencia", [(e, getattr(asistencia, c)) for c, e in ReporteAsistencia.INDICADORES]),
+        ("Asistencia Escuelas de Formación", [(e, getattr(asistencia, c)) for c, e in ReporteAsistencia.ESCUELAS]
+         + [("Total discípulos escuelas", asistencia.total_discipulos_escuelas)]),
+        ("Cultos", [(e, getattr(asistencia, c)) for c, e in ReporteAsistencia.CULTOS
+                    if not (c == "sabado" and asistencia.sabado is None)]),
+    ]
+    return grupos
 
 
 def solo_roles(*roles):
@@ -123,119 +142,71 @@ class ReporteDetailView(exportar.ExportableMixin, PanelCasasMixin, DetailView):
         ctx = super().get_context_data(**kwargs)
         r = self.object
         if r.es_general:
-            filas = []
-            for rc in r.reportes_casa.select_related("id_casa_vida", "id_usuario_envia").order_by("id_casa_vida__nombre", "fecha_inicio"):
-                filas.append({"reporte": rc, **resumen_actividades(rc.id_casa_vida, rc.fecha_inicio, rc.fecha_fin)})
-            presentes = sum(f["presentes"] for f in filas)
-            registros = sum(f["registros"] for f in filas)
+            filas = [
+                {"reporte": rc, "asistencia": asistencia_de(rc)}
+                for rc in r.reportes_casa.select_related("id_casa_vida", "id_usuario_envia", "asistencia")
+                .order_by("id_casa_vida__nombre", "fecha_inicio")
+            ]
             ctx["filas"] = filas
-            ctx["total"] = {
-                "presentes": presentes,
-                "registros": registros,
-                "porcentaje": round(presentes * 100 / registros) if registros else 0,
-            }
+            ctx["total"] = sumar(f["asistencia"] for f in filas)
         else:
-            ctx.update(resumen_actividades(r.id_casa_vida, r.fecha_inicio, r.fecha_fin))
+            asistencia = asistencia_de(r)
+            ctx["asistencia"] = asistencia
+            ctx["grupos"] = filas_detalle(asistencia) if asistencia else []
         return ctx
 
     def documento_exportable(self, ctx):
         r = self.object
+        periodo = f"{r.fecha_inicio:%d/%m/%Y} al {r.fecha_fin:%d/%m/%Y} ({r.periodo})"
         if r.es_general:
+            columnas = [("Casa de Vida", exportar.TEXTO), ("Fecha", exportar.FECHA)]
+            columnas += [(e, exportar.ENTERO) for _, e in COLUMNAS_SUMA] + [("Ofrenda", exportar.PESOS)]
+            filas = []
+            for f in ctx["filas"]:
+                a = f["asistencia"]
+                fila = [f["reporte"].id_casa_vida.nombre, a.fecha if a else None]
+                if a:
+                    fila += [a.total_discipulos_escuelas if c == "discipulos" else getattr(a, c) for c, _ in COLUMNAS_SUMA]
+                    fila.append(a.ofrenda)
+                else:
+                    fila += [None] * (len(COLUMNAS_SUMA) + 1)
+                filas.append(fila)
+            t = ctx["total"]
             return exportar.Documento(
                 titulo=f"Reporte general · Área {r.id_area.nombre}",
-                periodo=f"{r.fecha_inicio:%d/%m/%Y} al {r.fecha_fin:%d/%m/%Y} ({r.periodo})",
+                periodo=periodo,
                 datos=[("Supervisor", r.id_usuario_envia.nombre_completo), ("Enviado", r.enviado_en),
                        ("Observaciones", r.observaciones or "—")],
                 tablas=[exportar.Tabla(
-                    "Reportes de las Casas de Vida",
-                    [("Casa de Vida", exportar.TEXTO), ("Semana", exportar.TEXTO), ("Actividades", exportar.ENTERO),
-                     ("Presentes", exportar.ENTERO), ("Registros", exportar.ENTERO), ("Asistencia", exportar.PORCENTAJE),
-                     ("Observaciones del equipo", exportar.TEXTO)],
-                    [[f["reporte"].id_casa_vida.nombre, f"{f['reporte'].fecha_inicio:%d/%m} – {f['reporte'].fecha_fin:%d/%m}",
-                      len(f["actividades"]), f["presentes"], f["registros"], f["porcentaje"], f["reporte"].observaciones or ""]
-                     for f in ctx["filas"]],
-                    total=["Total", "", sum(len(f["actividades"]) for f in ctx["filas"]), ctx["total"]["presentes"],
-                           ctx["total"]["registros"], ctx["total"]["porcentaje"], ""],
+                    "Reportes de asistencia de las Casas de Vida", columnas, filas,
+                    total=["Total", "", *[t[c] for c, _ in COLUMNAS_SUMA], t["ofrenda"]],
                 )],
                 nombre_archivo=f"reporte_general_{r.id_area.nombre}_{r.periodo}",
             )
+        a = ctx["asistencia"]
+        datos = [
+            ("Área", r.id_casa_vida.id_area.nombre if r.id_casa_vida.id_area_id else "—"),
+            ("Fecha de la reunión", a.fecha if a else "—"),
+            ("Líder", a.id_lider.nombre_completo if a and a.id_lider else "—"),
+            ("Enviado por", r.id_usuario_envia.nombre_completo),
+            ("Enviado a", r.id_usuario_destino.nombre_completo if r.id_usuario_destino else "Supervisor de Área"),
+            ("Enviado", r.enviado_en),
+            ("Observaciones", r.observaciones or "—"),
+        ]
+        tablas = [
+            exportar.Tabla(titulo, [("Indicador", exportar.TEXTO), ("Total", exportar.ENTERO)], [list(f) for f in filas])
+            for titulo, filas in ctx["grupos"]
+        ]
+        if a:
+            tablas.append(exportar.Tabla("Informe financiero", [("Concepto", exportar.TEXTO), ("Valor", exportar.PESOS)],
+                                         [["Ofrenda", a.ofrenda]]))
         return exportar.Documento(
-            titulo=f"Reporte semanal · {r.id_casa_vida.nombre}",
-            periodo=f"{r.fecha_inicio:%d/%m/%Y} al {r.fecha_fin:%d/%m/%Y} ({r.periodo})",
-            datos=[("Área", r.id_casa_vida.id_area.nombre if r.id_casa_vida.id_area_id else "—"),
-                   ("Enviado por", r.id_usuario_envia.nombre_completo),
-                   ("Enviado a", r.id_usuario_destino.nombre_completo if r.id_usuario_destino else "Supervisor de Área"),
-                   ("Enviado", r.enviado_en), ("Observaciones", r.observaciones or "—")],
-            tablas=[_tabla_actividades(ctx)],
+            titulo=f"Reporte de asistencia · {r.id_casa_vida.nombre}",
+            periodo=periodo,
+            datos=datos,
+            tablas=tablas,
             nombre_archivo=f"reporte_{r.id_casa_vida.nombre}_{r.periodo}",
         )
-
-
-class EnviarReporteCasaView(solo_roles(ROLES_LIDER, ROLES_APOYO), PanelCasasMixin, FormView):
-    """El Líder o un usuario de apoyo envían el reporte semanal al Supervisor (RF14, CU02)."""
-
-    template_name = "pva/reporte_enviar_casa.html"
-    form_class = EnviarReporteCasaForm
-    seccion = "reportes"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and rol_de(request.user) in (ROLES_LIDER, ROLES_APOYO):
-            self.casa = casa_para_reportar(request.user)
-            if self.casa is None:
-                messages.error(request, "No tienes una Casa de Vida activa asignada.")
-                return redirect("pva:reportes")
-        return super().dispatch(request, *args, **kwargs)
-
-    @property
-    def supervisor(self):
-        return self.casa.id_area.id_supervisor if self.casa.id_area_id else None
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["casa"] = self.casa
-        return kwargs
-
-    def get_initial(self):
-        return {"semana": self.request.GET.get("semana") or periodos.semana(datetime.date.today()).inicio.isoformat()}
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        form = ctx["form"]
-        valor = form.data.get("semana") if form.is_bound else form.initial.get("semana")
-        try:
-            semana = periodos.semana(datetime.date.fromisoformat(valor))
-        except (TypeError, ValueError):
-            semana = periodos.semana(datetime.date.today())
-        ctx.update(casa=self.casa, supervisor=self.supervisor, semana=semana)
-        ctx.update(resumen_actividades(self.casa, semana.inicio, semana.fin))
-        ctx["ya_enviado"] = (
-            Reporte.objects.filter(tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=semana.etiqueta)
-            .select_related("id_usuario_envia")
-            .first()
-        )
-        return ctx
-
-    def form_valid(self, form):
-        if self.supervisor is None:
-            form.add_error(None, "La Casa de Vida no tiene Supervisor de Área asignado. Comuníquese con el Pastor.")
-            return self.form_invalid(form)
-        semana = form.cleaned_data["semana"]
-        with transaction.atomic():
-            reporte = Reporte.objects.create(
-                tipo_modulo=Actividad.TIPO_CASA_VIDA,
-                tipo_reporte=Reporte.CASA_VIDA,
-                id_usuario_envia=self.request.user,
-                id_usuario_destino=self.supervisor,
-                id_casa_vida=self.casa,
-                id_area=self.casa.id_area,
-                periodo=semana.etiqueta,
-                fecha_inicio=semana.inicio,
-                fecha_fin=semana.fin,
-                observaciones=form.cleaned_data["observaciones"] or None,
-            )
-            registrar_auditoria(self.request, "ENVIAR_REPORTE", reporte)
-        messages.success(self.request, f"Reporte de la {semana.nombre.lower()} enviado al Supervisor de Área.")
-        return redirect("pva:reporte_detalle", pk=reporte.pk)
 
 
 class EnviarReporteGeneralView(solo_roles(ROLES_SUPERVISOR), PanelCasasMixin, FormView):
@@ -269,12 +240,15 @@ class EnviarReporteGeneralView(solo_roles(ROLES_SUPERVISOR), PanelCasasMixin, Fo
             mes = periodos.mes(datetime.date.fromisoformat(valor))
         except (TypeError, ValueError):
             mes = periodos.mes(datetime.date.today())
-        pendientes = list(reportes_casa_pendientes(self.area, mes).order_by("id_casa_vida__nombre", "fecha_inicio"))
+        pendientes = list(
+            reportes_casa_pendientes(self.area, mes).select_related("asistencia").order_by("id_casa_vida__nombre", "fecha_inicio")
+        )
         con_reporte = {r.id_casa_vida_id for r in pendientes}
         ctx.update(
             area=self.area,
             mes=mes,
-            pendientes=pendientes,
+            pendientes=[{"reporte": r, "asistencia": asistencia_de(r)} for r in pendientes],
+            total=sumar(asistencia_de(r) for r in pendientes),
             casas_sin_reporte=CasaVida.objects.filter(id_area=self.area, estado=ACTIVO).exclude(pk__in=con_reporte),
             ya_enviado=Reporte.objects.filter(
                 tipo_reporte=Reporte.GENERAL_AREA, id_area=self.area, periodo=mes.etiqueta
@@ -315,6 +289,7 @@ class GenerarReporteView(exportar.ExportableMixin, solo_roles(ROLES_PASTOR), Pan
         ctx = super().get_context_data(**kwargs)
         form = GenerarReporteForm(self.request.GET or None)
         ctx["form"] = form
+        ctx["columnas"] = COLUMNAS_SUMA
         if form.is_bound and form.is_valid():
             ctx.update(self.consolidar(form))
         return ctx
@@ -328,59 +303,41 @@ class GenerarReporteView(exportar.ExportableMixin, solo_roles(ROLES_PASTOR), Pan
         if form.cleaned_data["casa"]:
             casas = casas.filter(pk=form.cleaned_data["casa"].pk)
 
-        def por_casa(qs, campo="id_casa_vida", **anotaciones):
-            return {fila[campo]: fila for fila in qs.values(campo).annotate(**anotaciones)}
+        def por_casa(qs, campo="id_casa_vida"):
+            return {fila[campo]: fila["n"] for fila in qs.values(campo).annotate(n=Count("pk"))}
 
-        actividades = por_casa(
-            Actividad.objects.filter(tipo_modulo=Actividad.TIPO_CASA_VIDA, fecha__range=rango, id_casa_vida__in=casas),
-            n=Count("id_actividad", distinct=True),
-            presentes=Count("asistencia", filter=Q(asistencia__presente=True)),
-            registros=Count("asistencia"),
-        )
-        miembros = por_casa(
-            CasaVidaMiembro.objects.filter(estado=ACTIVO, id_participante__estado=ACTIVO, id_casa_vida__in=casas),
-            n=Count("id_casa_vida_miembro"),
-        )
-        nuevos = por_casa(
-            CasaVidaMiembro.objects.filter(fecha_ingreso__range=rango, id_casa_vida__in=casas),
-            n=Count("id_casa_vida_miembro"),
-        )
-        seguimientos = por_casa(
-            Seguimiento.objects.filter(
+        asistencias = {}
+        for a in ReporteAsistencia.objects.filter(fecha__range=rango, id_reporte__id_casa_vida__in=casas).select_related("id_reporte"):
+            asistencias.setdefault(a.id_reporte.id_casa_vida_id, []).append(a)
+        personas = por_casa(CasaVidaMiembro.objects.filter(fecha_ingreso__range=rango, id_casa_vida__in=casas))
+        seguimientos = {
+            fila["casa"]: fila["n"]
+            for fila in Seguimiento.objects.filter(
                 tipo_modulo=Actividad.TIPO_CASA_VIDA,
                 fecha__range=rango,
                 id_participante__casavidamiembro__estado=ACTIVO,
                 id_participante__casavidamiembro__id_casa_vida__in=casas,
-            ),
-            campo="id_participante__casavidamiembro__id_casa_vida",
-            n=Count("id_seguimiento", distinct=True),
-        )
-        reportes = por_casa(
-            Reporte.objects.filter(tipo_reporte=Reporte.CASA_VIDA, fecha_inicio__range=rango, id_casa_vida__in=casas),
-            n=Count("id_reporte"),
-        )
+            ).values(casa=F("id_participante__casavidamiembro__id_casa_vida"))
+            .annotate(n=Count("id_seguimiento", distinct=True))
+        }
+        reportes = por_casa(Reporte.objects.filter(tipo_reporte=Reporte.CASA_VIDA, fecha_inicio__range=rango, id_casa_vida__in=casas))
         semanas_esperadas = periodos.lunes_transcurridos(periodo)
 
         filas = []
         for casa in casas.order_by("id_area__nombre", "nombre"):
-            act = actividades.get(casa.pk, {})
-            if casa.estado != ACTIVO and not act:
+            propias = asistencias.get(casa.pk, [])
+            if casa.estado != ACTIVO and not propias:
                 continue
-            presentes, registros = act.get("presentes", 0), act.get("registros", 0)
             filas.append({
                 "casa": casa,
-                "actividades": act.get("n", 0),
-                "presentes": presentes,
-                "registros": registros,
-                "porcentaje": round(presentes * 100 / registros) if registros else None,
-                "participantes": miembros.get(casa.pk, {}).get("n", 0),
-                "nuevos": nuevos.get(casa.pk, {}).get("n", 0),
-                "seguimientos": seguimientos.get(casa.pk, {}).get("n", 0),
-                "reportes": reportes.get(casa.pk, {}).get("n", 0),
+                **sumar(propias),
+                "personas": personas.get(casa.pk, 0),
+                "seguimientos": seguimientos.get(casa.pk, 0),
+                "reportes": reportes.get(casa.pk, 0),
             })
 
-        total = {k: sum(f[k] for f in filas) for k in ("actividades", "presentes", "registros", "participantes", "nuevos", "seguimientos", "reportes")}
-        total["porcentaje"] = round(total["presentes"] * 100 / total["registros"]) if total["registros"] else None
+        claves = ["reuniones", "ofrenda", "personas", "seguimientos", "reportes"] + [c for c, _ in COLUMNAS_SUMA]
+        total = {k: sum((f[k] for f in filas), Decimal(0) if k == "ofrenda" else 0) for k in claves}
         generales = Reporte.objects.filter(
             tipo_reporte=Reporte.GENERAL_AREA,
             fecha_inicio__range=rango,
@@ -392,7 +349,7 @@ class GenerarReporteView(exportar.ExportableMixin, solo_roles(ROLES_PASTOR), Pan
             "total": total,
             "semanas_esperadas": semanas_esperadas,
             "generales": generales,
-            "hay_datos": any(f["actividades"] or f["reportes"] or f["seguimientos"] or f["nuevos"] for f in filas),
+            "hay_datos": any(f["reuniones"] or f["reportes"] or f["seguimientos"] or f["personas"] for f in filas),
         }
 
     def documento_exportable(self, ctx):
@@ -401,6 +358,11 @@ class GenerarReporteView(exportar.ExportableMixin, solo_roles(ROLES_PASTOR), Pan
         form = ctx["form"]
         filtros = [("Área", form.cleaned_data["area"] or "Todas"), ("Casa de Vida", form.cleaned_data["casa"] or "Todas"),
                    ("Reportes semanales esperados por casa", ctx["semanas_esperadas"])]
+        columnas = [("Área", exportar.TEXTO), ("Casa de Vida", exportar.TEXTO), ("Reuniones", exportar.ENTERO)]
+        columnas += [(e, exportar.ENTERO) for _, e in COLUMNAS_SUMA]
+        columnas += [("Ofrenda", exportar.PESOS), ("Personas nuevas registradas", exportar.ENTERO),
+                     ("Seguimientos", exportar.ENTERO), ("Reportes enviados", exportar.ENTERO)]
+        claves = ["reuniones"] + [c for c, _ in COLUMNAS_SUMA] + ["ofrenda", "personas", "seguimientos", "reportes"]
         return exportar.Documento(
             titulo="Reporte consolidado de Casas de Vida",
             periodo=f"{ctx['periodo'].nombre} ({ctx['periodo'].inicio:%d/%m/%Y} al {ctx['periodo'].fin:%d/%m/%Y})",
@@ -408,15 +370,10 @@ class GenerarReporteView(exportar.ExportableMixin, solo_roles(ROLES_PASTOR), Pan
             tablas=[
                 exportar.Tabla(
                     "Casas de Vida",
-                    [("Área", exportar.TEXTO), ("Casa de Vida", exportar.TEXTO), ("Actividades", exportar.ENTERO),
-                     ("Presentes", exportar.ENTERO), ("Registros", exportar.ENTERO), ("Asistencia", exportar.PORCENTAJE),
-                     ("Participantes", exportar.ENTERO), ("Nuevos", exportar.ENTERO), ("Seguimientos", exportar.ENTERO),
-                     ("Reportes enviados", exportar.ENTERO)],
-                    [[f["casa"].id_area.nombre if f["casa"].id_area_id else "", f["casa"].nombre, f["actividades"], f["presentes"],
-                      f["registros"], f["porcentaje"], f["participantes"], f["nuevos"], f["seguimientos"], f["reportes"]]
+                    columnas,
+                    [[f["casa"].id_area.nombre if f["casa"].id_area_id else "", f["casa"].nombre, *[f[k] for k in claves]]
                      for f in ctx["filas"]],
-                    total=["Total", "", *[ctx["total"][k] for k in ("actividades", "presentes", "registros", "porcentaje",
-                                                                    "participantes", "nuevos", "seguimientos", "reportes")]],
+                    total=["Total", "", *[ctx["total"][k] for k in claves]],
                 ),
                 exportar.Tabla(
                     "Reportes generales de los Supervisores",

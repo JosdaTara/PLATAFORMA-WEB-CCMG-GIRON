@@ -6,16 +6,18 @@ from django.urls import reverse
 
 from cuentas.models import Rol, Usuario
 from nucleo.models import Auditoria
+from ofrendas.models import Ofrenda
+from pva import periodos
 from pva.models import (
     ACTIVO,
     INACTIVO,
-    Actividad,
     Area,
-    Asistencia,
     CasaVida,
     CasaVidaEquipo,
     CasaVidaMiembro,
     Participante,
+    Reporte,
+    ReporteAsistencia,
 )
 
 CLAVE = "password12345678901"
@@ -81,6 +83,27 @@ class BaseCasasVida(TestCase):
     def entrar(self, user):
         self.assertTrue(self.client.login(username=user.correo, password=CLAVE))
 
+    def reporte_asistencia(self, casa, fecha, envia, **valores):
+        """Reporte semanal de una Casa de Vida con los totales de su reunión."""
+        semana = periodos.semana(fecha)
+        reporte = Reporte.objects.create(
+            tipo_modulo="CASA_VIDA", tipo_reporte="CASA_VIDA", id_usuario_envia=envia, id_usuario_destino=casa.supervisor,
+            id_casa_vida=casa, id_area=casa.id_area, periodo=semana.etiqueta, fecha_inicio=semana.inicio, fecha_fin=semana.fin,
+        )
+        ReporteAsistencia.objects.create(id_reporte=reporte, fecha=fecha, id_lider=casa.id_lider, **valores)
+        return reporte
+
+    def datos_asistencia(self, fecha=None, **extra):
+        """Formulario del reporte de asistencia con el formato de la iglesia."""
+        datos = {c: "0" for c, _ in ReporteAsistencia.INDICADORES + ReporteAsistencia.ESCUELAS + ReporteAsistencia.CULTOS}
+        del datos["sabado"]
+        datos.update(
+            fecha=(fecha or datetime.date.today()).isoformat(), asistentes="14", ninos="4", nuevos="2",
+            conversiones="1", pasos_vida="2", ciclo_conexion="1", dominical="12", ofrenda="185000", observaciones="",
+        )
+        datos.update(extra)
+        return datos
+
     def datos_participante(self, **extra):
         datos = {
             "nombres_apellidos": "Diana  López",
@@ -137,39 +160,19 @@ class GestionPastorTests(BaseCasasVida):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "ya está asignado a la Casa de Vida")
 
-    def test_pastor_registra_participante_con_casa(self):
-        resp = self.client.post(reverse("pva:participante_crear"), self.datos_participante())
-        p = Participante.objects.get(documento_identidad="3001")
-        self.assertRedirects(resp, reverse("pva:participante_detalle", args=[p.pk]))
-        self.assertEqual(p.nombres_apellidos, "Diana López")
-        self.assertEqual(p.membresia_activa.id_casa_vida, self.casa)
-        self.assertTrue(Auditoria.objects.filter(entidad="participante", id_entidad=p.pk).exists())
+    def test_pastor_no_registra_personas_nuevas(self):
+        """En la Casa de Vida no se lleva una lista fija: el Pastor no registra participantes."""
+        self.assertEqual(self.client.get(reverse("pva:participante_crear")).status_code, 403)
 
-    def test_sin_autorizacion_de_datos_no_se_guarda(self):
-        datos = self.datos_participante()
-        del datos["autorizacion_datos"]
-        resp = self.client.post(reverse("pva:participante_crear"), datos)
-        self.assertContains(resp, "Sin la autorización de tratamiento de datos")
-        self.assertFalse(Participante.objects.filter(documento_identidad="3001").exists())
-
-    def test_documento_duplicado(self):
-        resp = self.client.post(reverse("pva:participante_crear"), self.datos_participante(documento_identidad="1001"))
-        self.assertContains(resp, "Ya existe un participante con ese documento")
-
-    def test_datos_minimos_obligatorios(self):
+    def test_pastor_corrige_los_datos_de_una_persona(self):
         resp = self.client.post(
-            reverse("pva:participante_crear"), self.datos_participante(telefono="", direccion="", fecha_nacimiento="")
+            reverse("pva:participante_editar", args=[self.ana.pk]),
+            {"nombres_apellidos": "Ana María  Pérez", "telefono": "3119998877", "autorizacion_datos": "on"},
         )
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(len(resp.context["form"].errors), 3)
-
-    def test_cambio_de_casa_conserva_historial(self):
-        datos = self.datos_participante(
-            nombres_apellidos=self.ana.nombres_apellidos, documento_identidad="1001", casa_vida=self.casa2.pk
-        )
-        self.client.post(reverse("pva:participante_editar", args=[self.ana.pk]), datos)
-        membresias = dict(CasaVidaMiembro.objects.filter(id_participante=self.ana).values_list("id_casa_vida", "estado"))
-        self.assertEqual(membresias, {self.casa.pk: INACTIVO, self.casa2.pk: ACTIVO})
+        self.assertRedirects(resp, reverse("pva:participante_detalle", args=[self.ana.pk]))
+        self.ana.refresh_from_db()
+        self.assertEqual((self.ana.nombres_apellidos, self.ana.telefono), ("Ana María Pérez", "3119998877"))
+        self.assertEqual(self.ana.documento_identidad, "1001")  # los demás datos no se pierden
 
     def test_desactivar_y_reactivar_participante(self):
         self.client.post(reverse("pva:participante_estado", args=[self.ana.pk, "desactivar"]))
@@ -204,8 +207,6 @@ class SoloLecturaTests(BaseCasasVida):
             reverse("pva:area_crear"),
             reverse("pva:casa_crear"),
             reverse("pva:casa_editar", args=[self.casa.pk]),
-            reverse("pva:participante_crear"),
-            reverse("pva:participante_editar", args=[self.ana.pk]),
         ]
         for user in (self.supervisor, self.lider, self.apoyo):
             self.entrar(user)
@@ -259,10 +260,13 @@ class AlcanceTests(BaseCasasVida):
         resp = self.client.get(reverse("pva:participantes"))
         self.assertEqual([p.pk for p in resp.context["participantes"]], [self.ana.pk])
 
-    def test_busqueda_por_documento(self):
+    def test_busqueda_por_nombre_o_telefono(self):
+        Participante.objects.filter(pk=self.carla.pk).update(telefono="3155550000")
         self.entrar(self.pastor)
-        resp = self.client.get(reverse("pva:participantes"), {"q": "200"})
+        resp = self.client.get(reverse("pva:participantes"), {"q": "315555"})
         self.assertEqual([p.pk for p in resp.context["participantes"]], [self.carla.pk])
+        resp = self.client.get(reverse("pva:participantes"), {"q": "beto"})
+        self.assertEqual([p.pk for p in resp.context["participantes"]], [self.beto.pk])
 
     def test_supervisor_no_ve_participantes_de_otra_area_aunque_filtre(self):
         self.entrar(self.supervisor)
@@ -270,61 +274,151 @@ class AlcanceTests(BaseCasasVida):
         self.assertEqual(len(resp.context["participantes"]), 0)
 
 
-class AsistenciaTests(BaseCasasVida):
-    """RF09, RF10, RN06, RN08."""
+class PersonasNuevasTests(BaseCasasVida):
+    """RF05, RN09: el Líder o su equipo toman nombre y teléfono de quien llega por primera vez."""
 
-    def registrar(self, user, presentes, titulo="Reunión semanal", fecha=None):
+    def registrar(self, user, **extra):
         self.entrar(user)
-        datos = {"titulo": titulo, "fecha": (fecha or datetime.date.today()).isoformat(), "descripcion": ""}
-        for p in presentes:
-            datos[f"presente_{p.pk}"] = "1"
-        return self.client.post(reverse("pva:asistencia_registrar"), datos)
+        datos = {"nombres_apellidos": "  Diana   López ", "telefono": "310 987 6543", "autorizacion_datos": "on"}
+        datos.update(extra)
+        return self.client.post(reverse("pva:participante_crear"), datos)
 
-    def test_apoyo_registra_asistencia_de_su_casa(self):
-        resp = self.registrar(self.apoyo, [self.ana])
-        actividad = Actividad.objects.get()
-        self.assertRedirects(resp, reverse("pva:asistencia_detalle", args=[actividad.pk]))
-        self.assertEqual(actividad.id_casa_vida, self.casa)
-        self.assertEqual(actividad.id_responsable, self.apoyo)
-        registros = dict(Asistencia.objects.values_list("id_participante", "presente"))
-        self.assertEqual(registros, {self.ana.pk: True, self.beto.pk: False})
+    def test_lider_registra_persona_nueva_con_nombre_y_telefono(self):
+        resp = self.registrar(self.lider)
+        self.assertRedirects(resp, reverse("pva:participantes"))
+        p = Participante.objects.get(nombres_apellidos="Diana López")
+        self.assertIsNone(p.documento_identidad)
+        self.assertEqual(p.telefono, "310 987 6543")
+        membresia = p.membresia_activa
+        self.assertEqual((membresia.id_casa_vida, membresia.fecha_ingreso), (self.casa, datetime.date.today()))
+        self.assertTrue(Auditoria.objects.filter(entidad="participante", id_entidad=p.pk, accion="CREAR").exists())
 
-    def test_registro_duplicado_aparece_como_enviado(self):
-        self.registrar(self.lider, [self.ana])
-        resp = self.registrar(self.apoyo, [self.beto])
-        self.assertContains(resp, "ya fue registrada por Lider")
-        self.assertEqual(Actividad.objects.count(), 1)
+    def test_apoyo_tambien_registra(self):
+        self.registrar(self.apoyo, nombres_apellidos="Elena Mora")
+        self.assertEqual(Participante.objects.get(nombres_apellidos="Elena Mora").membresia_activa.id_casa_vida, self.casa)
 
-    def test_no_se_registra_fecha_futura(self):
-        resp = self.registrar(self.lider, [self.ana], fecha=datetime.date.today() + datetime.timedelta(days=1))
+    def test_varias_personas_sin_documento(self):
+        """El documento es opcional: dos personas nuevas sin documento no chocan con la restricción única."""
+        self.registrar(self.lider, nombres_apellidos="Persona Uno")
+        self.registrar(self.lider, nombres_apellidos="Persona Dos")
+        self.assertEqual(Participante.objects.filter(documento_identidad__isnull=True).count(), 2)
+
+    def test_sin_autorizacion_queda_pendiente(self):
+        datos = {"nombres_apellidos": "Fabio Ríos", "telefono": "3001112233"}
+        self.entrar(self.lider)
+        self.client.post(reverse("pva:participante_crear"), datos)
+        self.assertFalse(Participante.objects.get(nombres_apellidos="Fabio Ríos").autorizacion_datos)
+        self.assertContains(self.client.get(reverse("pva:participantes")), "Autorización pendiente")
+
+    def test_nombre_y_telefono_obligatorios(self):
+        resp = self.registrar(self.lider, nombres_apellidos="", telefono="")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(set(resp.context["form"].errors), {"nombres_apellidos", "telefono"})
+        resp = self.registrar(self.lider, telefono="abc")
+        self.assertIn("teléfono válido", resp.context["form"].errors["telefono"][0])
+
+    def test_supervisor_y_pastor_solo_consultan(self):
+        for user in (self.supervisor, self.pastor):
+            self.entrar(user)
+            self.assertEqual(self.client.get(reverse("pva:participante_crear")).status_code, 403)
+            self.assertEqual(self.client.get(reverse("pva:participantes")).status_code, 200)
+
+    def test_el_equipo_corrige_solo_los_de_su_casa(self):
+        self.entrar(self.lider)
+        self.assertEqual(self.client.get(reverse("pva:participante_editar", args=[self.ana.pk])).status_code, 200)
+        self.entrar(self.lider2)
+        self.assertEqual(self.client.get(reverse("pva:participante_editar", args=[self.ana.pk])).status_code, 404)
+        self.entrar(self.supervisor)
+        self.assertEqual(self.client.get(reverse("pva:participante_editar", args=[self.ana.pk])).status_code, 403)
+
+
+class AsistenciaTests(BaseCasasVida):
+    """RF09, RF10, RF14, RN06, RN08: reporte de asistencia por totales de la reunión."""
+
+    def llenar(self, user, **extra):
+        self.entrar(user)
+        return self.client.post(reverse("pva:asistencia_registrar"), self.datos_asistencia(**extra))
+
+    def test_apoyo_llena_el_reporte_y_queda_enviado_al_supervisor(self):
+        resp = self.llenar(self.apoyo)
+        reporte = Reporte.objects.get()
+        self.assertRedirects(resp, reverse("pva:reporte_detalle", args=[reporte.pk]))
+        self.assertEqual(
+            (reporte.id_casa_vida, reporte.id_usuario_envia, reporte.id_usuario_destino, reporte.periodo),
+            (self.casa, self.apoyo, self.supervisor, periodos.semana(datetime.date.today()).etiqueta),
+        )
+        a = reporte.asistencia
+        self.assertEqual((a.fecha, a.id_lider, a.asistentes, a.ninos, a.nuevos, a.dominical), (datetime.date.today(), self.lider, 14, 4, 2, 12))
+        self.assertEqual(a.total_discipulos_escuelas, 3)
+        self.assertIsNone(a.sabado)
+        self.assertTrue(Auditoria.objects.filter(accion="ENVIAR_REPORTE", id_entidad=reporte.pk).exists())
+
+    def test_la_ofrenda_va_al_modulo_de_ofrendas(self):
+        self.llenar(self.lider)
+        a = ReporteAsistencia.objects.get()
+        ofrenda = Ofrenda.objects.get()
+        self.assertEqual(a.id_ofrenda, ofrenda)
+        self.assertEqual((ofrenda.valor, ofrenda.id_casa_vida, ofrenda.fecha), (185000, self.casa, a.fecha))
+
+    def test_ofrenda_en_cero_no_crea_registro(self):
+        self.llenar(self.lider, ofrenda="0")
+        self.assertIsNone(ReporteAsistencia.objects.get().id_ofrenda)
+        self.assertFalse(Ofrenda.objects.exists())
+
+    def test_sabado_solo_en_areas_r21_y_zonar21(self):
+        self.entrar(self.lider)
+        self.assertNotIn("sabado", self.client.get(reverse("pva:asistencia_registrar")).context["form"].fields)
+        for nombre in ("ZONAR21", "ZONR21", "R21"):
+            Area.objects.filter(pk=self.area.pk).update(nombre=nombre)
+            self.assertIn("sabado", self.client.get(reverse("pva:asistencia_registrar")).context["form"].fields, nombre)
+        self.llenar(self.lider, sabado="9")
+        self.assertEqual(ReporteAsistencia.objects.get().sabado, 9)
+
+    def test_semana_ya_reportada_aparece_como_enviada(self):
+        self.llenar(self.lider)
+        resp = self.llenar(self.apoyo)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("ya fue enviado por Lider", resp.context["form"].errors["fecha"][0])
+        self.assertEqual(resp.context["ya_enviado"].id_usuario_envia, self.lider)
+        self.assertEqual(Reporte.objects.count(), 1)
+
+    def test_no_se_reporta_fecha_futura_ni_valores_negativos(self):
+        resp = self.llenar(self.lider, fecha=datetime.date.today() + datetime.timedelta(days=1))
         self.assertContains(resp, "fecha futura")
-        self.assertFalse(Actividad.objects.exists())
+        resp = self.llenar(self.lider, asistentes="-3")
+        self.assertIn("asistentes", resp.context["form"].errors)
+        self.assertFalse(Reporte.objects.exists())
 
-    def test_pastor_y_supervisor_no_registran(self):
+    def test_sin_supervisor_no_se_envia(self):
+        Area.objects.filter(pk=self.area.pk).update(id_supervisor=None)
+        resp = self.llenar(self.lider)
+        self.assertContains(resp, "no tiene Supervisor de Área")
+        self.assertFalse(Reporte.objects.exists())
+
+    def test_pastor_y_supervisor_no_llenan_el_reporte(self):
         for user in (self.pastor, self.supervisor):
             self.entrar(user)
             self.assertEqual(self.client.get(reverse("pva:asistencia_registrar")).status_code, 403)
 
-    def test_participante_de_otra_casa_no_se_registra(self):
-        self.registrar(self.lider, [self.ana, self.carla])
-        self.assertFalse(Asistencia.objects.filter(id_participante=self.carla).exists())
-
     def test_consulta_segun_alcance(self):
-        self.registrar(self.lider, [self.ana])
-        self.registrar(self.lider2, [self.carla])
+        self.reporte_asistencia(self.casa, datetime.date.today(), self.lider, asistentes=10)
+        otro = self.reporte_asistencia(self.casa2, datetime.date.today(), self.lider2, asistentes=8)
         esperado = {self.supervisor: 1, self.supervisor2: 1, self.apoyo: 1, self.pastor: 2}
         for user, total in esperado.items():
             self.entrar(user)
             resp = self.client.get(reverse("pva:asistencia"))
-            self.assertEqual(len(resp.context["actividades"]), total, user.correo)
-        otra = Actividad.objects.get(id_casa_vida=self.casa2)
+            self.assertEqual(len(resp.context["asistencias"]), total, user.correo)
         self.entrar(self.supervisor)
-        self.assertEqual(self.client.get(reverse("pva:asistencia_detalle", args=[otra.pk])).status_code, 404)
+        self.assertEqual(self.client.get(reverse("pva:reporte_detalle", args=[otro.pk])).status_code, 404)
+        self.assertRedirects(
+            self.client.get(reverse("pva:asistencia_detalle", args=[otro.pk])),
+            reverse("pva:reporte_detalle", args=[otro.pk]), target_status_code=404,
+        )
 
     def test_panel_muestra_resumen_real(self):
-        self.registrar(self.lider, [self.ana])
+        self.reporte_asistencia(self.casa, datetime.date.today(), self.lider, asistentes=14)
+        self.reporte_asistencia(self.casa, datetime.date.today() - datetime.timedelta(weeks=1), self.lider, asistentes=10)
         self.entrar(self.supervisor)
-        resp = self.client.get(reverse("pva:panel"))
-        resumen = resp.context["resumen_pva"]
+        resumen = self.client.get(reverse("pva:panel")).context["resumen_pva"]
         self.assertEqual(resumen["participantes"], 2)
-        self.assertEqual(resumen["asistenciaPromedio"], 50)
+        self.assertEqual(resumen["asistenciaPromedio"], 12)

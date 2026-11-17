@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from nucleo.models import Auditoria
 from pva import periodos
-from pva.models import Actividad, Asistencia, CasaVidaMiembro, Reporte, Seguimiento
+from pva.models import CasaVidaMiembro, Reporte, Seguimiento
 
 from .test_casas_vida import BaseCasasVida
 
@@ -84,64 +84,42 @@ class SeguimientoTests(BaseCasasVida):
 
 
 class ReporteCasaTests(BaseCasasVida):
-    """RF14, RN06, CU02."""
+    """RF14, RN06, CU02: el reporte de asistencia es el reporte semanal que recibe el Supervisor."""
 
-    def asistencia(self, casa, fecha, presentes):
-        act = Actividad.objects.create(id_casa_vida=casa, titulo="Reunión", fecha=fecha, id_responsable=self.lider)
-        for p in Participante_de(casa):
-            Asistencia.objects.create(id_actividad=act, id_participante=p, presente=p in presentes)
-        return act
-
-    def enviar(self, user, semana=SEMANA, obs="Todo bien"):
+    def llenar(self, user, fecha=HOY, **extra):
         self.entrar(user)
-        return self.client.post(reverse("pva:reporte_enviar_casa"), {"semana": semana.inicio.isoformat(), "observaciones": obs})
+        return self.client.post(reverse("pva:asistencia_registrar"), self.datos_asistencia(fecha=fecha, **extra))
 
-    def test_apoyo_envia_reporte_al_supervisor(self):
-        self.asistencia(self.casa, SEMANA.inicio, [self.ana])
-        resp = self.enviar(self.apoyo)
-        r = Reporte.objects.get()
-        self.assertRedirects(resp, reverse("pva:reporte_detalle", args=[r.pk]))
-        self.assertEqual(
-            (r.tipo_reporte, r.id_casa_vida, r.id_area, r.id_usuario_envia, r.id_usuario_destino, r.periodo),
-            ("CASA_VIDA", self.casa, self.area, self.apoyo, self.supervisor, SEMANA.etiqueta),
+    def test_enviar_reporte_lleva_al_formulario_de_asistencia(self):
+        self.entrar(self.lider)
+        self.assertRedirects(
+            self.client.get(reverse("pva:reporte_enviar_casa")), reverse("pva:asistencia_registrar")
         )
 
     def test_se_muestra_enviado_al_resto_del_equipo(self):
-        self.asistencia(self.casa, SEMANA.inicio, [self.ana])
-        self.enviar(self.apoyo)
-        resp = self.enviar(self.lider)
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.context["ya_enviado"].id_usuario_envia, self.apoyo)
-        self.assertIn("ya fue enviado por Apoyo", resp.context["form"].errors["semana"][0])
-        self.assertEqual(Reporte.objects.count(), 1)
+        self.llenar(self.apoyo)
+        self.entrar(self.lider)
         resp = self.client.get(reverse("pva:reportes"))
         self.assertEqual(resp.context["reporte_semana"].id_usuario_envia, self.apoyo)
-
-    def test_no_se_envia_semana_sin_asistencia(self):
-        resp = self.enviar(self.lider)
-        self.assertContains(resp, "No hay asistencia registrada en esta semana")
-        self.assertFalse(Reporte.objects.exists())
-
-    def test_semana_reportada_bloquea_nueva_asistencia(self):
-        self.asistencia(self.casa, SEMANA.inicio, [self.ana])
-        self.enviar(self.lider)
-        resp = self.client.post(
-            reverse("pva:asistencia_registrar"),
-            {"titulo": "Otra reunión", "fecha": SEMANA.inicio.isoformat(), f"presente_{self.ana.pk}": "1"},
-        )
-        self.assertContains(resp, "ya fue enviado al Supervisor")
-        self.assertEqual(Actividad.objects.count(), 1)
+        self.assertContains(resp, "Enviado")
 
     def test_pastor_y_supervisor_no_envian_reporte_de_casa(self):
         for user in (self.pastor, self.supervisor):
             self.entrar(user)
-            self.assertEqual(self.client.get(reverse("pva:reporte_enviar_casa")).status_code, 403)
+            self.assertEqual(self.client.get(reverse("pva:asistencia_registrar")).status_code, 403)
+
+    def test_detalle_muestra_el_formato_de_la_iglesia(self):
+        self.llenar(self.lider, observaciones="Buena reunión")
+        reporte = Reporte.objects.get()
+        resp = self.client.get(reverse("pva:reporte_detalle", args=[reporte.pk]))
+        for texto in ("Líderes servidores asistentes", "Asistencia niños", "Ciclo de Conexión",
+                      "Total discípulos escuelas", "Asistencia dominical", "Informe financiero", "$185.000", "Buena reunión"):
+            self.assertContains(resp, texto)
+        self.assertNotContains(resp, "Asistencia sábado")
 
     def test_consulta_de_reportes_por_alcance(self):
-        self.asistencia(self.casa, SEMANA.inicio, [self.ana])
-        self.asistencia(self.casa2, SEMANA.inicio, [self.carla])
-        self.enviar(self.lider)
-        self.enviar(self.lider2)
+        self.llenar(self.lider)
+        self.llenar(self.lider2)
         otro = Reporte.objects.get(id_casa_vida=self.casa2)
         self.entrar(self.supervisor)
         resp = self.client.get(reverse("pva:reportes"))
@@ -151,35 +129,25 @@ class ReporteCasaTests(BaseCasasVida):
         self.assertEqual(self.client.get(reverse("pva:reporte_detalle", args=[otro.pk])).status_code, 200)
 
 
-def Participante_de(casa):
-    return [m.id_participante for m in CasaVidaMiembro.objects.filter(id_casa_vida=casa).select_related("id_participante")]
-
-
-class ReporteGeneralTests(ReporteCasaTests.__bases__[0]):
+class ReporteGeneralTests(BaseCasasVida):
     """RF13, RN07, CU03."""
 
     def preparar_reportes_casa(self):
-        mes = periodos.mes(SEMANA_PASADA.inicio)
-        act = Actividad.objects.create(id_casa_vida=self.casa, titulo="Reunión", fecha=SEMANA_PASADA.inicio, id_responsable=self.lider)
-        Asistencia.objects.create(id_actividad=act, id_participante=self.ana, presente=True)
-        Asistencia.objects.create(id_actividad=act, id_participante=self.beto, presente=False)
-        Reporte.objects.create(
-            tipo_modulo="CASA_VIDA", tipo_reporte="CASA_VIDA", id_usuario_envia=self.lider, id_usuario_destino=self.supervisor,
-            id_casa_vida=self.casa, id_area=self.area, periodo=SEMANA_PASADA.etiqueta,
-            fecha_inicio=SEMANA_PASADA.inicio, fecha_fin=SEMANA_PASADA.fin,
-        )
-        return mes
+        self.reporte_asistencia(self.casa, SEMANA_PASADA.inicio, self.lider, asistentes=14, nuevos=2, dominical=12, ofrenda=100000)
+        return periodos.mes(SEMANA_PASADA.inicio)
 
     def test_supervisor_envia_reporte_general(self):
         mes = self.preparar_reportes_casa()
         self.entrar(self.supervisor)
+        resp = self.client.get(reverse("pva:reporte_enviar_general"), {"mes": mes.inicio.isoformat()})
+        self.assertEqual(resp.context["total"]["asistentes"], 14)
         resp = self.client.post(reverse("pva:reporte_enviar_general"), {"mes": mes.inicio.isoformat(), "observaciones": "Buen mes"})
         general = Reporte.objects.get(tipo_reporte="GENERAL_AREA")
         self.assertRedirects(resp, reverse("pva:reporte_detalle", args=[general.pk]))
         self.assertEqual((general.id_area, general.periodo, general.id_usuario_envia), (self.area, mes.etiqueta, self.supervisor))
         self.assertEqual(Reporte.objects.get(tipo_reporte="CASA_VIDA").id_reporte_general, general)
-        resp = self.client.get(reverse("pva:reporte_detalle", args=[general.pk]))
-        self.assertEqual(resp.context["total"]["porcentaje"], 50)
+        total = self.client.get(reverse("pva:reporte_detalle", args=[general.pk])).context["total"]
+        self.assertEqual((total["reuniones"], total["asistentes"], total["nuevos"], total["ofrenda"]), (1, 14, 2, 100000))
 
     def test_no_se_envia_reporte_general_vacio(self):
         self.entrar(self.supervisor)
@@ -211,18 +179,25 @@ class GenerarReporteTests(BaseCasasVida):
     """RF16, RN19, CU04."""
 
     def test_pastor_genera_reporte_mensual(self):
-        act = Actividad.objects.create(id_casa_vida=self.casa, titulo="Reunión", fecha=HOY, id_responsable=self.lider)
-        Asistencia.objects.create(id_actividad=act, id_participante=self.ana, presente=True)
-        Asistencia.objects.create(id_actividad=act, id_participante=self.beto, presente=True)
+        self.reporte_asistencia(self.casa, HOY, self.lider, asistentes=14, ninos=4, nuevos=2, pasos_vida=2,
+                                seminario_biblico=1, dominical=12, ofrenda=185000)
         Seguimiento.objects.create(id_participante=self.ana, id_usuario=self.pastor, observacion="x", tipo_modulo="CASA_VIDA")
         self.entrar(self.pastor)
         resp = self.client.get(reverse("pva:reporte_generar"), {"tipo": "mensual", "fecha": HOY.isoformat()})
         filas = {f["casa"].pk: f for f in resp.context["filas"]}
-        self.assertEqual(filas[self.casa.pk]["porcentaje"], 100)
-        self.assertEqual(filas[self.casa.pk]["seguimientos"], 1)
-        self.assertEqual(filas[self.casa.pk]["participantes"], 2)
-        self.assertEqual(filas[self.casa2.pk]["actividades"], 0)
-        self.assertEqual(resp.context["total"]["actividades"], 1)
+        casa = filas[self.casa.pk]
+        self.assertEqual((casa["reuniones"], casa["asistentes"], casa["ninos"], casa["discipulos"], casa["ofrenda"]), (1, 14, 4, 3, 185000))
+        self.assertEqual(casa["seguimientos"], 1)
+        self.assertEqual(filas[self.casa2.pk]["reuniones"], 0)
+        self.assertEqual(resp.context["total"]["asistentes"], 14)
+        self.assertContains(resp, "$185.000")
+
+    def test_personas_nuevas_del_periodo(self):
+        CasaVidaMiembro.objects.filter(id_participante=self.ana).update(fecha_ingreso=HOY)
+        CasaVidaMiembro.objects.filter(id_participante=self.beto).update(fecha_ingreso=HOY.replace(year=HOY.year - 1))
+        self.entrar(self.pastor)
+        resp = self.client.get(reverse("pva:reporte_generar"), {"tipo": "mensual", "fecha": HOY.isoformat(), "casa": self.casa.pk})
+        self.assertEqual(resp.context["filas"][0]["personas"], 1)
 
     def test_filtro_por_area(self):
         self.entrar(self.pastor)

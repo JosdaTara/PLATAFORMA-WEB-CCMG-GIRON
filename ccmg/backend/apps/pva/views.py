@@ -8,7 +8,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.views.generic import CreateView, DetailView, FormView, ListView, UpdateView, View
+from django.views.generic import CreateView, DetailView, FormView, ListView, RedirectView, UpdateView, View
 
 from nucleo.mixins import ModuleRequiredMixin, PastorRequiredMixin
 from nucleo.permissions import module_required, puede_gestionar_ofrendas
@@ -24,8 +24,11 @@ from nucleo.utils import (
     sesion_js,
 )
 
+from ofrendas.models import Ofrenda
+
+from . import periodos
 from .alcance import (
-    actividades_visibles,
+    asistencias_visibles,
     casa_para_reportar,
     casas_visibles,
     es_pastor,
@@ -33,17 +36,18 @@ from .alcance import (
     rol_de,
     seguimientos_visibles,
 )
-from .forms import AreaForm, CasaVidaForm, ParticipanteForm, RegistroAsistenciaForm
+from .forms import AreaForm, CasaVidaForm, PersonaNuevaForm, ReporteAsistenciaForm
 from .models import (
     ACTIVO,
     INACTIVO,
     Actividad,
     Area,
-    Asistencia,
     CasaVida,
     CasaVidaEquipo,
     CasaVidaMiembro,
     Participante,
+    Reporte,
+    ReporteAsistencia,
 )
 
 ROLES_NOMBRE = ROLES_ETIQUETA
@@ -56,7 +60,7 @@ def menu_casas(user, seccion):
     todos = [ROLES_PASTOR, ROLES_SUPERVISOR, ROLES_LIDER, ROLES_APOYO]
     items = [
         ("inicio", "Inicio", "speedometer2", panel + "#inicio", todos),
-        ("participantes", "Participantes", "people", reverse("pva:participantes"), todos),
+        ("participantes", "Personas nuevas", "person-plus", reverse("pva:participantes"), todos),
         ("casas", "Casas de Vida", "houses", reverse("pva:casas"), todos),
         ("areas", "Áreas", "map", reverse("pva:areas"), [ROLES_PASTOR]),
         ("importar", "Importar datos", "upload", reverse("pva:importar"), [ROLES_PASTOR]),
@@ -137,21 +141,23 @@ class CambiarEstadoView(PastorRequiredMixin, View):
 def panel_casas(request):
     user = request.user
     casas = casas_visibles(user)
-    actividades = actividades_visibles(user).annotate(
-        presentes=Count("asistencia", filter=Q(asistencia__presente=True)),
-        total=Count("asistencia"),
-    ).order_by("-fecha", "-id_actividad")
+    asistencias = asistencias_visibles(user).order_by("-fecha", "-id_reporte")
+    reuniones = list(asistencias.values_list("asistentes", flat=True))
     seguimientos = seguimientos_visibles(user).order_by("-fecha", "-id_seguimiento")
-    total_presentes = sum(a.presentes for a in actividades)
-    total_registros = sum(a.total for a in actividades)
     resumen = {
         "participantes": participantes_visibles(user).filter(estado=ACTIVO).count(),
         "casas": casas.count(),
         "casasActivas": casas.filter(estado=ACTIVO).count(),
-        "asistenciaPromedio": round(total_presentes * 100 / total_registros) if total_registros else 0,
+        # Promedio de asistentes por reunión reportada (la asistencia ya no se marca por persona).
+        "asistenciaPromedio": round(sum(reuniones) / len(reuniones)) if reuniones else 0,
         "actividades": [
-            {"casa": a.id_casa_vida.nombre, "fecha": a.fecha.isoformat(), "tipo": a.titulo, "asistentes": a.presentes}
-            for a in actividades[:4]
+            {
+                "casa": a.id_reporte.id_casa_vida.nombre,
+                "fecha": a.fecha.isoformat(),
+                "nuevos": a.nuevos,
+                "asistentes": a.asistentes,
+            }
+            for a in asistencias[:4]
         ],
         "seguimientosAbiertos": seguimientos.exclude(estado="CERRADO").count(),
         "seguimientos": [
@@ -277,18 +283,18 @@ class CasaDetailView(PanelCasasMixin, DetailView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         casa = self.object
-        ctx["miembros"] = Participante.objects.filter(
-            estado=ACTIVO,
-            casavidamiembro__id_casa_vida=casa,
-            casavidamiembro__estado=ACTIVO,
+        ctx["miembros"] = (
+            CasaVidaMiembro.objects.filter(id_casa_vida=casa, estado=ACTIVO, id_participante__estado=ACTIVO)
+            .select_related("id_participante")
+            .order_by("-fecha_ingreso", "id_participante__nombres_apellidos")
         )
         ctx["equipo"] = CasaVidaEquipo.objects.filter(id_casa_vida=casa, activo=True).select_related("id_usuario")
-        ctx["actividades"] = (
-            Actividad.objects.filter(id_casa_vida=casa)
-            .annotate(presentes=Count("asistencia", filter=Q(asistencia__presente=True)), total=Count("asistencia"))
-            .select_related("id_responsable")
-            .order_by("-fecha", "-id_actividad")[:5]
+        ctx["asistencias"] = (
+            ReporteAsistencia.objects.filter(id_reporte__id_casa_vida=casa)
+            .select_related("id_reporte__id_usuario_envia")
+            .order_by("-fecha")[:5]
         )
+        ctx["puede_registrar_persona"] = casa_para_reportar(self.request.user) == casa
         return ctx
 
 
@@ -331,7 +337,7 @@ class CasaEstadoView(CambiarEstadoView):
     nombre = "Casa de Vida"
 
 
-# ----------------------------------------------------------------- Participantes
+# ----------------------------------------------------------------- Personas nuevas
 
 
 def _con_casa_actual(qs):
@@ -345,6 +351,8 @@ def _con_casa_actual(qs):
 
 
 class ParticipanteListView(PanelCasasMixin, ListView):
+    """Personas nuevas que han llegado a las Casas de Vida, según el alcance del rol (RF06)."""
+
     template_name = "pva/participantes_lista.html"
     context_object_name = "participantes"
     paginate_by = 25
@@ -356,18 +364,19 @@ class ParticipanteListView(PanelCasasMixin, ListView):
         g = self.request.GET
         q = g.get("q", "").strip()
         if q:
-            qs = qs.filter(Q(nombres_apellidos__icontains=q) | Q(documento_identidad__icontains=q))
+            qs = qs.filter(Q(nombres_apellidos__icontains=q) | Q(telefono__icontains=q))
         casa = g.get("casa")
         if casa and casa.isdigit():
             qs = qs.filter(casavidamiembro__id_casa_vida=casa, casavidamiembro__estado=ACTIVO)
         if es_pastor(user) and g.get("estado") in (ACTIVO, INACTIVO):
             qs = qs.filter(estado=g["estado"])
-        return _con_casa_actual(qs.distinct().order_by("nombres_apellidos"))
+        return _con_casa_actual(qs.distinct().order_by("-creado_en", "nombres_apellidos"))
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["casas_filtro"] = casas_visibles(self.request.user)
         ctx["filtros"] = self.request.GET
+        ctx["casa_registro"] = casa_para_reportar(self.request.user)
         params = self.request.GET.copy()
         params.pop("page", None)
         ctx["query_sin_pagina"] = params.urlencode()
@@ -386,11 +395,7 @@ class ParticipanteDetailView(PanelCasasMixin, DetailView):
         ctx = super().get_context_data(**kwargs)
         p = self.object
         ctx["historial_casas"] = p.casavidamiembro_set.select_related("id_casa_vida").order_by("-fecha_ingreso")
-        ctx["asistencias"] = (
-            Asistencia.objects.filter(id_participante=p, id_actividad__in=actividades_visibles(self.request.user))
-            .select_related("id_actividad", "id_actividad__id_casa_vida")
-            .order_by("-id_actividad__fecha")[:10]
-        )
+        ctx["puede_editar"] = puede_editar_persona(self.request.user, p)
         ctx["ve_seguimiento"] = rol_de(self.request.user) in (ROLES_PASTOR, ROLES_SUPERVISOR, ROLES_LIDER)
         ctx["seguimientos"] = seguimientos_visibles(self.request.user).filter(id_participante=p)[:10]
         return ctx
@@ -411,72 +416,116 @@ def asignar_casa(participante, casa):
         membresia.save(update_fields=["estado", "fecha_ingreso"])
 
 
-class ParticipanteFormMixin(PastorCasasMixin):
+def puede_editar_persona(user, persona):
+    """El Pastor corrige cualquier registro; el Líder y su equipo, los de su Casa de Vida."""
+    if es_pastor(user):
+        return True
+    casa = casa_para_reportar(user)
+    membresia = persona.membresia_activa
+    return bool(casa and membresia and membresia.id_casa_vida_id == casa.pk)
+
+
+class PersonaNuevaCreateView(PanelCasasMixin, CreateView):
+    """El Líder o un usuario de apoyo toman los datos de una persona nueva que llega (RF05, RN09).
+
+    En la Casa de Vida no se lleva una lista fija de participantes: las personas vienen y van.
+    Solo se registra a quien llega por primera vez, con su nombre y teléfono.
+    """
+
     model = Participante
-    form_class = ParticipanteForm
+    form_class = PersonaNuevaForm
     template_name = "pva/formulario.html"
     seccion = "participantes"
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            if rol_de(request.user) not in (ROLES_LIDER, ROLES_APOYO):
+                raise PermissionDenied("Las personas nuevas las registra el Líder o su equipo en la Casa de Vida.")
+            self.casa = casa_para_reportar(request.user)
+            if self.casa is None:
+                messages.error(request, "No tienes una Casa de Vida activa asignada.")
+                return redirect("pva:participantes")
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         with transaction.atomic():
-            participante = form.save()
-            asignar_casa(participante, form.cleaned_data["casa_vida"])
-            registrar_auditoria(self.request, self.accion, participante)
-        messages.success(self.request, self.mensaje)
-        return redirect("pva:participante_detalle", pk=participante.pk)
+            persona = form.save()
+            CasaVidaMiembro.objects.create(
+                id_casa_vida=self.casa, id_participante=persona, fecha_ingreso=datetime.date.today()
+            )
+            registrar_auditoria(self.request, "CREAR", persona)
+        messages.success(
+            self.request, f"Se registró a {persona.nombres_apellidos} como persona nueva de {self.casa.nombre}."
+        )
+        return redirect("pva:participantes")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx.update(titulo=self.titulo, volver=reverse("pva:participantes"))
-        if not CasaVida.objects.filter(estado=ACTIVO).exists():
-            ctx["aviso"] = "Primero registre al menos una Casa de Vida activa para asociar al participante."
+        ctx.update(
+            titulo="Registrar persona nueva",
+            subtitulo=f"Casa de Vida {self.casa.nombre} · {datetime.date.today():%d/%m/%Y}",
+            volver=reverse("pva:participantes"),
+        )
         return ctx
 
 
-class ParticipanteCreateView(ParticipanteFormMixin, CreateView):
-    titulo = "Nuevo participante"
-    accion = "CREAR"
-    mensaje = "Participante registrado correctamente."
+class PersonaNuevaUpdateView(PanelCasasMixin, UpdateView):
+    model = Participante
+    form_class = PersonaNuevaForm
+    template_name = "pva/formulario.html"
+    seccion = "participantes"
 
+    def get_queryset(self):
+        return participantes_visibles(self.request.user)
 
-class ParticipanteUpdateView(ParticipanteFormMixin, UpdateView):
-    titulo = "Editar participante"
-    accion = "ACTUALIZAR"
-    mensaje = "Participante actualizado correctamente."
+    def get_object(self, queryset=None):
+        persona = super().get_object(queryset)
+        if not puede_editar_persona(self.request.user, persona):
+            raise PermissionDenied("Solo el Pastor o el equipo de su Casa de Vida corrigen estos datos.")
+        return persona
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            persona = form.save()
+            registrar_auditoria(self.request, "ACTUALIZAR", persona)
+        messages.success(self.request, "Datos actualizados correctamente.")
+        return redirect("pva:participante_detalle", pk=persona.pk)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(titulo="Editar persona", volver=reverse("pva:participante_detalle", args=[self.object.pk]))
+        return ctx
 
 
 class ParticipanteEstadoView(CambiarEstadoView):
     model = Participante
     url_retorno = reverse_lazy("pva:participantes")
-    nombre = "Participante"
+    nombre = "Registro de"
 
 
-# ----------------------------------------------------------------- Asistencia
+# ----------------------------------------------------------------- Asistencia (reporte por totales)
 
 
 class AsistenciaListView(PanelCasasMixin, ListView):
-    """Consulta de asistencia según el alcance del rol (RF10)."""
+    """Reportes de asistencia de las Casas de Vida según el alcance del rol (RF10)."""
 
     template_name = "pva/asistencia_lista.html"
-    context_object_name = "actividades"
+    context_object_name = "asistencias"
     paginate_by = 20
     seccion = "asistencia"
 
     def get_queryset(self):
-        qs = actividades_visibles(self.request.user)
+        qs = asistencias_visibles(self.request.user)
         g = self.request.GET
         casa = g.get("casa")
         if casa and casa.isdigit():
-            qs = qs.filter(id_casa_vida=casa)
+            qs = qs.filter(id_reporte__id_casa_vida=casa)
         for campo, lookup in (("desde", "fecha__gte"), ("hasta", "fecha__lte")):
             try:
                 qs = qs.filter(**{lookup: datetime.date.fromisoformat(g.get(campo, ""))})
             except ValueError:
                 pass
-        return qs.annotate(
-            presentes=Count("asistencia", filter=Q(asistencia__presente=True)),
-            total=Count("asistencia"),
-        ).order_by("-fecha", "-id_actividad")
+        return qs.order_by("-fecha", "-id_reporte")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -489,60 +538,29 @@ class AsistenciaListView(PanelCasasMixin, ListView):
         return ctx
 
 
-class AsistenciaDetailView(PanelCasasMixin, DetailView):
-    template_name = "pva/asistencia_detalle.html"
-    context_object_name = "actividad"
-    seccion = "asistencia"
+class AsistenciaDetailView(RedirectView):
+    """El detalle de la asistencia es el del reporte semanal que la contiene."""
 
-    def get_queryset(self):
-        return actividades_visibles(self.request.user)
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx["asistencias"] = (
-            self.object.asistencia_set.select_related("id_participante")
-            .order_by("id_participante__nombres_apellidos")
-        )
-        ctx["presentes"] = sum(1 for a in ctx["asistencias"] if a.presente)
-        return ctx
+    pattern_name = "pva:reporte_detalle"
 
 
 class RegistrarAsistenciaView(PanelCasasMixin, FormView):
-    """El Líder y los usuarios de apoyo registran la asistencia de su Casa de Vida (RF09, RN05, RN08)."""
+    """El Líder o un usuario de apoyo llenan el reporte de asistencia y queda enviado al Supervisor
+    (RF09, RF14, RN05, RN06). La ofrenda se registra también en el módulo de Ofrendas (RF17)."""
 
     template_name = "pva/asistencia_registrar.html"
-    form_class = RegistroAsistenciaForm
+    form_class = ReporteAsistenciaForm
     seccion = "asistencia"
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and rol_de(request.user) not in (ROLES_LIDER, ROLES_APOYO):
-            raise PermissionDenied("Solo el Líder y los usuarios de apoyo registran asistencia.")
+        if request.user.is_authenticated:
+            if rol_de(request.user) not in (ROLES_LIDER, ROLES_APOYO):
+                raise PermissionDenied("Solo el Líder y los usuarios de apoyo llenan el reporte de asistencia.")
+            self.casa = casa_para_reportar(request.user)
+            if self.casa is None:
+                messages.error(request, "No tienes una Casa de Vida activa asignada para reportar asistencia.")
+                return redirect("pva:asistencia")
         return super().dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        if self.casa is None:
-            messages.error(request, "No tienes una Casa de Vida activa asignada para registrar asistencia.")
-            return redirect("pva:asistencia")
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        if self.casa is None:
-            messages.error(request, "No tienes una Casa de Vida activa asignada para registrar asistencia.")
-            return redirect("pva:asistencia")
-        return super().post(request, *args, **kwargs)
-
-    @property
-    def casa(self):
-        if not hasattr(self, "_casa"):
-            self._casa = casa_para_reportar(self.request.user)
-        return self._casa
-
-    def miembros(self):
-        return Participante.objects.filter(
-            estado=ACTIVO,
-            casavidamiembro__id_casa_vida=self.casa,
-            casavidamiembro__estado=ACTIVO,
-        )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -551,39 +569,59 @@ class RegistrarAsistenciaView(PanelCasasMixin, FormView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["casa"] = self.casa
-        ctx["miembros"] = self.miembros()
-        marcados = self.request.POST if self.request.method == "POST" else None
-        ctx["marcados"] = {
-            p.pk for p in ctx["miembros"] if marcados is None or marcados.get(f"presente_{p.pk}")
-        }
+        semana = periodos.semana(datetime.date.today())
+        ctx.update(
+            casa=self.casa,
+            supervisor=self.casa.supervisor,
+            semana=semana,
+            ya_enviado=Reporte.objects.filter(
+                tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=semana.etiqueta
+            ).select_related("id_usuario_envia").first(),
+        )
         return ctx
 
     def form_valid(self, form):
-        miembros = list(self.miembros())
-        if not miembros:
-            form.add_error(None, "La Casa de Vida no tiene participantes activos para registrar asistencia.")
+        supervisor = self.casa.supervisor
+        if supervisor is None:
+            form.add_error(None, "La Casa de Vida no tiene Supervisor de Área asignado. Comuníquese con el Pastor.")
             return self.form_invalid(form)
+        datos = form.cleaned_data
+        semana = periodos.semana(datos["fecha"])
         user = self.request.user
         with transaction.atomic():
-            actividad = Actividad.objects.create(
+            reporte = Reporte.objects.create(
                 tipo_modulo=Actividad.TIPO_CASA_VIDA,
+                tipo_reporte=Reporte.CASA_VIDA,
+                id_usuario_envia=user,
+                id_usuario_destino=supervisor,
                 id_casa_vida=self.casa,
-                titulo=form.cleaned_data["titulo"],
-                fecha=form.cleaned_data["fecha"],
-                descripcion=form.cleaned_data["descripcion"] or None,
-                id_responsable=user,
+                id_area=self.casa.id_area,
+                periodo=semana.etiqueta,
+                fecha_inicio=semana.inicio,
+                fecha_fin=semana.fin,
+                observaciones=datos["observaciones"] or None,
             )
-            Asistencia.objects.bulk_create(
-                Asistencia(
-                    id_actividad=actividad,
-                    id_participante=p,
-                    presente=bool(self.request.POST.get(f"presente_{p.pk}")),
-                    registrado_por=user,
+            ofrenda = None
+            if datos["ofrenda"]:
+                ofrenda = Ofrenda.objects.create(
+                    fecha=datos["fecha"],
+                    concepto=f"Ofrenda Casa de Vida {self.casa.nombre}",
+                    valor=datos["ofrenda"],
+                    id_casa_vida=self.casa,
+                    id_usuario_registro=user,
+                    observacion="Registrada desde el reporte de asistencia.",
                 )
-                for p in miembros
+            campos = [c for c, _ in ReporteAsistencia.INDICADORES + ReporteAsistencia.ESCUELAS + ReporteAsistencia.CULTOS]
+            ReporteAsistencia.objects.create(
+                id_reporte=reporte,
+                fecha=datos["fecha"],
+                id_lider=self.casa.id_lider,
+                ofrenda=datos["ofrenda"],
+                id_ofrenda=ofrenda,
+                **{c: datos[c] for c in campos if c in datos},
             )
-            registrar_auditoria(self.request, "REGISTRAR_ASISTENCIA", actividad)
-        presentes = sum(1 for p in miembros if self.request.POST.get(f"presente_{p.pk}"))
-        messages.success(self.request, f"Asistencia registrada: {presentes} de {len(miembros)} presentes.")
-        return redirect("pva:asistencia_detalle", pk=actividad.pk)
+            registrar_auditoria(self.request, "ENVIAR_REPORTE", reporte)
+        messages.success(
+            self.request, f"Reporte de asistencia del {datos['fecha']:%d/%m/%Y} enviado al Supervisor de Área."
+        )
+        return redirect("pva:reporte_detalle", pk=reporte.pk)

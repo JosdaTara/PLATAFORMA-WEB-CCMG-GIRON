@@ -291,7 +291,7 @@ El usuario podrá ingresar a la plataforma mediante sus credenciales de acceso. 
 
 ### Gestión de Participantes
 
-El Pastor podrá registrar, consultar y actualizar la información de los participantes vinculados al Plan Vida Abundante, de acuerdo con los datos definidos por la iglesia. Los demás roles solo consultarán la información que corresponda a su Casa de Vida, área o proceso. El Pastor también podrá importar los datos que hoy se mantienen en hojas de cálculo y formularios de Google, y desactivar registros en lugar de eliminarlos.
+En las Casas de Vida no se lleva una lista fija de participantes, porque las personas vienen y van: el Líder de Casa de Vida y los usuarios de apoyo solo registran a cada persona nueva que llega, con su nombre y su número de teléfono, para poder hacerle seguimiento. El Pastor puede corregir esos datos y desactivarlos, y los demás roles los consultan según su Casa de Vida o área. Los participantes de las Escuelas de Formación los registra el Coordinador con sus datos completos. El Pastor también podrá importar los datos que hoy se mantienen en hojas de cálculo y formularios de Google, y desactivar registros en lugar de eliminarlos.
 
 ### Gestión de Áreas
 
@@ -303,7 +303,7 @@ El Pastor podrá registrar, consultar y actualizar la información de las Casas 
 
 ### Gestión de Asistencia
 
-El Líder de Casa de Vida, el Aprendiz, el Anfitrión y el Maestro de Niños podrán llenar y enviar al Supervisor de Área los reportes de asistencia de su Casa de Vida, indicando la actividad, la fecha y los participantes. El Pastor, el Supervisor de Área y el Coordinador de Formación podrán consultar la asistencia que corresponda a su alcance.
+El Líder de Casa de Vida, el Aprendiz, el Anfitrión y el Maestro de Niños podrán llenar y enviar al Supervisor de Área el reporte de asistencia de su Casa de Vida con los totales de la reunión, sin marcar persona por persona: fecha, nombre del líder (automático), líderes servidores asistentes, asistentes, asistencia de niños, asistencia de nuevos, conversiones, reconciliaciones, ausentes, asistencia a las Escuelas de Formación (Pasos de Vida, Ciclo de Conexión, Módulo de Liderazgo, Seminario Bíblico y total de discípulos, que se calcula solo), asistencia VEA, asistencia del sábado (solo las Áreas R21 y ZONAR21), asistencia dominical y, como informe financiero, el valor total de la ofrenda. En las Escuelas de Formación el Coordinador sigue registrando la asistencia de cada inscrito. El Pastor, el Supervisor de Área y el Coordinador de Formación podrán consultar la asistencia que corresponda a su alcance.
 
 ### Gestión de Escuelas de Formación
 
@@ -398,8 +398,9 @@ En esta sección se van a presentar las palabras clave por decirlo de alguna man
 | **PostgreSQL** | Sistema de gestión de bases de datos relacional que se contempla dentro de la propuesta tecnológica del proyecto |
 | **Frontend** | Parte de la plataforma web con la que interactúa directamente el usuario, incluyendo las páginas, formularios, botones, gráficos y demás elementos visuales. |
 | **Backend** | Parte de la plataforma encargada de procesar la información, gestionar las solicitudes, comunicarse con la base de datos y realizar la integración con servicios externos. |
-| **Reporte de asistencia** | Documento que el Líder de Casa de Vida o un usuario de apoyo llena con la actividad, la fecha y los participantes que asistieron, y envía al Supervisor de Área. Cuando uno de ellos lo envía, aparece como enviado para todo el equipo de la Casa de Vida. |
+| **Reporte de asistencia** | Formato semanal que el Líder de Casa de Vida o un usuario de apoyo llena con los totales de la reunión (fecha, nombre del líder (automático), líderes servidores asistentes, asistentes, asistencia de niños, asistencia de nuevos, conversiones, reconciliaciones, ausentes, asistencia a las Escuelas de Formación (Pasos de Vida, Ciclo de Conexión, Módulo de Liderazgo, Seminario Bíblico y total de discípulos, que se calcula solo), asistencia VEA, asistencia del sábado (solo las Áreas R21 y ZONAR21), asistencia dominical y, como informe financiero, el valor total de la ofrenda) y envía al Supervisor de Área. La ofrenda queda registrada también en el módulo de Ofrendas. Cuando uno de ellos lo envía, aparece como enviado para todo el equipo de la Casa de Vida. |
 | **Pastor** | Responsable del servicio Plan Vida Abundante y Administrador del Sistema. Gestiona usuarios, roles, Casas de Vida, ofrendas y reportes, y es el último receptor de los reportes: no los envía. |
+| **Persona nueva** | Persona que llega por primera vez a una Casa de Vida. Se registra solo con su nombre y su número de teléfono; la autorización de tratamiento de datos queda pendiente si aún no la ha dado (RN23). |
 | **Supervisor de Área** | Rol que consulta, en modo de solo lectura, las Casas de Vida de su área, recibe los reportes de asistencia de los líderes y envía al Pastor un reporte general de sus Casas de Vida. |
 | **Líder de Casa de Vida** | Responsable de una Casa de Vida. Consulta la información de su Casa de Vida, sin poder editarla, y llena y envía los reportes de asistencia al Supervisor de Área. |
 | **Aprendiz** | Usuario de apoyo de una Casa de Vida. Consulta la información de su Casa de Vida y, igual que el Líder, llena y envía los reportes de asistencia al Supervisor de Área. |
@@ -463,13 +464,13 @@ Entre las funcionalidades principales se contemplan:
 
 - **Gestión de usuarios:** permitir el registro, consulta y administración de los usuarios que tendrán acceso a la plataforma, de acuerdo con el rol asignado.
 
-- **Gestión de participantes:** registrar y consultar la información de las personas vinculadas al Plan Vida Abundante, permitiendo realizar seguimiento a su participación dentro de las diferentes actividades.
+- **Gestión de participantes:** registrar con nombre y teléfono a las personas nuevas que llegan a las Casas de Vida, y con sus datos completos a los participantes de las Escuelas de Formación, para hacerles seguimiento.
 
 - **Gestión de Casas de Vida:** administrar la información de las Casas de Vida, sus integrantes, responsables y actividades realizadas.
 
 - **Seguimiento de Casas de Vida:** permitir al Supervisor de Área y al Líder de Casa de Vida consultar, en modo de solo lectura, la información relacionada con el funcionamiento de las Casas de Vida que les corresponden, y recibir o enviar los reportes de asistencia según su rol.
 
-- **Gestión de asistencia:** registrar y consultar la asistencia de los participantes a las actividades correspondientes.
+- **Gestión de asistencia:** registrar y consultar el reporte de asistencia de cada Casa de Vida con los totales de la reunión, y la asistencia de cada inscrito en las Escuelas de Formación.
 
 - **Gestión de Escuelas de Formación:** administrar la información relacionada con las diferentes escuelas, sus participantes, responsables y actividades de formación.
 
@@ -521,7 +522,7 @@ La Figura 1a es el diagrama general de casos de uso de la plataforma. Los actore
 
 *Figura 1f. Casos de uso: módulo Escuelas de Formación*
 
-Las Figuras 2a a 2e presentan el modelo entidad-relación de la base de datos, en notación de pata de gallo. La Figura 2a muestra las quince entidades por módulo con sus claves (PK, FK y UK); las Figuras 2b a 2e detallan cada módulo. La negrita indica atributo obligatorio, las restricciones aparecen al pie de cada tabla y el borde punteado, una entidad detallada en otra figura. Cada relación une la clave primaria de la entidad del lado «uno» con la clave foránea de la entidad del lado «muchos», y se dibuja sin cruzar otras relaciones. Las relaciones de muchos a muchos se resuelven con entidades asociativas (CASA_VIDA_EQUIPO, CASA_VIDA_MIEMBRO, ASISTENCIA e INSCRIPCION_FORMACION). El modelo no guarda el Supervisor en la Casa de Vida: se obtiene de su Área (RN03), lo que evita una dependencia transitiva (casa → área → supervisor) y mantiene la tercera forma normal. El esquema completo está en [`ccmg/backend/base_datos/esquema.sql`](../ccmg/backend/base_datos/esquema.sql).
+Las Figuras 2a a 2e presentan el modelo entidad-relación de la base de datos, en notación de pata de gallo. La Figura 2a muestra las entidades por módulo con sus claves (PK, FK y UK); las Figuras 2b a 2e detallan cada módulo. La negrita indica atributo obligatorio, las restricciones aparecen al pie de cada tabla y el borde punteado, una entidad detallada en otra figura. Cada relación une la clave primaria de la entidad del lado «uno» con la clave foránea de la entidad del lado «muchos», y se dibuja sin cruzar otras relaciones. Las relaciones de muchos a muchos se resuelven con entidades asociativas (CASA_VIDA_EQUIPO, CASA_VIDA_MIEMBRO, ASISTENCIA e INSCRIPCION_FORMACION). El reporte de asistencia de las Casas de Vida guarda sus totales en REPORTE_ASISTENCIA, relacionada 1 a 1 con REPORTE (su clave primaria es también la clave foránea al reporte) y, de forma opcional, con la OFRENDA que creó; la entidad ASISTENCIA queda para las Escuelas de Formación, donde sí se registra a cada inscrito. El modelo no guarda el Supervisor en la Casa de Vida: se obtiene de su Área (RN03), lo que evita una dependencia transitiva (casa → área → supervisor) y mantiene la tercera forma normal. El esquema completo está en [`ccmg/backend/base_datos/esquema.sql`](../ccmg/backend/base_datos/esquema.sql).
 
 ![Figura 2a](diagramas/entidad_relacion/der-00-general.png)
 
@@ -561,7 +562,7 @@ Los usuarios del sistema estarán conformados por integrantes de la Iglesia CCMG
 | Tipo de usuario | Supervisor de Área |
 | Formación | N/A |
 | Habilidades | Manejo básico de dispositivos tecnológicos, navegación web. |
-| Actividades | Usuario que supervisa, en modo de solo lectura, únicamente las Casas de Vida de su área; no puede modificarlas, pues esa función corresponde al Pastor. Consulta la información de cada Casa de Vida y de sus participantes, recibe los reportes del Líder de Casa de Vida y de su equipo, y envía al Pastor un reporte general de las Casas de Vida que tiene asignadas. |
+| Actividades | Usuario que supervisa, en modo de solo lectura, únicamente las Casas de Vida de su área; no puede modificarlas, pues esa función corresponde al Pastor. Consulta la información de cada Casa de Vida y de las personas nuevas registradas en ella, recibe los reportes del Líder de Casa de Vida y de su equipo, y envía al Pastor un reporte general de las Casas de Vida que tiene asignadas. |
 
 | | |
 |---|---|
@@ -619,9 +620,9 @@ Los usuarios del sistema estarán conformados por integrantes de la Iglesia CCMG
 
 **Criterios de aceptación:** (1) Al asignar un rol, el usuario solo ve las opciones y datos de ese rol; (2) todo cambio de rol queda registrado con fecha y responsable; (3) un usuario sin rol asignado no puede acceder a funciones protegidas.
 
-**HU-04 — Pastor / Administrador del Sistema** Como administrador del sistema, quiero gestionar la información de los participantes para mantener un registro organizado y actualizado de las personas vinculadas al Plan Vida Abundante.
+**HU-04 — Pastor / Administrador del Sistema** Como administrador del sistema, quiero consultar y corregir los datos de las personas nuevas que registran las Casas de Vida para mantener actualizado el registro de quienes llegan al Plan Vida Abundante.
 
-**Criterios de aceptación:** (1) No se guarda un participante sin los datos mínimos de RN09, incluida la autorización de tratamiento de datos; (2) el Pastor puede actualizar los datos y cada cambio queda con fecha y usuario; (3) cada participante queda asociado a una Casa de Vida.
+**Criterios de aceptación:** (1) No se guarda una persona nueva sin nombre y teléfono (RN09); (2) el Pastor puede corregir los datos y desactivar el registro, y cada cambio queda con fecha y usuario; (3) cada persona nueva queda asociada a la Casa de Vida a la que llegó y a la fecha de llegada.
 
 **HU-05 — Pastor / Administrador del Sistema** Como administrador del sistema, quiero gestionar las Casas de Vida para registrar y mantener actualizada la información relacionada con ellas.
 
@@ -651,9 +652,9 @@ Los usuarios del sistema estarán conformados por integrantes de la Iglesia CCMG
 
 **Criterios de aceptación:** (1) El Supervisor ve solo las Casas de Vida de su área; (2) no dispone de opciones de edición; (3) no puede abrir Casas de Vida de otras áreas.
 
-**HU-12 — Supervisor de Área** Como supervisor de área, quiero consultar la información de los participantes de las Casas de Vida asignadas para conocer su participación y proceso.
+**HU-12 — Supervisor de Área** Como supervisor de área, quiero consultar las personas nuevas que llegan a las Casas de Vida asignadas para conocer el crecimiento de mi área.
 
-**Criterios de aceptación:** (1) El Supervisor ve los participantes de las Casas de Vida de su área; (2) los datos se muestran en solo lectura; (3) no ve participantes de otras áreas.
+**Criterios de aceptación:** (1) El Supervisor ve las personas nuevas de las Casas de Vida de su área; (2) los datos se muestran en solo lectura; (3) no ve las de otras áreas.
 
 **HU-13 — Supervisor de Área** Como supervisor de área, quiero consultar la asistencia reportada por las Casas de Vida de mi área para mantener actualizado el seguimiento de participación.
 
@@ -661,7 +662,7 @@ Los usuarios del sistema estarán conformados por integrantes de la Iglesia CCMG
 
 **HU-14 — Supervisor de Área** Como supervisor de área, quiero consultar la información de cada Casa de Vida de mi área para conocer su desarrollo y las situaciones que requieran atención.
 
-**Criterios de aceptación:** (1) El detalle de cada Casa de Vida muestra líder, usuarios de apoyo, participantes y actividades; (2) la información se muestra en solo lectura; (3) solo se accede a las Casas de Vida del área del Supervisor.
+**Criterios de aceptación:** (1) El detalle de cada Casa de Vida muestra líder, usuarios de apoyo, personas nuevas registradas y sus últimos reportes de asistencia; (2) la información se muestra en solo lectura; (3) solo se accede a las Casas de Vida del área del Supervisor.
 
 **HU-15 — Supervisor de Área** Como supervisor de área, quiero recibir y consultar los reportes que envían los líderes de Casa de Vida y su equipo para analizar la información de las actividades y participantes bajo mi responsabilidad.
 
@@ -671,13 +672,13 @@ Los usuarios del sistema estarán conformados por integrantes de la Iglesia CCMG
 
 **Criterios de aceptación:** (1) El Supervisor puede elegir el periodo y reunir los reportes recibidos de sus Casas de Vida; (2) al enviar, el reporte queda registrado como enviado con fecha y llega al Pastor; (3) el sistema confirma el envío.
 
-**HU-17 — Líder de Casa de Vida** Como líder de Casa de Vida, quiero consultar la información de mi Casa de Vida y de sus participantes, sin poder editarla, para mantener un seguimiento organizado de las personas que participan en ella.
+**HU-17 — Líder de Casa de Vida** Como líder de Casa de Vida, quiero consultar la información de mi Casa de Vida, sin poder editarla, y registrar con nombre y teléfono a cada persona nueva que llega, para hacerle seguimiento.
 
-**Criterios de aceptación:** (1) El Líder ve la información de su Casa de Vida y de sus participantes; (2) no dispone de opciones de edición; (3) no puede abrir otras Casas de Vida.
+**Criterios de aceptación:** (1) El Líder ve la información de su Casa de Vida y las personas nuevas registradas en ella; (2) no puede editar la Casa de Vida, pero sí registrar personas nuevas con nombre y teléfono y corregir sus datos; (3) no puede abrir otras Casas de Vida.
 
 **HU-18 — Líder de Casa de Vida** Como líder de Casa de Vida, quiero llenar los reportes de asistencia que se me piden y enviarlos al Supervisor de Área para mantener informado el estado de participación de mi Casa de Vida.
 
-**Criterios de aceptación:** (1) El formulario del reporte pide actividad, fecha y asistencia de cada participante; (2) no se envía un reporte sin actividad, fecha o asistencia; (3) al enviar, el reporte llega al Supervisor de Área y el sistema confirma el envío.
+**Criterios de aceptación:** (1) El formulario del reporte pide los totales de la reunión en el formato de la iglesia (RN08), con el nombre del líder automático y el total de discípulos de las Escuelas calculado solo; (2) no se envía con una fecha futura, con valores negativos ni dos veces la misma semana; (3) al enviar, el reporte llega al Supervisor de Área, la ofrenda queda registrada en el módulo de Ofrendas y el sistema confirma el envío.
 
 **HU-19 — Líder de Casa de Vida** Como líder de Casa de Vida, quiero ver si el reporte de asistencia ya fue enviado, por mí o por alguien de mi equipo, para evitar envíos duplicados.
 
@@ -693,7 +694,7 @@ Los usuarios del sistema estarán conformados por integrantes de la Iglesia CCMG
 
 **HU-22 — Aprendiz / Anfitrión / Maestro de Niños** Como usuario de apoyo, quiero llenar los reportes de asistencia de mi Casa de Vida, igual que el líder, para mantener informado al Supervisor de Área.
 
-**Criterios de aceptación:** (1) El formulario del reporte pide actividad, fecha y asistencia de cada participante; (2) no se envía un reporte sin actividad, fecha o asistencia; (3) al enviar, el reporte llega al Supervisor de Área y el sistema confirma el envío.
+**Criterios de aceptación:** (1) El formulario del reporte pide los totales de la reunión en el formato de la iglesia (RN08), con el nombre del líder automático y el total de discípulos de las Escuelas calculado solo; (2) no se envía con una fecha futura, con valores negativos ni dos veces la misma semana; (3) al enviar, el reporte llega al Supervisor de Área, la ofrenda queda registrada en el módulo de Ofrendas y el sistema confirma el envío.
 
 **HU-23 — Aprendiz / Anfitrión / Maestro de Niños** Como usuario de apoyo, quiero ver que el reporte aparece como enviado cuando el líder u otro integrante del equipo ya lo envió para no repetirlo.
 
@@ -947,11 +948,11 @@ Las principales interfaces contempladas serán:
 
 - **Gestión de usuarios:** permitirá al Pastor administrar las cuentas de los usuarios.
 
-- **Gestión de participantes:** permitirá registrar, consultar y actualizar la información de los participantes.
+- **Gestión de participantes:** en las Casas de Vida, permitirá registrar con nombre y teléfono a las personas nuevas y consultarlas según el alcance; en las Escuelas de Formación, registrar y actualizar a los participantes con sus datos completos.
 
 - **Módulo PVA – Casas de Vida:** el Pastor podrá registrar y administrar las Casas de Vida; el Supervisor de Área (las de su área), el Líder de Casa de Vida y los usuarios de apoyo (la suya) solo podrán consultarlas.
 
-- **Asistencia:** permitirá al Líder de Casa de Vida y a los usuarios de apoyo llenar y enviar el reporte de asistencia, y a los demás roles consultarla según su alcance.
+- **Asistencia:** permitirá al Líder de Casa de Vida y a los usuarios de apoyo llenar y enviar el reporte de asistencia con los totales de la reunión, y a los demás roles consultarlo según su alcance.
 
 - **Ofrendas:** permitirá registrar y consultar la información correspondiente a las ofrendas.
 
@@ -971,7 +972,7 @@ El mapa del sitio representa la estructura de navegación de la plataforma web: 
 
 La plataforma se organiza en seis módulos de primer nivel: Sitio público, Acceso y cuenta, PVA – Casas de Vida, Escuelas de Formación, Ofrendas y Administración. Los roles que navegan por ella son el Miembro Asistente, que no inicia sesión (RN22); el Super Administrador; el Pastor (Administrador); el Supervisor de Área; el Coordinador de Escuelas de Formación; el Líder de Casa de Vida y los usuarios de apoyo de su equipo. El acceso a Ofrendas no depende de un rol sino de la autorización como responsable de ofrendas que el Pastor da a un usuario (RN14).
 
-Criterios de organización: cada página aparece una sola vez y en ella se indica qué roles pueden usarla, en lugar de repetir la estructura por rol; las acciones que no abren una vista propia (desactivar, reactivar, cambiar estado, exportar o descargar una plantilla) no se dibujan como páginas; y los colores distinguen el tipo de acceso: verde, página pública; azul, requiere sesión; naranja, restringida por rol o módulo; morado, administrativa.
+Criterios de organización: cada página aparece una sola vez y en ella se indica qué roles pueden usarla, en lugar de repetir la estructura por rol; las acciones que no abren una vista propia (desactivar, reactivar, cambiar estado, exportar o descargar una plantilla) no se dibujan como páginas. Cada módulo tiene su color y cada página se representa como una tarjeta con su ícono, una miniatura de la vista y, al pie, el tipo de acceso (globo: pública; persona: requiere sesión; candado: restringida por rol; escudo: administrativa) con los roles autorizados.
 
 **Sitemap jerárquico:**
 
@@ -987,14 +988,14 @@ Criterios de organización: cada página aparece una sola vez y en ella se indic
   - Mi perfil y Cambiar contraseña; Cerrar sesión como acción del menú
 - **PVA – Casas de Vida (/pva/): Pastor, Supervisor de Área, Líder y usuarios de apoyo**
   - Panel
-  - Participantes
-    - Detalle del participante · Nuevo / editar (Pastor)
+  - Personas nuevas
+    - Detalle de la persona · Registrar persona nueva (Líder y apoyo) · Editar (Pastor, Líder y apoyo)
   - Casas de Vida
     - Detalle de la Casa de Vida · Nueva / editar (Pastor)
   - Áreas (Pastor)
     - Nueva / editar
   - Asistencia
-    - Detalle · Registrar asistencia (Líder y apoyo)
+    - Llenar reporte de asistencia (Líder y apoyo)
   - Seguimiento (Pastor, Supervisor y Líder)
     - Nuevo / editar
   - Reportes
@@ -1020,74 +1021,7 @@ Criterios de organización: cada página aparece una sola vez y en ella se indic
     - Crear usuario · Editar usuario
   - Auditoría (Super Administrador)
 
-Las Figuras 3a a 3e presentan el mapa del sitio. La Figura 3a muestra la raíz y los seis módulos con sus páginas de segundo nivel; las Figuras 3b a 3e detallan cada módulo hasta sus subpáginas y se dibujan de izquierda a derecha para que se lean en una página. Debajo del nombre de cada página aparece, en cursiva, el rol que la restringe. Las fuentes Mermaid están en [`diagramas/sitemap/`](diagramas/sitemap/).
-
-```mermaid
-%%{init: {'flowchart': {'rankSpacing': 26, 'nodeSpacing': 26}}}%%
-flowchart TB
-  R(["Plataforma web CCMG Girón"]):::raiz
-  R --> M1["Sitio público"]:::modulo
-  R --> M2["Acceso y cuenta"]:::modulo
-  R --> M3["PVA – Casas de Vida"]:::modulo
-  R --> M4["Escuelas de Formación"]:::modulo
-  R --> M5["Ofrendas"]:::modulo
-  R --> M6["Administración"]:::modulo
-  P1["Portada"]:::publica
-  M1 --- P1
-  A1["Iniciar sesión"]:::publica
-  A2["Recuperar contraseña"]:::publica
-  A3["Panel por rol"]:::autenticada
-  A4["Selector de módulo<br/><i>Pastor</i>"]:::rol
-  A5["Mi perfil y contraseña"]:::autenticada
-  M2 --- A1
-  A1 --- A2
-  A2 --- A3
-  A3 --- A4
-  A4 --- A5
-  C1["Panel"]:::rol
-  C2["Participantes"]:::rol
-  C3["Casas de Vida"]:::rol
-  C4["Áreas<br/><i>Pastor</i>"]:::rol
-  C5["Asistencia"]:::rol
-  C6["Seguimiento"]:::rol
-  C7["Reportes"]:::rol
-  C8["Importar datos<br/><i>Pastor</i>"]:::rol
-  M3 --- C1
-  C1 --- C2
-  C2 --- C3
-  C3 --- C4
-  C4 --- C5
-  C5 --- C6
-  C6 --- C7
-  C7 --- C8
-  F1["Panel"]:::rol
-  F2["Procesos de formación"]:::rol
-  F3["Participantes"]:::rol
-  F4["Actividades y asistencia"]:::rol
-  F5["Seguimiento"]:::rol
-  F6["Reportes"]:::rol
-  M4 --- F1
-  F1 --- F2
-  F2 --- F3
-  F3 --- F4
-  F4 --- F5
-  F5 --- F6
-  O1["Ofrendas registradas"]:::rol
-  M5 --- O1
-  U1["Usuarios<br/><i>Pastor</i>"]:::admin
-  U2["Auditoría<br/><i>Super Administrador</i>"]:::admin
-  M6 --- U1
-  U1 --- U2
-  R ~~~ LT["Leyenda"]:::leyenda
-  LT ~~~ L1["Pública"]:::publica ~~~ L2["Requiere sesión"]:::autenticada ~~~ L3["Restringida por rol"]:::rol ~~~ L4["Administrativa"]:::admin
-  classDef raiz fill:#1F3A5F,stroke:#1F3A5F,color:#FFFFFF,font-weight:bold
-  classDef modulo fill:#2C3E50,stroke:#2C3E50,color:#FFFFFF,font-weight:bold
-  classDef publica fill:#D5EDD6,stroke:#3C8D40,color:#1B3D1D
-  classDef autenticada fill:#D6E4F0,stroke:#3A6EA5,color:#13304F
-  classDef rol fill:#FDEBD0,stroke:#C77C1E,color:#5A3608
-  classDef admin fill:#E8DAF5,stroke:#7B4BA8,color:#3A1F55
-  classDef leyenda fill:#FFFFFF,stroke:#999999,stroke-dasharray:4 3,color:#333333,font-weight:bold
-```
+Las Figuras 3a a 3e presentan el mapa del sitio. La Figura 3a muestra la raíz y los seis módulos con sus páginas de segundo nivel; las Figuras 3b a 3e detallan cada módulo hasta sus subpáginas. Las flechas indican a qué página lleva cada una: en fila para las secciones de un módulo, en columna para sus subpáginas y en línea recta entre los pasos de un flujo, como la recuperación de contraseña o la importación de datos.
 
 ![Figura 3a](diagramas/sitemap/sm-00-general.png)
 
@@ -1124,23 +1058,23 @@ La matriz de navegación relaciona cada página con su ruta, los roles autorizad
 | SM-07 | Acceso y cuenta | Cambiar contraseña | `/cuentas/cambiar-password/` | Usuario con sesión | RF25 |
 | SM-08 | Acceso y cuenta | Cerrar sesión (acción del menú) | `/cuentas/logout/` | Usuario con sesión | RF02 |
 | SM-09 | PVA – Casas de Vida | Panel Casas de Vida | `/pva/panel/` | Pastor, Supervisor, Líder, apoyo | RF23 |
-| SM-10 | PVA – Casas de Vida | Participantes | `/pva/participantes/` | Pastor, Supervisor, Líder, apoyo | RF06 |
-| SM-11 | PVA – Casas de Vida | Detalle del participante | `/pva/participantes/<id>/` | Pastor, Supervisor, Líder, apoyo | RF06 |
-| SM-12 | PVA – Casas de Vida | Nuevo / editar participante | `/pva/participantes/nuevo/, …/<id>/editar/` | Pastor | RF05, RF28 |
+| SM-10 | PVA – Casas de Vida | Personas nuevas | `/pva/participantes/` | Pastor, Supervisor, Líder, apoyo | RF06 |
+| SM-11 | PVA – Casas de Vida | Detalle de la persona | `/pva/participantes/<id>/` | Pastor, Supervisor, Líder, apoyo | RF06 |
+| SM-12 | PVA – Casas de Vida | Registrar / editar persona nueva | `/pva/participantes/nuevo/, …/<id>/editar/` | Líder, apoyo (registrar y editar); Pastor (editar) | RF05, RF28 |
 | SM-13 | PVA – Casas de Vida | Casas de Vida | `/pva/casas/` | Pastor, Supervisor, Líder, apoyo | RF07, RF08 |
 | SM-14 | PVA – Casas de Vida | Detalle de la Casa de Vida | `/pva/casas/<id>/` | Pastor, Supervisor, Líder, apoyo | RF08 |
 | SM-15 | PVA – Casas de Vida | Nueva / editar Casa de Vida | `/pva/casas/nueva/, …/<id>/editar/` | Pastor | RF07, RF28 |
 | SM-16 | PVA – Casas de Vida | Áreas | `/pva/areas/` | Pastor | RF07, RF28 |
 | SM-17 | PVA – Casas de Vida | Nueva / editar Área | `/pva/areas/nueva/, …/<id>/editar/` | Pastor | RF07 |
-| SM-18 | PVA – Casas de Vida | Asistencia | `/pva/asistencia/` | Pastor, Supervisor, Líder, apoyo | RF10 |
-| SM-19 | PVA – Casas de Vida | Detalle de asistencia | `/pva/asistencia/<id>/` | Pastor, Supervisor, Líder, apoyo | RF10 |
-| SM-20 | PVA – Casas de Vida | Registrar asistencia (crea la actividad) | `/pva/asistencia/registrar/` | Líder, apoyo | RF09, RF12 |
+| SM-18 | PVA – Casas de Vida | Asistencia (reportes de asistencia) | `/pva/asistencia/` | Pastor, Supervisor, Líder, apoyo | RF10 |
+| SM-19 | PVA – Casas de Vida | Detalle de asistencia (abre el del reporte, SM-24) | `/pva/asistencia/<id>/` | Pastor, Supervisor, Líder, apoyo | RF10 |
+| SM-20 | PVA – Casas de Vida | Llenar reporte de asistencia (totales de la reunión y ofrenda) | `/pva/asistencia/registrar/` | Líder, apoyo | RF09, RF14, RF17 |
 | SM-21 | PVA – Casas de Vida | Seguimiento | `/pva/seguimiento/` | Pastor, Supervisor, Líder | RF11 |
 | SM-22 | PVA – Casas de Vida | Nuevo / editar seguimiento | `/pva/seguimiento/nuevo/, …/<id>/editar/` | Pastor, Supervisor, Líder | RF11 |
 | SM-23 | PVA – Casas de Vida | Reportes | `/pva/reportes/` | Pastor, Supervisor, Líder, apoyo | RF15 |
 | SM-24 | PVA – Casas de Vida | Detalle del reporte y exportar | `/pva/reportes/<id>/` | Pastor, Supervisor, Líder, apoyo | RF15, RF27 |
-| SM-25 | PVA – Casas de Vida | Enviar reporte de casa | `/pva/reportes/enviar/` | Líder, apoyo | RF13 |
-| SM-26 | PVA – Casas de Vida | Enviar reporte general | `/pva/reportes/enviar-general/` | Supervisor | RF14 |
+| SM-25 | PVA – Casas de Vida | Enviar reporte de casa (lleva a llenar el reporte de asistencia, SM-20) | `/pva/reportes/enviar/` | Líder, apoyo | RF14 |
+| SM-26 | PVA – Casas de Vida | Enviar reporte general | `/pva/reportes/enviar-general/` | Supervisor | RF13 |
 | SM-27 | PVA – Casas de Vida | Generar reporte y exportar | `/pva/reportes/generar/` | Pastor | RF16, RF27 |
 | SM-28 | PVA – Casas de Vida | Importar datos (subir, vista previa, resultado) | `/pva/importar/…` | Pastor | RF26 |
 | SM-29 | Escuelas de Formación | Panel Escuelas de Formación | `/formacion/panel/` | Pastor, Coordinador | RF23 |
@@ -1165,7 +1099,7 @@ La matriz de navegación relaciona cada página con su ruta, los roles autorizad
 - **RF04 – Gestionar roles y permisos:** no tiene una página propia. Los roles son fijos y el rol, con su Área o Casa de Vida, se asigna en el formulario de creación o edición de usuario (SM-43).
 - **Perfil de usuario:** la interfaz descrita en «Interfaces de usuario» se implementa como la sección «Mi perfil» del panel y la página «Cambiar contraseña», no como una ruta independiente.
 - **RF19 a RF22:** Pasos de Vida, Escuelas Vida, Módulos de Liderazgo y Misiones no son páginas separadas: son tipos de proceso que se gestionan desde «Procesos de formación».
-- **RF12 – Gestionar actividades (Casas de Vida):** el módulo PVA no tiene un listado propio de actividades; la actividad se registra junto con la asistencia (SM-20).
+- **RF12 – Gestionar actividades (Casas de Vida):** el módulo PVA no tiene un listado propio de actividades; la reunión de la semana se informa en el reporte de asistencia (SM-20).
 
 **Recomendaciones de navegación (propuestas, no requisitos):**
 
@@ -1290,9 +1224,9 @@ La prioridad de cada requisito se indica con el método MoSCoW: M — Debe tener
 | **Campo** | **Descripción** |
 | **Identificador** | RF05 |
 | **Nombre** | Gestionar Participantes |
-| **Descripción** | El sistema permitirá al Pastor registrar y actualizar la información de las personas vinculadas al Plan Vida Abundante, y al Coordinador de Formación registrar y actualizar los participantes de las Escuelas de Formación. La consulta de participantes se describe en RF06, la importación de datos existentes en RF26 y la desactivación de registros en RF28. |
-| **Actores** | Pastor / Administrador del Sistema y Coordinador de Formación (participantes de las Escuelas de Formación). |
-| **Entradas** | Datos personales, datos relacionados con la participación en el PVA y autorización de tratamiento de datos personales (del representante legal si es menor de edad). |
+| **Descripción** | En las Casas de Vida no se lleva una lista fija de participantes, porque las personas vienen y van. El sistema permitirá al Líder de Casa de Vida y a los usuarios de apoyo registrar a cada persona nueva que llega a su Casa de Vida, solo con su nombre y su número de teléfono, y al Pastor corregir esos datos; y al Coordinador de Formación registrar y actualizar los participantes de las Escuelas de Formación con sus datos completos. La consulta de participantes se describe en RF06, la importación de datos existentes en RF26 y la desactivación de registros en RF28. |
+| **Actores** | Líder de Casa de Vida, Aprendiz, Anfitrión y Maestro de Niños (personas nuevas de su Casa de Vida); Pastor / Administrador del Sistema (corrección y desactivación); Coordinador de Formación (participantes de las Escuelas de Formación). |
+| **Entradas** | Persona nueva: nombre, número de teléfono y, si la dio, autorización de tratamiento de datos (Ley 1581 de 2012); la Casa de Vida y la fecha de llegada se toman solas. Participante de las Escuelas de Formación: datos personales completos y autorización de tratamiento de datos (del representante legal si es menor de edad). |
 | **Procesamiento** | El sistema validará y almacenará la información del participante. |
 | **Salidas** | Registro creado o actualizado. |
 | **Requisitos relacionados** | RNF04, RNF06, RNF07, RNF13, RNF16, RNF18. |
@@ -1320,9 +1254,9 @@ La prioridad de cada requisito se indica con el método MoSCoW: M — Debe tener
 | **Campo** | **Descripción** |
 | **Identificador** | RF07 |
 | **Nombre** | Gestionar Casas de Vida |
-| **Descripción** | El sistema permitirá al Pastor, de forma exclusiva, registrar, consultar y actualizar las Casas de Vida y asignar a cada una su Área, su Supervisor de Área, su Líder y sus integrantes. Ningún otro rol podrá modificar las Casas de Vida. |
+| **Descripción** | El sistema permitirá al Pastor, de forma exclusiva, registrar, consultar y actualizar las Casas de Vida y asignar a cada una su Área (de la que toma su Supervisor), su Líder y sus usuarios de apoyo. Ningún otro rol podrá modificar las Casas de Vida. |
 | **Actores** | Pastor / Administrador del Sistema (exclusivo). |
-| **Entradas** | Nombre de la Casa de Vida, Área, Supervisor de Área, Líder, usuarios de apoyo, participantes y demás datos requeridos. |
+| **Entradas** | Nombre de la Casa de Vida, Área, Líder, usuarios de apoyo, dirección y demás datos requeridos. |
 | **Procesamiento** | El sistema validará y almacenará la información de la Casa de Vida. |
 | **Salidas** | Casa de Vida registrada, actualizada o consultada. |
 | **Requisitos relacionados** | RNF04, RNF07, RNF13, RNF18. |
@@ -1335,7 +1269,7 @@ La prioridad de cada requisito se indica con el método MoSCoW: M — Debe tener
 | **Campo** | **Descripción** |
 | **Identificador** | RF08 |
 | **Nombre** | Consultar Casas de Vida asignadas |
-| **Descripción** | El sistema permitirá al Supervisor de Área consultar, en modo de solo lectura, únicamente las Casas de Vida de su área, con su información y la de sus participantes. No podrá modificarlas. |
+| **Descripción** | El sistema permitirá al Supervisor de Área consultar, en modo de solo lectura, únicamente las Casas de Vida de su área, con su información, las personas nuevas registradas y sus reportes de asistencia. No podrá modificarlas. |
 | **Actores** | Supervisor de Área. |
 | **Entradas** | Usuario autenticado. |
 | **Procesamiento** | El sistema identificará las Casas de Vida del área del Supervisor, mostrará su información y bloqueará cualquier acción de edición. |
@@ -1350,10 +1284,10 @@ La prioridad de cada requisito se indica con el método MoSCoW: M — Debe tener
 | **Campo** | **Descripción** |
 | **Identificador** | RF09 |
 | **Nombre** | Registrar asistencia |
-| **Descripción** | El sistema permitirá al Líder de Casa de Vida y a los usuarios de apoyo llenar la asistencia de los participantes a las actividades de su Casa de Vida como parte del reporte de asistencia, y al Coordinador de Formación registrar la asistencia de sus procesos. |
+| **Descripción** | El sistema permitirá al Líder de Casa de Vida y a los usuarios de apoyo llenar el reporte de asistencia de su Casa de Vida con los totales de la reunión, sin marcar persona por persona, y al Coordinador de Formación registrar la asistencia de cada inscrito en sus procesos. |
 | **Actores** | Líder de Casa de Vida, Aprendiz, Anfitrión, Maestro de Niños y Coordinador de Formación. |
-| **Entradas** | Participante, actividad, fecha y estado de asistencia. |
-| **Procesamiento** | El sistema validará la información y almacenará el registro de asistencia. |
+| **Entradas** | Casas de Vida: fecha, nombre del líder (automático), líderes servidores asistentes, asistentes, asistencia de niños, asistencia de nuevos, conversiones, reconciliaciones, ausentes, asistencia a las Escuelas de Formación (Pasos de Vida, Ciclo de Conexión, Módulo de Liderazgo, Seminario Bíblico y total de discípulos, que se calcula solo), asistencia VEA, asistencia del sábado (solo las Áreas R21 y ZONAR21), asistencia dominical y, como informe financiero, el valor total de la ofrenda. Escuelas de Formación: actividad, fecha y asistencia de cada inscrito. |
+| **Procesamiento** | El sistema validará que la fecha no sea futura y que los valores no sean negativos, calculará el total de discípulos de las Escuelas, mostrará la asistencia del sábado solo a las Casas de Vida de las Áreas R21 y ZONAR21, almacenará el registro de asistencia y registrará la ofrenda en el módulo de Ofrendas (RF17). |
 | **Salidas** | Confirmación del registro o mensaje de error. |
 | **Requisitos relacionados** | RNF02, RNF04, RNF07, RNF10, RNF13. |
 | **Prioridad** | **M — Debe tener** |
@@ -1395,7 +1329,7 @@ La prioridad de cada requisito se indica con el método MoSCoW: M — Debe tener
 | **Campo** | **Descripción** |
 | **Identificador** | RF12 |
 | **Nombre** | Gestionar actividades |
-| **Descripción** | El sistema permitirá al Pastor y al Coordinador de Formación registrar y consultar las actividades de los procesos de formación, y al Líder de Casa de Vida y a los usuarios de apoyo informar las actividades realizadas en su Casa de Vida dentro del reporte de asistencia. |
+| **Descripción** | El sistema permitirá al Pastor y al Coordinador de Formación registrar y consultar las actividades de los procesos de formación, y al Líder de Casa de Vida y a los usuarios de apoyo informar la reunión de su Casa de Vida dentro del reporte de asistencia (RF09). |
 | **Actores** | Pastor, Líder de Casa de Vida, Aprendiz, Anfitrión, Maestro de Niños y Coordinador de Formación. |
 | **Entradas** | Nombre, fecha, descripción, responsable y demás información de la actividad. |
 | **Procesamiento** | El sistema almacenará y relacionará la actividad con el área correspondiente. |
@@ -1427,7 +1361,7 @@ La prioridad de cada requisito se indica con el método MoSCoW: M — Debe tener
 | Nombre | Enviar reporte de asistencia al Supervisor |
 | Descripción | El sistema permitirá al Líder de Casa de Vida, Aprendiz, Anfitrión y Maestro de Niños llenar el reporte de asistencia de su Casa de Vida y enviarlo al Supervisor de Área. Cuando uno de ellos lo envía, el reporte aparecerá como enviado para los demás integrantes de la Casa de Vida. |
 | Actores | Líder de Casa de Vida, Aprendiz, Anfitrión y Maestro de Niños. |
-| Entradas | Información del reporte, actividad, fecha, participantes y observaciones. |
+| Entradas | Totales de la reunión del reporte de asistencia (RF09), ofrenda y observaciones. |
 | Procesamiento | El sistema almacenará el reporte, lo asociará a la Casa de Vida y al Supervisor correspondiente y lo marcará como enviado para todo el equipo de la Casa de Vida. |
 | Salidas | Confirmación del envío y estado «enviado» visible para los integrantes de la Casa de Vida. |
 | Requisitos relacionados | RNF04, RNF07, RNF10, RNF18. |
@@ -1470,7 +1404,7 @@ La prioridad de cada requisito se indica con el método MoSCoW: M — Debe tener
 | **Campo** | **Descripción** |
 | **Identificador** | RF17 |
 | **Nombre** | Gestionar ofrendas |
-| **Descripción** | El sistema permitirá registrar y consultar la información correspondiente a las ofrendas administradas dentro del Plan Vida Abundante. |
+| **Descripción** | El sistema permitirá registrar y consultar la información correspondiente a las ofrendas administradas dentro del Plan Vida Abundante. La ofrenda de cada Casa de Vida llega desde su reporte de asistencia (RF09): el Líder o un usuario de apoyo escribe el valor total y el sistema crea el registro a nombre de la Casa de Vida, sin que tengan acceso al módulo de Ofrendas. |
 | **Actores** | Pastor / Administrador del Sistema (y el usuario que el Pastor autorice expresamente como responsable de ofrendas). |
 | **Entradas** | Fecha, valor, concepto y demás información definida para el registro. |
 | **Procesamiento** | El sistema validará y almacenará la información de la ofrenda. |
@@ -1947,11 +1881,11 @@ El Supervisor de Área podrá enviar al Pastor un reporte general de las Casas d
 
 ### RN08 — Registro de asistencia
 
-Cada registro de asistencia deberá estar relacionado con un participante, una actividad o proceso y una fecha determinada.
+En las Casas de Vida, la asistencia se registra como un reporte por reunión, con los totales del formato de la iglesia y una fecha; no se relaciona con cada persona, porque los asistentes vienen y van. Solo las Casas de Vida de las Áreas R21 y ZONAR21 reportan la asistencia del sábado. En las Escuelas de Formación, cada registro de asistencia deberá estar relacionado con un participante inscrito, una actividad del proceso y una fecha determinada.
 
 ### RN09 — Información de participantes
 
-Un participante deberá contar con la información mínima requerida para poder ser registrado en el sistema, la cual comprende: nombres y apellidos, documento de identidad, fecha de nacimiento, teléfono de contacto, dirección, Casa de Vida a la que pertenece y la autorización para el tratamiento de sus datos personales.
+Una persona nueva de una Casa de Vida se registra con su nombre y su número de teléfono; el sistema le asocia la Casa de Vida y la fecha de llegada, y si aún no ha autorizado el tratamiento de sus datos queda con autorización pendiente (RN23). Un participante de las Escuelas de Formación deberá contar con la información mínima requerida: nombres y apellidos, documento de identidad, fecha de nacimiento, teléfono de contacto, dirección y la autorización para el tratamiento de sus datos personales.
 
 ### RN10 — Seguimiento de participantes
 

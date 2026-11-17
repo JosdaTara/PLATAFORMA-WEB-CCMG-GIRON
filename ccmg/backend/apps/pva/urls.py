@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import RedirectView
 from . import views, views_importacion, views_reportes, views_seguimiento
 
 app_name = "pva"
@@ -16,13 +17,13 @@ urlpatterns = [
     path("casas/<int:pk>/", views.CasaDetailView.as_view(), name="casa_detalle"),
     path("casas/<int:pk>/editar/", views.CasaUpdateView.as_view(), name="casa_editar"),
     path("casas/<int:pk>/<str:accion>/", views.CasaEstadoView.as_view(), name="casa_estado"),
-    # Participantes
+    # Personas nuevas (solo nombre y teléfono)
     path("participantes/", views.ParticipanteListView.as_view(), name="participantes"),
-    path("participantes/nuevo/", views.ParticipanteCreateView.as_view(), name="participante_crear"),
+    path("participantes/nuevo/", views.PersonaNuevaCreateView.as_view(), name="participante_crear"),
     path("participantes/<int:pk>/", views.ParticipanteDetailView.as_view(), name="participante_detalle"),
-    path("participantes/<int:pk>/editar/", views.ParticipanteUpdateView.as_view(), name="participante_editar"),
+    path("participantes/<int:pk>/editar/", views.PersonaNuevaUpdateView.as_view(), name="participante_editar"),
     path("participantes/<int:pk>/<str:accion>/", views.ParticipanteEstadoView.as_view(), name="participante_estado"),
-    # Asistencia
+    # Asistencia: reporte de totales de la reunión
     path("asistencia/", views.AsistenciaListView.as_view(), name="asistencia"),
     path("asistencia/registrar/", views.RegistrarAsistenciaView.as_view(), name="asistencia_registrar"),
     path("asistencia/<int:pk>/", views.AsistenciaDetailView.as_view(), name="asistencia_detalle"),
@@ -32,7 +33,7 @@ urlpatterns = [
     path("seguimiento/<int:pk>/editar/", views_seguimiento.SeguimientoUpdateView.as_view(), name="seguimiento_editar"),
     # Reportes
     path("reportes/", views_reportes.ReporteListView.as_view(), name="reportes"),
-    path("reportes/enviar/", views_reportes.EnviarReporteCasaView.as_view(), name="reporte_enviar_casa"),
+    path("reportes/enviar/", RedirectView.as_view(pattern_name="pva:asistencia_registrar"), name="reporte_enviar_casa"),
     path("reportes/enviar-general/", views_reportes.EnviarReporteGeneralView.as_view(), name="reporte_enviar_general"),
     path("reportes/generar/", views_reportes.GenerarReporteView.as_view(), name="reporte_generar"),
     path("reportes/<int:pk>/", views_reportes.ReporteDetailView.as_view(), name="reporte_detalle"),

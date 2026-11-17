@@ -6,7 +6,7 @@ from cuentas.models import Usuario
 from nucleo.utils import ROLES_LIDER, ROLES_SUPERVISOR
 
 from . import periodos
-from .models import ACTIVO, Actividad, Area, CasaVida, Participante, Reporte, Seguimiento
+from .models import ACTIVO, Area, CasaVida, Participante, Reporte, ReporteAsistencia, Seguimiento
 
 
 def _usuarios_con_rol(rol):
@@ -144,7 +144,7 @@ class ParticipanteForm(EstiloBootstrapMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for campo in ("fecha_nacimiento", "telefono", "direccion"):
+        for campo in ("documento_identidad", "fecha_nacimiento", "telefono", "direccion"):
             self.fields[campo].required = True
         self.fields["autorizacion_datos"].required = True
         self.fields["autorizacion_datos"].error_messages["required"] = (
@@ -161,7 +161,7 @@ class ParticipanteForm(EstiloBootstrapMixin, forms.ModelForm):
         return " ".join(self.cleaned_data["nombres_apellidos"].split())
 
     def clean_documento_identidad(self):
-        documento = self.cleaned_data["documento_identidad"].strip()
+        documento = (self.cleaned_data["documento_identidad"] or "").strip()
         qs = Participante.objects.filter(documento_identidad__iexact=documento)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -176,60 +176,107 @@ class ParticipanteForm(EstiloBootstrapMixin, forms.ModelForm):
         return fecha
 
     def clean_telefono(self):
-        telefono = self.cleaned_data["telefono"].strip()
-        digitos = telefono.replace(" ", "").replace("+", "").replace("-", "")
-        if not digitos.isdigit() or not 7 <= len(digitos) <= 15:
-            raise forms.ValidationError("Ingrese un teléfono válido (solo números, de 7 a 15 dígitos).")
-        return telefono
+        return validar_telefono(self.cleaned_data["telefono"])
 
 
-class RegistroAsistenciaForm(EstiloBootstrapMixin, forms.Form):
-    """Datos de la actividad; la asistencia de cada participante llega como casillas 'presente_<id>'."""
+def validar_telefono(telefono):
+    telefono = (telefono or "").strip()
+    digitos = telefono.replace(" ", "").replace("+", "").replace("-", "")
+    if not digitos.isdigit() or not 7 <= len(digitos) <= 15:
+        raise forms.ValidationError("Ingrese un teléfono válido (solo números, de 7 a 15 dígitos).")
+    return telefono
 
-    titulo = forms.CharField(max_length=150, label="Actividad", initial="Reunión semanal")
-    fecha = forms.DateField(
-        label="Fecha", widget=forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")
+
+class PersonaNuevaForm(EstiloBootstrapMixin, forms.ModelForm):
+    """Persona nueva que llega a una Casa de Vida: solo nombre y teléfono (RF05, RN09).
+
+    La autorización de datos (Ley 1581) se marca si la persona la dio; si no, queda pendiente (RN23).
+    """
+
+    class Meta:
+        model = Participante
+        fields = ["nombres_apellidos", "telefono", "autorizacion_datos"]
+        labels = {
+            "nombres_apellidos": "Nombre",
+            "telefono": "Número de teléfono",
+            "autorizacion_datos": "Autorizó el tratamiento de sus datos personales (Ley 1581 de 2012)",
+        }
+        help_texts = {"autorizacion_datos": "Si no la dio todavía, el registro queda con autorización pendiente."}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["telefono"].required = True
+
+    def clean_nombres_apellidos(self):
+        return " ".join(self.cleaned_data["nombres_apellidos"].split())
+
+    def clean_telefono(self):
+        return validar_telefono(self.cleaned_data["telefono"])
+
+
+class ReporteAsistenciaForm(EstiloBootstrapMixin, forms.Form):
+    """Reporte de asistencia de la Casa de Vida con los totales de la reunión (RF09, RF14, RN08).
+
+    El Líder o un usuario de apoyo lo llenan y queda enviado al Supervisor de Área; si otro integrante
+    ya envió el de esa semana, aparece como enviado para todos (RN06).
+    """
+
+    fecha = forms.DateField(label="Fecha", widget=forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"))
+    ofrenda = forms.DecimalField(
+        label="Ofrenda (valor total)", min_value=0, max_digits=12, decimal_places=2, initial=0,
+        widget=forms.NumberInput(attrs={"step": "50", "inputmode": "numeric"}),
+        help_text="Se registra también en el módulo de Ofrendas a nombre de la Casa de Vida.",
     )
-    descripcion = forms.CharField(
-        label="Observaciones", required=False, widget=forms.Textarea(attrs={"rows": 2})
+    observaciones = forms.CharField(
+        label="Observaciones para el Supervisor", required=False, widget=forms.Textarea(attrs={"rows": 3})
     )
 
     def __init__(self, *args, casa=None, **kwargs):
         self.casa = casa
         super().__init__(*args, **kwargs)
         self.fields["fecha"].initial = datetime.date.today
+        campos = ReporteAsistencia.INDICADORES + ReporteAsistencia.ESCUELAS + ReporteAsistencia.CULTOS
+        for campo, etiqueta in campos:
+            if campo == "sabado" and not (casa and casa.reporta_sabado):
+                continue  # Solo las Áreas R21 y ZONAR21 reportan el sábado
+            self.fields[campo] = forms.IntegerField(
+                label=etiqueta, min_value=0, initial=0, widget=forms.NumberInput(attrs={"inputmode": "numeric"})
+            )
+        # El estilo de Bootstrap se aplica a los campos que se agregaron después del mixin.
+        for nombre, _ in campos:
+            if nombre in self.fields:
+                self.fields[nombre].widget.attrs["class"] = "form-control"
 
-    def clean_titulo(self):
-        return " ".join(self.cleaned_data["titulo"].split())
+    def campos(self, grupo):
+        return [self[nombre] for nombre, _ in grupo if nombre in self.fields]
+
+    @property
+    def indicadores(self):
+        return self.campos(ReporteAsistencia.INDICADORES)
+
+    @property
+    def escuelas(self):
+        return self.campos(ReporteAsistencia.ESCUELAS)
+
+    @property
+    def cultos(self):
+        return self.campos(ReporteAsistencia.CULTOS)
 
     def clean_fecha(self):
         fecha = self.cleaned_data["fecha"]
         if fecha > datetime.date.today():
-            raise forms.ValidationError("No se puede registrar asistencia de una fecha futura.")
-        if self.casa and Reporte.objects.filter(
-            tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=periodos.semana(fecha).etiqueta
-        ).exists():
+            raise forms.ValidationError("No se puede reportar una reunión de una fecha futura.")
+        semana = periodos.semana(fecha)
+        ya = (
+            Reporte.objects.filter(tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=semana.etiqueta)
+            .select_related("id_usuario_envia")
+            .first()
+        )
+        if ya:
             raise forms.ValidationError(
-                "El reporte de esa semana ya fue enviado al Supervisor; no se puede agregar asistencia."
+                f"El reporte de la {semana.nombre.lower()} ya fue enviado por {ya.id_usuario_envia.nombre_completo}."
             )
         return fecha
-
-    def clean(self):
-        datos = super().clean()
-        titulo, fecha = datos.get("titulo"), datos.get("fecha")
-        if self.casa and titulo and fecha:
-            # Si otro integrante del equipo ya la registró, se muestra como registrada (RN06).
-            ya = (
-                Actividad.objects.filter(id_casa_vida=self.casa, fecha=fecha, titulo__iexact=titulo)
-                .select_related("id_responsable")
-                .first()
-            )
-            if ya:
-                quien = ya.id_responsable.nombre_completo if ya.id_responsable else "otro integrante"
-                raise forms.ValidationError(
-                    f"La asistencia de «{titulo}» del {fecha:%d/%m/%Y} ya fue registrada por {quien}."
-                )
-        return datos
 
 
 class SeguimientoForm(EstiloBootstrapMixin, forms.ModelForm):
@@ -259,35 +306,6 @@ class SeguimientoForm(EstiloBootstrapMixin, forms.ModelForm):
 
     def clean_observacion(self):
         return self.cleaned_data["observacion"].strip()
-
-
-class EnviarReporteCasaForm(EstiloBootstrapMixin, forms.Form):
-    """Reporte semanal de la Casa de Vida al Supervisor de Área (RF14, CU02)."""
-
-    semana = forms.ChoiceField(label="Semana")
-    observaciones = forms.CharField(
-        label="Observaciones para el Supervisor", required=False, widget=forms.Textarea(attrs={"rows": 3})
-    )
-
-    def __init__(self, *args, casa=None, **kwargs):
-        self.casa = casa
-        super().__init__(*args, **kwargs)
-        self.fields["semana"].choices = [(p.inicio.isoformat(), p.nombre) for p in periodos.semanas_recientes(8)]
-
-    def clean_semana(self):
-        periodo = periodos.semana(datetime.date.fromisoformat(self.cleaned_data["semana"]))
-        ya = (
-            Reporte.objects.filter(tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=periodo.etiqueta)
-            .select_related("id_usuario_envia")
-            .first()
-        )
-        if ya:
-            raise forms.ValidationError(
-                f"El reporte de esta semana ya fue enviado por {ya.id_usuario_envia.nombre_completo}."
-            )
-        if not Actividad.objects.filter(id_casa_vida=self.casa, fecha__range=(periodo.inicio, periodo.fin)).exists():
-            raise forms.ValidationError("No hay asistencia registrada en esta semana. Regístrela antes de enviar el reporte.")
-        return periodo
 
 
 class EnviarReporteGeneralForm(EstiloBootstrapMixin, forms.Form):

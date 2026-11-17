@@ -9,7 +9,7 @@ from openpyxl import load_workbook
 from formacion.models import InscripcionFormacion, ProcesoFormacion
 from ofrendas.models import Ofrenda
 from pva import periodos
-from pva.models import Actividad, Asistencia, Reporte
+from pva.models import Reporte, ReporteAsistencia
 from pva.tests.test_casas_vida import BaseCasasVida
 
 HOY = datetime.date.today()
@@ -26,13 +26,13 @@ class ExportarTests(BaseCasasVida):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        act = Actividad.objects.create(id_casa_vida=cls.casa, titulo="Reunión", fecha=SEMANA.inicio, id_responsable=cls.lider)
-        Asistencia.objects.create(id_actividad=act, id_participante=cls.ana, presente=True)
-        Asistencia.objects.create(id_actividad=act, id_participante=cls.beto, presente=False)
         cls.reporte_casa = Reporte.objects.create(
             tipo_modulo="CASA_VIDA", tipo_reporte="CASA_VIDA", id_usuario_envia=cls.lider, id_usuario_destino=cls.supervisor,
             id_casa_vida=cls.casa, id_area=cls.area, periodo=SEMANA.etiqueta, fecha_inicio=SEMANA.inicio, fecha_fin=SEMANA.fin,
             observaciones="Semana tranquila",
+        )
+        ReporteAsistencia.objects.create(
+            id_reporte=cls.reporte_casa, fecha=SEMANA.inicio, id_lider=cls.lider, asistentes=14, nuevos=2, ofrenda=Decimal("185000")
         )
         mes = periodos.mes(SEMANA.inicio)
         cls.reporte_general = Reporte.objects.create(
@@ -60,7 +60,9 @@ class ExportarTests(BaseCasasVida):
         for formato in ("pdf", "xlsx"):
             self.assertArchivo(self.exportar(url, formato), formato)
         texto = celdas(self.exportar(url, "xlsx"))
-        self.assertIn("Reporte semanal · Casa Norte", texto)
+        self.assertIn("Reporte de asistencia · Casa Norte", texto)
+        self.assertIn("Asistentes", texto)
+        self.assertIn("Informe financiero", texto)
         self.assertIn(f"{SEMANA.inicio:%d/%m/%Y} al {SEMANA.fin:%d/%m/%Y}", texto)  # criterio 3: periodo
         self.assertIn("Generado", texto)  # criterio 3: fecha de generación
         self.assertIn(f"{datetime.date.today():%d/%m/%Y}", texto)

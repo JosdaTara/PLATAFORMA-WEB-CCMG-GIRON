@@ -9,6 +9,14 @@ ESTADOS = [(ACTIVO, "Activo"), (INACTIVO, "Inactivo")]
 
 FUNCIONES_APOYO = [("APRENDIZ", "Aprendiz"), ("ANFITRION", "Anfitrión"), ("MAESTRO_NINOS", "Maestro de Niños")]
 
+# Solo las Casas de Vida de estas Áreas reportan la asistencia del sábado. Se aceptan las dos
+# grafías en que se escribe el nombre del Área (ZONR21 y ZONAR21); se comparan sin espacios ni guiones.
+AREAS_CON_ASISTENCIA_SABADO = {"R21", "ZONR21", "ZONAR21"}
+
+
+def normalizar_nombre_area(nombre):
+    return "".join(c for c in (nombre or "").upper() if c.isalnum())
+
 
 class CasaVidaEquipo(models.Model):
     id_casa_vida_equipo = models.AutoField(primary_key=True, db_column="id_casa_vida_equipo")
@@ -53,6 +61,11 @@ class CasaVida(models.Model):
         """El Supervisor de una Casa de Vida es siempre el de su Área (RN03); no se guarda en la casa."""
         return self.id_area.id_supervisor if self.id_area_id else None
 
+    @property
+    def reporta_sabado(self):
+        """Solo las Áreas R21 y ZONAR21 llenan la Asistencia Sábado en el reporte."""
+        return bool(self.id_area_id) and normalizar_nombre_area(self.id_area.nombre) in AREAS_CON_ASISTENCIA_SABADO
+
 
 class Area(models.Model):
     id_area = models.AutoField(primary_key=True, db_column="id_area")
@@ -77,7 +90,8 @@ class Area(models.Model):
 class Participante(models.Model):
     id_participante = models.AutoField(primary_key=True, db_column="id_participante")
     nombres_apellidos = models.CharField(max_length=150)
-    documento_identidad = models.CharField(max_length=50, unique=True)
+    # Opcional: a una persona nueva de una Casa de Vida solo se le toman nombre y teléfono.
+    documento_identidad = models.CharField(max_length=50, unique=True, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     direccion = models.TextField(blank=True, null=True)
@@ -234,3 +248,66 @@ class Reporte(models.Model):
     @property
     def es_general(self):
         return self.tipo_reporte == self.GENERAL_AREA
+
+
+class ReporteAsistencia(models.Model):
+    """Totales de la reunión semanal de una Casa de Vida (RF09, RF14).
+
+    En las Casas de Vida las personas vienen y van, por eso la asistencia no se marca por persona:
+    el Líder o su equipo informan los totales. Va 1 a 1 con el Reporte que se envía al Supervisor.
+    """
+
+    id_reporte = models.OneToOneField(
+        Reporte, models.DO_NOTHING, primary_key=True, db_column="id_reporte", related_name="asistencia"
+    )
+    fecha = models.DateField()
+    id_lider = models.ForeignKey("cuentas.Usuario", models.DO_NOTHING, db_column="id_lider", blank=True, null=True, related_name="+")
+    lideres_servidores = models.PositiveIntegerField(default=0)
+    asistentes = models.PositiveIntegerField(default=0)
+    ninos = models.PositiveIntegerField(default=0)
+    nuevos = models.PositiveIntegerField(default=0)
+    conversiones = models.PositiveIntegerField(default=0)
+    reconciliaciones = models.PositiveIntegerField(default=0)
+    ausentes = models.PositiveIntegerField(default=0)
+    pasos_vida = models.PositiveIntegerField(default=0)
+    ciclo_conexion = models.PositiveIntegerField(default=0)
+    modulo_liderazgo = models.PositiveIntegerField(default=0)
+    seminario_biblico = models.PositiveIntegerField(default=0)
+    vea = models.PositiveIntegerField(default=0)
+    sabado = models.PositiveIntegerField(blank=True, null=True)
+    dominical = models.PositiveIntegerField(default=0)
+    ofrenda = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    id_ofrenda = models.ForeignKey("ofrendas.Ofrenda", models.DO_NOTHING, db_column="id_ofrenda", blank=True, null=True, related_name="+")
+
+    # Campos numéricos en el orden del formato de la iglesia (se usan en formularios, tablas y sumas).
+    INDICADORES = [
+        ("lideres_servidores", "Líderes servidores asistentes"),
+        ("asistentes", "Asistentes"),
+        ("ninos", "Asistencia niños"),
+        ("nuevos", "Asistencia nuevos"),
+        ("conversiones", "Conversiones"),
+        ("reconciliaciones", "Reconciliaciones"),
+        ("ausentes", "Ausentes"),
+    ]
+    ESCUELAS = [
+        ("pasos_vida", "Pasos de Vida"),
+        ("ciclo_conexion", "Ciclo de Conexión"),
+        ("modulo_liderazgo", "Módulo de Liderazgo"),
+        ("seminario_biblico", "Seminario Bíblico"),
+    ]
+    CULTOS = [
+        ("vea", "Asistencia VEA"),
+        ("sabado", "Asistencia sábado"),
+        ("dominical", "Asistencia dominical"),
+    ]
+
+    class Meta:
+        managed = False
+        db_table = "reporte_asistencia"
+
+    def __str__(self):
+        return f"Asistencia {self.id_reporte.id_casa_vida} · {self.fecha:%d/%m/%Y}"
+
+    @property
+    def total_discipulos_escuelas(self):
+        return sum(getattr(self, campo) for campo, _ in self.ESCUELAS)

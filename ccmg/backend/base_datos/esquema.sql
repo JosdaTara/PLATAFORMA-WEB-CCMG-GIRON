@@ -568,7 +568,7 @@ ALTER SEQUENCE public.ofrenda_id_ofrenda_seq OWNED BY public.ofrenda.id_ofrenda;
 CREATE TABLE public.participante (
     id_participante integer NOT NULL,
     nombres_apellidos character varying(150) NOT NULL,
-    documento_identidad character varying(50) NOT NULL,
+    documento_identidad character varying(50),
     fecha_nacimiento date,
     telefono character varying(20),
     direccion text,
@@ -668,6 +668,57 @@ CREATE TABLE public.reporte (
 
 
 ALTER TABLE public.reporte OWNER TO postgres;
+
+--
+-- Name: reporte_asistencia; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.reporte_asistencia (
+    id_reporte integer NOT NULL,
+    fecha date NOT NULL,
+    id_lider integer,
+    lideres_servidores integer DEFAULT 0 NOT NULL,
+    asistentes integer DEFAULT 0 NOT NULL,
+    ninos integer DEFAULT 0 NOT NULL,
+    nuevos integer DEFAULT 0 NOT NULL,
+    conversiones integer DEFAULT 0 NOT NULL,
+    reconciliaciones integer DEFAULT 0 NOT NULL,
+    ausentes integer DEFAULT 0 NOT NULL,
+    pasos_vida integer DEFAULT 0 NOT NULL,
+    ciclo_conexion integer DEFAULT 0 NOT NULL,
+    modulo_liderazgo integer DEFAULT 0 NOT NULL,
+    seminario_biblico integer DEFAULT 0 NOT NULL,
+    vea integer DEFAULT 0 NOT NULL,
+    sabado integer,
+    dominical integer DEFAULT 0 NOT NULL,
+    ofrenda numeric(12,2) DEFAULT 0 NOT NULL,
+    id_ofrenda integer,
+    CONSTRAINT reporte_asistencia_no_negativos CHECK (((lideres_servidores >= 0) AND (asistentes >= 0) AND (ninos >= 0) AND (nuevos >= 0) AND (conversiones >= 0) AND (reconciliaciones >= 0) AND (ausentes >= 0) AND (pasos_vida >= 0) AND (ciclo_conexion >= 0) AND (modulo_liderazgo >= 0) AND (seminario_biblico >= 0) AND (vea >= 0) AND ((sabado IS NULL) OR (sabado >= 0)) AND (dominical >= 0) AND (ofrenda >= (0)::numeric)))
+);
+
+
+ALTER TABLE public.reporte_asistencia OWNER TO postgres;
+
+--
+-- Name: TABLE reporte_asistencia; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.reporte_asistencia IS 'Totales de la reunión semanal de una Casa de Vida (RF09, RF14). 1 a 1 con reporte.';
+
+
+--
+-- Name: COLUMN reporte_asistencia.sabado; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.reporte_asistencia.sabado IS 'Solo para las Casas de Vida de las Áreas R21 y ZONAR21; NULL en las demás.';
+
+
+--
+-- Name: COLUMN reporte_asistencia.id_ofrenda; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.reporte_asistencia.id_ofrenda IS 'Registro que el reporte creó en el módulo de Ofrendas (NULL si la ofrenda fue 0).';
+
 
 --
 -- Name: reporte_id_reporte_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -1143,6 +1194,14 @@ ALTER TABLE ONLY public.proceso_formacion
 
 
 --
+-- Name: reporte_asistencia reporte_asistencia_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reporte_asistencia
+    ADD CONSTRAINT reporte_asistencia_pkey PRIMARY KEY (id_reporte);
+
+
+--
 -- Name: reporte reporte_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1563,6 +1622,30 @@ ALTER TABLE ONLY public.ofrenda
 
 ALTER TABLE ONLY public.proceso_formacion
     ADD CONSTRAINT proceso_formacion_id_coordinador_fkey FOREIGN KEY (id_coordinador) REFERENCES public.usuario(id_usuario);
+
+
+--
+-- Name: reporte_asistencia reporte_asistencia_id_lider_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reporte_asistencia
+    ADD CONSTRAINT reporte_asistencia_id_lider_fkey FOREIGN KEY (id_lider) REFERENCES public.usuario(id_usuario);
+
+
+--
+-- Name: reporte_asistencia reporte_asistencia_id_ofrenda_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reporte_asistencia
+    ADD CONSTRAINT reporte_asistencia_id_ofrenda_fkey FOREIGN KEY (id_ofrenda) REFERENCES public.ofrenda(id_ofrenda);
+
+
+--
+-- Name: reporte_asistencia reporte_asistencia_id_reporte_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reporte_asistencia
+    ADD CONSTRAINT reporte_asistencia_id_reporte_fkey FOREIGN KEY (id_reporte) REFERENCES public.reporte(id_reporte);
 
 
 --

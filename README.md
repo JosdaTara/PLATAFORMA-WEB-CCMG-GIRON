@@ -38,7 +38,7 @@ La plataforma se organiza en **módulos independientes** (RN21):
 | Módulo | Para qué sirve |
 |---|---|
 | **Página pública** | Información de la iglesia y contacto, sin iniciar sesión. |
-| **PVA – Casas de Vida** | Áreas, Casas de Vida, participantes, asistencia, seguimiento y reportes. |
+| **PVA – Casas de Vida** | Áreas, Casas de Vida, personas nuevas, reporte de asistencia, seguimiento y reportes. |
 | **Escuelas de Formación** | Pasos de Vida, Escuelas Vida, Módulos de Liderazgo y Misiones. |
 | **Ofrendas** | Registro y consulta de ofrendas. |
 | **Administración** | Usuarios, roles, asignaciones e importación de datos. |
@@ -53,8 +53,8 @@ Están implementados los **28 requisitos funcionales** de la [Especificación de
 - Panel por rol (RF23).
 
 **Casas de Vida**
-- Áreas, Casas de Vida y participantes con los datos mínimos y la autorización de tratamiento de datos (RF05–RF08).
-- Asistencia por actividad, registrada por el Líder o su equipo de apoyo (RF09, RF10).
+- Áreas y Casas de Vida; registro de cada persona nueva que llega, con nombre y teléfono (RF05–RF08).
+- Reporte de asistencia con los totales de la reunión en el formato de la iglesia (asistentes, niños, nuevos, conversiones, Escuelas de Formación, VEA, sábado, dominical y ofrenda), que llena el Líder o su equipo y llega al Supervisor (RF09, RF10, RF14).
 - Seguimiento pastoral de cada participante (RF11).
 - Flujo de reportes (RF12–RF16):
   - el Líder o su equipo envían el **reporte semanal** al Supervisor;
@@ -87,8 +87,8 @@ Están implementados los **28 requisitos funcionales** de la [Especificación de
 | **Super Administrador** | Todo lo del Pastor en ambos módulos, más la bitácora de auditoría. Es el **único** que crea, edita, desactiva o reactiva Administradores (Pastor) y otros Super Administradores. |
 | **Pastor** (Administrador) | Toda la información de ambos módulos. Gestiona las cuentas de Supervisores, Coordinadores, Líderes y su equipo, las Áreas, las Casas de Vida y las ofrendas. No ve ni modifica a otros Administradores ni puede cambiar su propio rol. Recibe los reportes generales y genera los consolidados. |
 | **Supervisor de Área** | Solo las Casas de Vida de su Área, en modo de consulta. Recibe los reportes semanales y envía el general al Pastor. |
-| **Líder de Casa de Vida** | Solo su Casa de Vida. Registra la asistencia y envía el reporte semanal. |
-| **Apoyo** (Aprendiz, Anfitrión, Maestro de Niños) | Igual que el Líder para la asistencia y el reporte de su casa. |
+| **Líder de Casa de Vida** | Solo su Casa de Vida. Llena el reporte de asistencia y registra a las personas nuevas. |
+| **Apoyo** (Aprendiz, Anfitrión, Maestro de Niños) | Igual que el Líder para el reporte de asistencia y las personas nuevas de su casa. |
 | **Coordinador de Formación** | Solo los procesos de formación que coordina. |
 
 Los permisos se validan **en el servidor**. Una página fuera del alcance responde 403, y un registro ajeno responde 404, para no revelar que existe.
@@ -111,7 +111,7 @@ PLATAFORMA-WEB-CCMG-GIRON/
 │   │   │   ├── cuentas/               # Autenticación, usuarios, roles, contraseñas
 │   │   │   ├── nucleo/                # Permisos, auditoría, exportación PDF/Excel, utilidades
 │   │   │   ├── publico/               # Página pública
-│   │   │   ├── pva/                   # Casas de Vida: áreas, participantes, asistencia, reportes, importación
+│   │   │   ├── pva/                   # Casas de Vida: áreas, personas nuevas, asistencia, reportes, importación
 │   │   │   ├── formacion/             # Escuelas de Formación
 │   │   │   └── ofrendas/              # Ofrendas
 │   │   ├── config/settings/           # base · development · demo · production

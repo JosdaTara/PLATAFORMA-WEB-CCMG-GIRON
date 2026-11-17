@@ -190,7 +190,7 @@ class ActividadesFormacionTests(BaseFormacion):
         self.entrar(self.coord)
         self.registrar([self.ana])
         self.entrar(self.pastor)
-        self.assertEqual(len(self.client.get(reverse("pva:asistencia")).context["actividades"]), 0)
+        self.assertEqual(len(self.client.get(reverse("pva:asistencia")).context["asistencias"]), 0)
         self.assertEqual(len(self.client.get(reverse("formacion:actividades")).context["actividades"]), 1)
 
 

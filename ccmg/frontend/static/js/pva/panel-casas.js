@@ -21,17 +21,17 @@ const VISTAS_CASAS = {
       '<span class="modulo-tag"><i class="bi bi-houses"></i> Módulo Casas de Vida</span>') +
       '<p class="text-muted">Resumen del módulo de Casas de Vida.</p>' +
       '<div class="row g-3">' +
-      stat('Participantes', RESUMEN.participantes, 'people') +
+      stat('Personas nuevas', RESUMEN.participantes, 'person-plus') +
       stat('Casas de Vida', RESUMEN.casas + ' <small class="text-muted fs-6">(' + RESUMEN.casasActivas + ' activas)</small>', 'houses') +
-      stat('Asistencia promedio', RESUMEN.asistenciaPromedio + '%', 'graph-up') +
+      stat('Asistentes por reunión', RESUMEN.asistenciaPromedio, 'graph-up') +
       stat('Seguimientos abiertos', RESUMEN.seguimientosAbiertos, 'clipboard-check') +
       '</div>' +
       '<div class="row g-3 mt-1">' +
       '<div class="col-lg-7"><div class="card p-3 border-0 shadow-sm h-100">' +
-      '<div class="d-flex justify-content-between align-items-center mb-3"><h6 class="m-0">Últimas actividades registradas</h6>' +
+      '<div class="d-flex justify-content-between align-items-center mb-3"><h6 class="m-0">Últimos reportes de asistencia</h6>' +
       (URLS_PVA.asistencia ? '<a class="small text-decoration-none" href="' + URLS_PVA.asistencia + '">Ver asistencia</a>' : '') + '</div>' +
-      tabla(['Casa de Vida', 'Fecha', 'Actividad', 'Asistentes'], RESUMEN.actividades.map(function (a) {
-        return [esc(a.casa), fechaCorta(a.fecha), esc(a.tipo), a.asistentes];
+      tabla(['Casa de Vida', 'Fecha', 'Asistentes', 'Nuevos'], RESUMEN.actividades.map(function (a) {
+        return [esc(a.casa), fechaCorta(a.fecha), a.asistentes, a.nuevos];
       })) +
       '</div></div>' +
       '<div class="col-lg-5"><div class="card p-3 border-0 shadow-sm h-100">' +
@@ -70,7 +70,7 @@ function guardarPerfil() {
 /* --------------------------- Menú del módulo --------------------------- */
 const MENU_CASAS = [
   { id: 'inicio', t: 'Inicio', i: 'speedometer2', r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
-  { id: 'participantes', t: 'Participantes', i: 'people', url: URLS_PVA.participantes, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
+  { id: 'participantes', t: 'Personas nuevas', i: 'person-plus', url: URLS_PVA.participantes, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'casas', t: 'Casas de Vida', i: 'houses', url: URLS_PVA.casas, r: ['pastor', 'supervisor', 'lider', 'apoyo'] },
   { id: 'areas', t: 'Áreas', i: 'map', url: URLS_PVA.areas, r: ['pastor'] },
   { id: 'importar', t: 'Importar datos', i: 'upload', url: URLS_PVA.importar, r: ['pastor'] },
