@@ -101,12 +101,14 @@ function activarBuscador(inputId, tablaId) {
   const input = document.getElementById(inputId);
   const table = document.getElementById(tablaId);
   if (!input || !table) return;
-  input.addEventListener('input', function () {
+  const filtrar = function () {
     const q = input.value.toLowerCase().trim();
     table.querySelectorAll('tbody tr').forEach(function (tr) {
       tr.style.display = tr.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
     });
-  });
+  };
+  /* Debounce: no se recorre la tabla en cada tecla, sino al dejar de escribir */
+  input.addEventListener('input', window.CCMG && CCMG.debounce ? CCMG.debounce(filtrar, 250) : filtrar);
 }
 
 /* ---------------------------------------------------------------------
@@ -159,9 +161,11 @@ function iniciarPanelModulo(cfg) {
     permitidos.splice(perfil === -1 ? permitidos.length : perfil, 0, ofrendas);
   }
 
-  /* Las secciones con `url` son páginas de Django; el resto se pinta aquí */
+  /* Las secciones con `url` son páginas de Django; el resto se pinta aquí.
+     Mientras carga la página de Django se muestra un skeleton en la vista (no el overlay). */
   menu.innerHTML = permitidos.map(function (m) {
-    return '<a href="' + (m.url || '#' + m.id) + '" data-id="' + m.id + '"><i class="bi bi-' + m.i + ' me-2"></i>' + m.t + '</a>';
+    return '<a href="' + (m.url || '#' + m.id) + '" data-id="' + m.id + '"' + (m.url ? ' data-no-loader' : '') +
+      '><i class="bi bi-' + m.i + ' me-2"></i>' + m.t + '</a>';
   }).join('');
   permitidos = permitidos.filter(function (m) { return !m.url; });
 

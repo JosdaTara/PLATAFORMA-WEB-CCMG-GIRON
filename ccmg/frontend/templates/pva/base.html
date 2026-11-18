@@ -10,17 +10,17 @@
 <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
-<link href="{% static 'css/styles.css' %}?v=9" rel="stylesheet">
+<link href="{% static 'css/styles.css' %}?v=10" rel="stylesheet">
 </head>
 <body class="panel-body">
 
 <aside class="sidebar" id="sidebar">
   <div class="marca text-center">
-    <img src="{% static 'img/logo-blanco.png' %}" alt="Logo CCMG" class="logo-side">
+    <picture><source srcset="{% static 'img/logo-blanco.avif' %}" type="image/avif"><source srcset="{% static 'img/logo-blanco.webp' %}" type="image/webp"><img src="{% static 'img/logo-blanco.png' %}" alt="Logo CCMG" class="logo-side" decoding="async"></picture>
     <div class="mt-2">CCMG · Girón</div>
     <small class="marca-sub">{% block marca_sub %}Casas de Vida{% endblock %}</small>
   </div>
-  <nav id="menu" aria-label="Menú del módulo">
+  <nav id="menu" aria-label="Menú del módulo" data-skeleton-nav>
     {% for item in menu %}
       <a href="{{ item.url }}"{% if item.activo %} class="active" aria-current="page"{% endif %}><i class="bi bi-{{ item.icono }} me-2"></i>{{ item.t }}</a>
     {% endfor %}
@@ -41,12 +41,12 @@
 <div class="contenido">
   <div class="topbar d-flex align-items-center px-3 py-2">
     <button class="btn btn-outline-secondary d-lg-none" id="toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
-    <img src="{% static 'img/logo.png' %}" alt="Logo CCMG" class="logo-top ms-2 d-lg-none">
+    <picture><source srcset="{% static 'img/logo.webp' %}" type="image/webp"><img src="{% static 'img/logo.png' %}" alt="Logo CCMG" class="logo-top ms-2 d-lg-none" decoding="async"></picture>
     <span class="modulo-tag ms-3 d-none d-lg-inline-flex">{% block modulo_tag %}<i class="bi bi-houses"></i> Módulo Casas de Vida{% endblock %}</span>
     <button type="button" class="btn btn-sm btn-outline-secondary btn-tema ms-auto me-3" data-tema-toggle aria-label="Cambiar a modo oscuro"><i class="bi bi-moon-stars" aria-hidden="true"></i></button>
     <span class="text-end"><strong>{{ user.nombre_completo }}</strong><br><small class="text-muted">{{ rol_nombre }}</small></span>
   </div>
-  <main class="p-3 p-md-4">
+  <main class="p-3 p-md-4" data-skeleton-pagina>
     {% for message in messages %}
       <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
         {{ message }}
@@ -64,5 +64,6 @@
   });
 </script>
 <script src="{% static 'js/comun/theme.js' %}?v=2"></script>
+<script src="{% static 'js/comun/interaccion.js' %}?v=1"></script>
 </body>
 </html>

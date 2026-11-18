@@ -20,6 +20,7 @@ urlpatterns = [
     # Personas nuevas (solo nombre y teléfono)
     path("participantes/", views.ParticipanteListView.as_view(), name="participantes"),
     path("participantes/nuevo/", views.PersonaNuevaCreateView.as_view(), name="participante_crear"),
+    path("participantes/autocompletar/", views.ParticipanteAutocompletarView.as_view(), name="participantes_autocompletar"),
     path("participantes/<int:pk>/", views.ParticipanteDetailView.as_view(), name="participante_detalle"),
     path("participantes/<int:pk>/editar/", views.PersonaNuevaUpdateView.as_view(), name="participante_editar"),
     path("participantes/<int:pk>/<str:accion>/", views.ParticipanteEstadoView.as_view(), name="participante_estado"),

@@ -50,21 +50,26 @@ const VISTAS_CASAS = {
       '<div class="mb-3"><label class="form-label">Nombre</label><input class="form-control" id="perfilNombre" value="' + esc(s.nombre) + '"></div>' +
       '<div class="mb-3"><label class="form-label">Rol</label><input class="form-control" value="' + esc(info ? info.nombre : s.rol) + '" disabled></div>' +
       '<div class="mb-3"><label class="form-label">Módulo</label><input class="form-control" value="Casas de Vida" disabled></div>' +
-      '<button class="btn btn-ccmg" onclick="guardarPerfil()">Guardar cambios</button>' +
+      '<button class="btn btn-ccmg" onclick="guardarPerfil(this)">Guardar cambios</button>' +
       '</div>';
   }
 };
 
-function guardarPerfil() {
-  const nombre = document.getElementById('perfilNombre');
-  const sesion = sesionActual();
-  if (nombre && sesion) {
-    sesion.nombre = nombre.value.trim() || sesion.nombre;
-    // [DEMOSTRACIÓN] Datos de ejemplo - no se usan para control de acceso
-    const el = document.getElementById('nombre');
-    if (el) el.textContent = sesion.nombre;
-  }
-  avisar('Perfil actualizado.');
+function guardarPerfil(btn) {
+  const guardar = function () {
+    const nombre = document.getElementById('perfilNombre');
+    const sesion = sesionActual();
+    if (nombre && sesion) {
+      sesion.nombre = nombre.value.trim() || sesion.nombre;
+      // [DEMOSTRACIÓN] Datos de ejemplo - no se usan para control de acceso
+      const el = document.getElementById('nombre');
+      if (el) el.textContent = sesion.nombre;
+    }
+    avisar('Perfil actualizado.');
+  };
+  // Loader en el botón mientras se aplica el cambio (evita doble clic)
+  if (btn && window.CCMG) CCMG.botonCargando(btn, null, 'Guardando…').then(guardar);
+  else guardar();
 }
 
 /* --------------------------- Menú del módulo --------------------------- */

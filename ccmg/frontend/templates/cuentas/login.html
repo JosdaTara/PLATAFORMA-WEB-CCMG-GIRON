@@ -10,18 +10,18 @@
 <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
-<link href="{% static 'css/styles.css' %}?v=9" rel="stylesheet">
+<link href="{% static 'css/styles.css' %}?v=10" rel="stylesheet">
 </head>
 <body>
-<div id="loader"><img src="{% static 'img/logo.png' %}" alt="Cargando..."></div>
+<div id="loader"><picture><source srcset="{% static 'img/logo.webp' %}" type="image/webp"><img src="{% static 'img/logo.png' %}" alt="Cargando..." decoding="async"></picture></div>
 <div class="login-split">
-  <div class="login-banner">
-   <img src="{% static 'img/hero-fondo2.jpeg' %}" alt="Predicación en el auditorio del CCMG Girón">
+  <div class="login-banner skeleton" data-skeleton-imagen>
+   <picture><source srcset="{% static 'img/hero-fondo2.avif' %}" type="image/avif"><source srcset="{% static 'img/hero-fondo2.webp' %}" type="image/webp"><img src="{% static 'img/hero-fondo2.jpeg' %}" alt="Predicación en el auditorio del CCMG Girón" decoding="async" fetchpriority="high" onload="this.closest('[data-skeleton-imagen]').classList.remove('skeleton')"></picture>
   </div>
   <div class="login-form-side">
    <div class="card card-ccmg p-4 w-100" style="max-width:440px">
     <div class="text-end mb-n4"><button type="button" class="btn btn-sm btn-outline-secondary btn-tema" data-tema-toggle aria-label="Cambiar a modo oscuro"><i class="bi bi-moon-stars" aria-hidden="true"></i></button></div>
-    <div class="text-center mb-3"><img src="{% static 'img/logo.png' %}" alt="Logo CCMG" class="logo-login"><h4 class="mt-2">CCMG Girón</h4><small>Plataforma Plan Vida Abundante</small></div>
+    <div class="text-center mb-3"><picture><source srcset="{% static 'img/logo.webp' %}" type="image/webp"><img src="{% static 'img/logo.png' %}" alt="Logo CCMG" class="logo-login" decoding="async"></picture><h4 class="mt-2">CCMG Girón</h4><small>Plataforma Plan Vida Abundante</small></div>
     <form method="post" action="{% url 'cuentas:login' %}" novalidate aria-label="Formulario de inicio de sesión" data-no-loader>
 {% csrf_token %}
      <div class="mb-3"><label class="form-label" for="usuario">Usuario o correo</label><input id="usuario" name="usuario" type="text" class="form-control" autocomplete="username" required aria-required="true"></div>
@@ -37,6 +37,7 @@
   </div>
 </div>
 <script src="{% static 'js/comun/loader.js' %}"></script>
+<script src="{% static 'js/comun/interaccion.js' %}?v=1"></script>
 <script>setTimeout(function(){var l=document.getElementById('loader');if(l)l.classList.add('hidden');},100);</script>
 <script src="{% static 'js/comun/theme.js' %}?v=2"></script>
 </body>

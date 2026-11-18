@@ -10,11 +10,11 @@
 <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
-<link href="{% static 'css/styles.css' %}?v=9" rel="stylesheet">
+<link href="{% static 'css/styles.css' %}?v=10" rel="stylesheet">
 </head>
 <body class="panel-body">
 <main class="container py-5 text-center" style="max-width:560px">
-  <img src="{% static 'img/logo.png' %}" alt="Logo CCMG" height="72" class="mb-4">
+  <picture><source srcset="{% static 'img/logo.webp' %}" type="image/webp"><img src="{% static 'img/logo.png' %}" alt="Logo CCMG" height="72" class="mb-4" decoding="async"></picture>
   <div class="empty-state bg-white rounded shadow-sm">
     <i class="bi bi-{% block icono %}{% endblock %}"></i>
     <h1 class="h4">{% block encabezado %}{% endblock %}</h1>

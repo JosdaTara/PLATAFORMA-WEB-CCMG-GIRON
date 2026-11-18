@@ -11,6 +11,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, UpdateView, View
 
 from nucleo import exportar
+from nucleo.autocompletar import sugerencias
 from nucleo.mixins import ModuleRequiredMixin
 from nucleo.permissions import module_required, puede_gestionar_ofrendas
 from nucleo.utils import ROLES_COORD, ROLES_ETIQUETA, ROLES_PASTOR, es_superadmin, registrar_auditoria, rol_real, sesion_js
@@ -512,6 +513,22 @@ class RegistrarActividadView(PanelFormacionMixin, FormView):
         presentes = sum(1 for p in inscritos if self.request.POST.get(f"presente_{p.pk}"))
         messages.success(self.request, f"Actividad registrada: {presentes} de {len(inscritos)} presentes.")
         return redirect("formacion:actividad_detalle", pk=actividad.pk)
+
+
+class ParticipanteAutocompletarView(PanelFormacionMixin, View):
+    """Sugerencias de participantes de formación para el buscador (mismo alcance que la lista)."""
+
+    def get(self, request):
+        def construir(p):
+            return {
+                "id": p.pk,
+                "nombre": p.nombres_apellidos,
+                "detalle": p.documento_identidad or p.telefono or "",
+                "url": reverse("formacion:participante_detalle", args=[p.pk]),
+            }
+
+        qs = participantes_formacion(request.user)
+        return sugerencias(request, qs, ("nombres_apellidos", "documento_identidad"), construir)
 
 
 # ----------------------------------------------------------------- Seguimiento

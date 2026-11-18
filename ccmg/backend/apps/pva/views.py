@@ -10,6 +10,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, DetailView, FormView, ListView, RedirectView, UpdateView, View
 
+from nucleo.autocompletar import sugerencias
 from nucleo.mixins import ModuleRequiredMixin, PastorRequiredMixin
 from nucleo.permissions import module_required, puede_gestionar_ofrendas
 from nucleo.utils import (
@@ -381,6 +382,24 @@ class ParticipanteListView(PanelCasasMixin, ListView):
         params.pop("page", None)
         ctx["query_sin_pagina"] = params.urlencode()
         return ctx
+
+
+class ParticipanteAutocompletarView(PanelCasasMixin, View):
+    """Sugerencias de personas nuevas para el buscador, con el mismo alcance por rol que la lista."""
+
+    def get(self, request):
+        def construir(p):
+            casa = p.membresias[0].id_casa_vida.nombre if p.membresias else "Sin Casa de Vida"
+            detalle = " · ".join(filter(None, [p.telefono, casa]))
+            return {
+                "id": p.pk,
+                "nombre": p.nombres_apellidos,
+                "detalle": detalle,
+                "url": reverse("pva:participante_detalle", args=[p.pk]),
+            }
+
+        qs = _con_casa_actual(participantes_visibles(request.user))
+        return sugerencias(request, qs, ("nombres_apellidos", "telefono"), construir)
 
 
 class ParticipanteDetailView(PanelCasasMixin, DetailView):

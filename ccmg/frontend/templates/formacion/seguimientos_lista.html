@@ -6,11 +6,11 @@
   <a href="{% url 'formacion:seguimiento_crear' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-plus-lg me-1"></i>Nuevo seguimiento</a>
 </div>
 
-<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+<form method="get" class="card p-3 border-0 shadow-sm mb-3" data-filtro-vivo>
   <div class="row g-2 align-items-end">
     <div class="col-md-4">
       <label class="form-label small mb-1" for="q">Buscar</label>
-      <input id="q" name="q" value="{{ filtros.q }}" class="form-control" placeholder="Participante u observación">
+      <input id="q" name="q" type="search" data-autocompletar="{% url 'formacion:participantes_autocompletar' %}" data-autocompletar-destino="?participante={id}" value="{{ filtros.q }}" class="form-control" placeholder="Participante u observación">
     </div>
     <div class="col-md-3">
       <label class="form-label small mb-1" for="proceso">Proceso</label>
@@ -36,7 +36,7 @@
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table table-hover align-middle mb-0">
     <thead><tr><th>Fecha</th><th>Participante</th><th>Proceso</th><th>Tipo</th><th>Observaciones</th><th>Responsable</th><th>Estado</th><th></th></tr></thead>
-    <tbody>
+    <tbody data-skeleton>
       {% for s in seguimientos %}
       <tr>
         <td class="text-nowrap">{{ s.fecha|date:"d/m/Y" }}</td>

@@ -12,7 +12,7 @@
   </div>
 </div>
 
-<form method="get" class="card p-3 border-0 shadow-sm mb-3" novalidate>
+<form method="get" class="card p-3 border-0 shadow-sm mb-3" data-filtro-vivo novalidate>
   {% if filtro.non_field_errors %}<div class="alert alert-danger py-2">{{ filtro.non_field_errors.0 }}</div>{% endif %}
   <div class="row g-2 align-items-end">
     <div class="col-md-3">
@@ -42,7 +42,7 @@
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table table-hover align-middle mb-0">
     <thead><tr><th>Fecha</th><th>Concepto</th><th>Casa de Vida</th><th class="text-end">Valor</th><th>Registró</th><th>Observaciones</th><th></th></tr></thead>
-    <tbody>
+    <tbody data-skeleton>
       {% for o in ofrendas %}
         <tr>
           <td class="text-nowrap">{{ o.fecha|date:"d/m/Y" }}</td>

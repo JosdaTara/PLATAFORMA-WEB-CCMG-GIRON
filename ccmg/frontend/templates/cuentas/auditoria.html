@@ -11,7 +11,7 @@
   {% include "pva/_exportar.html" %}
 </div>
 
-<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+<form method="get" class="card p-3 border-0 shadow-sm mb-3" data-filtro-vivo>
   <div class="row g-2 align-items-end">
     <div class="col-md-3">
       <label class="form-label small mb-1" for="usuario">Usuario</label>
@@ -46,7 +46,7 @@
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table table-sm table-hover align-middle mb-0">
     <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>Id</th><th>IP</th></tr></thead>
-    <tbody>
+    <tbody data-skeleton>
       {% for r in registros %}
         <tr>
           <td class="text-nowrap">{{ r.fecha|date:"d/m/Y H:i:s" }}</td>

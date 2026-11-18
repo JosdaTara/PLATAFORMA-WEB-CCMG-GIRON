@@ -35,6 +35,7 @@ MIDDLEWARE = [
     "cuentas.middleware.ForzarCambioPasswordMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "nucleo.middleware.DescargaTokenMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"

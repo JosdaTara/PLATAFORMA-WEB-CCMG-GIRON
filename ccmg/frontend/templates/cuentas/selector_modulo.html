@@ -10,17 +10,17 @@
 <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
-<link href="{% static 'css/styles.css' %}?v=9" rel="stylesheet">
+<link href="{% static 'css/styles.css' %}?v=10" rel="stylesheet">
 </head>
 <body>
-<div id="loader"><img src="{% static 'img/logo.png' %}" alt="Cargando..."></div>
+<div id="loader"><picture><source srcset="{% static 'img/logo.webp' %}" type="image/webp"><img src="{% static 'img/logo.png' %}" alt="Cargando..." decoding="async"></picture></div>
 
 <div class="selector-wrap">
   <div class="selector-card">
 
     <div class="selector-header">
       <button type="button" class="btn btn-sm btn-outline-light btn-tema" data-tema-toggle aria-label="Cambiar a modo oscuro"><i class="bi bi-moon-stars" aria-hidden="true"></i></button>
-      <img src="{% static 'img/logo-blanco.png' %}" alt="Logo CCMG" class="logo-hero" style="height:84px">
+      <picture><source srcset="{% static 'img/logo-blanco.avif' %}" type="image/avif"><source srcset="{% static 'img/logo-blanco.webp' %}" type="image/webp"><img src="{% static 'img/logo-blanco.png' %}" alt="Logo CCMG" class="logo-hero" style="height:84px" decoding="async"></picture>
       <h1>Selecciona un módulo</h1>
       <p>Casas de Vida y Escuelas de Formación son módulos independientes.</p>
       <div class="selector-usuario">
@@ -92,6 +92,7 @@
 
 <script src="{% static 'js/cuentas/auth.js' %}?v=5"></script>
 <script src="{% static 'js/comun/loader.js' %}?v=3"></script>
+<script src="{% static 'js/comun/interaccion.js' %}?v=1"></script>
 {{ sesion_js|json_script:"ccmg-sesion" }}
 <script>
   const sesion = requiereSesion('AMBOS');

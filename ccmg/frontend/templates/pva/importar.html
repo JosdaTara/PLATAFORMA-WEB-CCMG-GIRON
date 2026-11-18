@@ -35,8 +35,8 @@
         <li>Importe los <strong>Participantes</strong>: cada uno se asigna a su Casa de Vida por el nombre.</li>
       </ol>
       <div class="d-grid gap-2">
-        <a href="{% url 'pva:importar_plantilla' 'casas' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Plantilla de Casas de Vida</a>
-        <a href="{% url 'pva:importar_plantilla' 'participantes' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Plantilla de Participantes</a>
+        <a href="{% url 'pva:importar_plantilla' 'casas' %}" class="btn btn-outline-secondary btn-sm" data-descarga data-no-loader><i class="bi bi-file-earmark-excel me-1"></i>Plantilla de Casas de Vida</a>
+        <a href="{% url 'pva:importar_plantilla' 'participantes' %}" class="btn btn-outline-secondary btn-sm" data-descarga data-no-loader><i class="bi bi-file-earmark-excel me-1"></i>Plantilla de Participantes</a>
       </div>
       <p class="small text-muted mt-3 mb-0">Las personas o casas que ya existen se omiten, no se duplican. Los participantes sin autorización de tratamiento de datos se importan con autorización pendiente (RN25).</p>
     </div>

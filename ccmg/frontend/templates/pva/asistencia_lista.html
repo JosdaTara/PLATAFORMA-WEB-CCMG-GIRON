@@ -12,7 +12,7 @@
   {% endif %}
 </div>
 
-<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+<form method="get" class="card p-3 border-0 shadow-sm mb-3" data-filtro-vivo>
   <div class="row g-2 align-items-end">
     <div class="col-md-4">
       <label class="form-label small mb-1" for="casa">Casa de Vida</label>
@@ -39,7 +39,7 @@
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table table-hover align-middle mb-0">
     <thead><tr><th>Fecha</th><th>Casa de Vida</th><th>Líder</th><th class="text-end">Asistentes</th><th class="text-end">Niños</th><th class="text-end">Nuevos</th><th class="text-end">Dominical</th><th class="text-end">Ofrenda</th><th>Envió</th><th class="text-end"></th></tr></thead>
-    <tbody>
+    <tbody data-skeleton>
       {% for a in asistencias %}
       <tr>
         <td class="text-nowrap">{{ a.fecha|date:"d/m/Y" }}</td>

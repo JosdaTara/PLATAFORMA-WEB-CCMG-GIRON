@@ -9,11 +9,11 @@
   </div>
 </div>
 
-<form method="get" class="card p-3 border-0 shadow-sm mb-3">
+<form method="get" class="card p-3 border-0 shadow-sm mb-3" data-filtro-vivo>
   <div class="row g-2 align-items-end">
     <div class="col-md-5">
       <label class="form-label small mb-1" for="q">Buscar</label>
-      <input id="q" name="q" value="{{ filtros.q }}" class="form-control" placeholder="Nombre o documento">
+      <input id="q" name="q" type="search" data-autocompletar="{% url 'formacion:participantes_autocompletar' %}" value="{{ filtros.q }}" class="form-control" placeholder="Nombre o documento">
     </div>
     <div class="col-md-5">
       <label class="form-label small mb-1" for="proceso">Proceso</label>
@@ -32,7 +32,7 @@
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table table-hover align-middle mb-0">
     <thead><tr><th>Nombre</th><th>Documento</th><th>Teléfono</th><th>Procesos actuales</th><th></th></tr></thead>
-    <tbody>
+    <tbody data-skeleton>
       {% for p in participantes %}
       <tr>
         <td><a href="{% url 'formacion:participante_detalle' p.pk %}" class="fw-semibold text-decoration-none">{{ p.nombres_apellidos }}</a>{% if not p.activo %} <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">Desactivado</span>{% endif %}</td>

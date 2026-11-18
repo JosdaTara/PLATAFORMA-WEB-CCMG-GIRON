@@ -17,6 +17,7 @@ urlpatterns = [
     path("participantes/", views.ParticipanteListView.as_view(), name="participantes"),
     path("participantes/nuevo/", views.NuevoParticipanteView.as_view(), name="participante_crear"),
     path("participantes/inscribir/", views.InscribirExistenteView.as_view(), name="inscribir"),
+    path("participantes/autocompletar/", views.ParticipanteAutocompletarView.as_view(), name="participantes_autocompletar"),
     path("participantes/<int:pk>/", views.ParticipanteDetailView.as_view(), name="participante_detalle"),
     path("participantes/<int:pk>/editar/", views.ParticipanteUpdateView.as_view(), name="participante_editar"),
     path("inscripciones/<int:pk>/<str:accion>/", views.InscripcionEstadoView.as_view(), name="inscripcion_estado"),

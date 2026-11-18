@@ -50,7 +50,7 @@
           <th class="text-end">Ofrenda</th><th class="text-end">Personas nuevas registradas</th><th class="text-end">Seguimientos</th><th>Reportes enviados</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody data-skeleton>
         {% for f in filas %}
           <tr>
             <td>{{ f.casa.id_area.nombre|default:"—" }}</td>
@@ -85,7 +85,7 @@
   <div class="table-responsive bg-white rounded shadow-sm">
     <table class="table align-middle mb-0">
       <thead><tr><th>Mes</th><th>Área</th><th>Supervisor</th><th>Observaciones</th><th></th></tr></thead>
-      <tbody>
+      <tbody data-skeleton>
         {% for r in generales %}
           <tr>
             <td>{{ r.periodo }}</td><td>{{ r.id_area.nombre }}</td><td>{{ r.id_usuario_envia.nombre_completo }}</td>

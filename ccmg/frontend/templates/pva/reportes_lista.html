@@ -33,7 +33,7 @@
   <div class="table-responsive bg-white rounded shadow-sm mb-4">
     <table class="table table-hover align-middle mb-0">
       <thead><tr><th>Mes</th><th>Área</th><th>Supervisor</th><th>Enviado</th><th></th></tr></thead>
-      <tbody>
+      <tbody data-skeleton>
         {% for r in reportes_generales %}
           <tr>
             <td>{{ r.periodo }}</td>
@@ -54,7 +54,7 @@
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table table-hover align-middle mb-0">
     <thead><tr><th>Semana</th><th>Casa de Vida</th><th>Envió</th><th>Enviado</th>{% if area or es_pastor %}<th>Reporte general</th>{% endif %}<th></th></tr></thead>
-    <tbody>
+    <tbody data-skeleton>
       {% for r in reportes_casa %}
         <tr>
           <td>{{ r.fecha_inicio|date:"d/m" }} – {{ r.fecha_fin|date:"d/m/Y" }}</td>

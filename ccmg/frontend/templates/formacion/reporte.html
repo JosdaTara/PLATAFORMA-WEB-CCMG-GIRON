@@ -51,7 +51,7 @@
   <div class="table-responsive bg-white rounded shadow-sm">
     <table class="table table-hover align-middle mb-0">
       <thead><tr><th>Escuela</th><th>Proceso</th><th>Actividades</th><th>Presentes</th><th>Asistencia</th><th>Inscritos</th><th>Nuevos</th><th>Seguimientos</th></tr></thead>
-      <tbody>
+      <tbody data-skeleton>
         {% for f in filas %}
           <tr>
             <td>{{ f.proceso.get_tipo_proceso_display }}</td>
