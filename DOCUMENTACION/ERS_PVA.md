@@ -534,7 +534,7 @@ Las Figuras 2a a 2e presentan el modelo entidad-relación de la base de datos, e
 
 ![Figura 2c](diagramas/entidad_relacion/der-02-casas-vida-estructura.png)
 
-*Figura 2c. Modelo entidad-relación: Áreas, Casas de Vida, participantes y ofrendas*
+*Figura 2c. Modelo entidad-relación: Áreas, Casas de Vida, personas nuevas y participantes, y ofrendas*
 
 ![Figura 2d](diagramas/entidad_relacion/der-04-escuelas-formacion.png)
 
@@ -542,7 +542,7 @@ Las Figuras 2a a 2e presentan el modelo entidad-relación de la base de datos, e
 
 ![Figura 2e](diagramas/entidad_relacion/der-03-casas-vida-operacion.png)
 
-*Figura 2e. Modelo entidad-relación: actividades, asistencia, seguimiento y reportes*
+*Figura 2e. Modelo entidad-relación: reporte de asistencia, actividades, seguimiento y reportes*
 
 La versión en PDF de esta especificación es [`IEEE_PLATAFORMA_WEB_CCMG.pdf`](IEEE_PLATAFORMA_WEB_CCMG.pdf).
 

@@ -119,41 +119,42 @@
 <ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-676.8" rx="88.56" ry="16.56"/>
 <text text-anchor="start" x="221.35" y="-672.52" font-family="Arial" font-size="12.00">Gestionar Casas de Vida</text>
 </g>
-<!-- part -->
-<g id="node18" class="node">
-<title>part</title>
-<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-630" rx="88.56" ry="16.56"/>
-<text text-anchor="start" x="226.22" y="-625.73" font-family="Arial" font-size="12.00">Gestionar participantes</text>
-</g>
 <!-- gen -->
-<g id="node19" class="node">
+<g id="node18" class="node">
 <title>gen</title>
-<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-583.2" rx="100.44" ry="16.56"/>
-<text text-anchor="start" x="211.6" y="-578.92" font-family="Arial" font-size="12.00">Generar reporte consolidado</text>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-630" rx="100.44" ry="16.56"/>
+<text text-anchor="start" x="211.6" y="-625.73" font-family="Arial" font-size="12.00">Generar reporte consolidado</text>
 </g>
 <!-- envg -->
-<g id="node20" class="node">
+<g id="node19" class="node">
 <title>envg</title>
-<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-532.8" rx="85.68" ry="16.56"/>
-<text text-anchor="start" x="228.47" y="-528.52" font-family="Arial" font-size="12.00">Enviar reporte general</text>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-583.2" rx="85.68" ry="16.56"/>
+<text text-anchor="start" x="228.47" y="-578.92" font-family="Arial" font-size="12.00">Enviar reporte general</text>
 </g>
 <!-- crep -->
-<g id="node21" class="node">
+<g id="node20" class="node">
 <title>crep</title>
-<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-482.4" rx="73.44" ry="16.56"/>
-<text text-anchor="start" x="238.6" y="-478.13" font-family="Arial" font-size="12.00">Consultar reportes</text>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-532.8" rx="73.44" ry="16.56"/>
+<text text-anchor="start" x="238.6" y="-528.52" font-family="Arial" font-size="12.00">Consultar reportes</text>
 </g>
 <!-- ccasa -->
-<g id="node22" class="node">
+<g id="node21" class="node">
 <title>ccasa</title>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-482.4" rx="88.56" ry="16.56"/>
+<text text-anchor="start" x="221.35" y="-478.13" font-family="Arial" font-size="12.00">Consultar Casas de Vida</text>
+</g>
+<!-- part -->
+<g id="node22" class="node">
+<title>part</title>
 <ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-435.6" rx="88.56" ry="16.56"/>
-<text text-anchor="start" x="221.35" y="-431.32" font-family="Arial" font-size="12.00">Consultar Casas de Vida</text>
+<text text-anchor="start" x="222.1" y="-431.32" font-family="Arial" font-size="12.00">Registrar persona nueva</text>
 </g>
 <!-- asis -->
 <g id="node23" class="node">
 <title>asis</title>
-<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-388.8" rx="79.56" ry="16.56"/>
-<text text-anchor="start" x="234.85" y="-384.52" font-family="Arial" font-size="12.00">Registrar asistencia</text>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="287.72" cy="-388.8" rx="68.4" ry="22.68"/>
+<text text-anchor="start" x="250.6" y="-391.65" font-family="Arial" font-size="12.00">Llenar reporte</text>
+<text text-anchor="start" x="252.47" y="-377.4" font-family="Arial" font-size="12.00">de asistencia</text>
 </g>
 <!-- envs -->
 <g id="node24" class="node">
@@ -170,8 +171,8 @@
 <!-- exp -->
 <g id="node26" class="node">
 <title>exp</title>
-<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="496.52" cy="-532.8" rx="68.4" ry="16.56"/>
-<text text-anchor="start" x="453.77" y="-528.52" font-family="Arial" font-size="12.00">Exportar reporte</text>
+<ellipse fill="#eaf4fb" stroke="#2c3e50" cx="496.52" cy="-583.2" rx="68.4" ry="16.56"/>
+<text text-anchor="start" x="453.77" y="-578.92" font-family="Arial" font-size="12.00">Exportar reporte</text>
 </g>
 <!-- proc -->
 <g id="node27" class="node">
@@ -323,94 +324,94 @@
 <text text-anchor="start" x="896.93" y="-69.7" font-family="Arial" font-size="10.00">CU&#45;02 a CU&#45;05.</text>
 </g>
 <!-- login&#45;&gt;panel -->
-<g id="edge24" class="edge">
+<g id="edge23" class="edge">
 <title>login:e&#45;&gt;panel:w</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M356.41,-1065.6C356.41,-1065.6 401.32,-1040.7 419.92,-1030.39"/>
 <polygon fill="#555555" stroke="#555555" points="426.77,-1026.59 421.52,-1033.62 424.34,-1027.94 419.78,-1030.47 419.78,-1030.47 419.78,-1030.47 424.34,-1027.94 418.03,-1027.32 426.77,-1026.59"/>
 <text text-anchor="middle" x="408.42" y="-1039.44" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
 </g>
 <!-- login&#45;&gt;val -->
-<g id="edge23" class="edge">
+<g id="edge22" class="edge">
 <title>login:e&#45;&gt;val:w</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M356.41,-1065.6C356.41,-1065.6 598.66,-1065.6 648.81,-1065.6"/>
 <polygon fill="#555555" stroke="#555555" points="656.61,-1065.6 648.61,-1069.2 653.83,-1065.6 648.61,-1065.6 648.61,-1065.6 648.61,-1065.6 653.83,-1065.6 648.61,-1062 656.61,-1065.6"/>
 <text text-anchor="middle" x="482.36" y="-1057.05" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
 </g>
 <!-- rpass&#45;&gt;login -->
-<g id="edge29" class="edge">
+<g id="edge28" class="edge">
 <title>rpass:w&#45;&gt;login:e</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M416.63,-1116C416.63,-1116 379.14,-1084.62 363.32,-1071.38"/>
 <polygon fill="#555555" stroke="#555555" points="357.35,-1066.38 365.79,-1068.76 359.48,-1068.17 363.48,-1071.52 363.48,-1071.52 363.48,-1071.52 359.48,-1068.17 361.17,-1074.28 357.35,-1066.38"/>
 <text text-anchor="middle" x="370.85" y="-1085.14" font-family="Arial" font-size="9.00" fill="#444444">«extend»</text>
 </g>
 <!-- rpass&#45;&gt;SMTP -->
-<g id="edge35" class="edge">
+<g id="edge34" class="edge">
 <title>rpass:e&#45;&gt;SMTP:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M576.42,-1116C576.42,-1116 957.08,-1105.2 957.08,-1105.2"/>
 </g>
 <!-- panel&#45;&gt;perm -->
-<g id="edge25" class="edge">
+<g id="edge24" class="edge">
 <title>panel:e&#45;&gt;perm:w</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M565.21,-1026C565.21,-1026 638.82,-916 658.94,-885.92"/>
 <polygon fill="#555555" stroke="#555555" points="663.3,-879.41 661.84,-888.06 661.75,-881.72 658.85,-886.06 658.85,-886.06 658.85,-886.06 661.75,-881.72 655.86,-884.06 663.3,-879.41"/>
 <text text-anchor="middle" x="632.33" y="-947.41" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
 </g>
 <!-- usr&#45;&gt;rol -->
-<g id="edge26" class="edge">
+<g id="edge25" class="edge">
 <title>usr:e&#45;&gt;rol:w</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M361.47,-766.8C361.47,-766.8 403.62,-798.8 420.74,-811.81"/>
 <polygon fill="#555555" stroke="#555555" points="426.87,-816.46 418.32,-814.49 424.65,-814.78 420.5,-811.62 420.5,-811.62 420.5,-811.62 424.65,-814.78 422.67,-808.76 426.87,-816.46"/>
 <text text-anchor="middle" x="411.35" y="-791.25" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
 </g>
 <!-- usr&#45;&gt;bit -->
-<g id="edge27" class="edge">
+<g id="edge26" class="edge">
 <title>usr:e&#45;&gt;bit:w</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M361.47,-766.8C361.47,-766.8 596.3,-766.8 645.83,-766.8"/>
 <polygon fill="#555555" stroke="#555555" points="653.72,-766.8 645.72,-770.4 650.94,-766.8 645.72,-766.8 645.72,-766.8 645.72,-766.8 650.94,-766.8 645.72,-763.2 653.72,-766.8"/>
 <text text-anchor="middle" x="483.4" y="-758.25" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
 </g>
-<!-- des&#45;&gt;casa -->
+<!-- asis&#45;&gt;envs -->
 <g id="edge31" class="edge">
+<title>asis:s&#45;&gt;envs:n</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M287.72,-365.94C287.72,-365.94 287.72,-365.92 287.72,-365.87"/>
+<polygon fill="#555555" stroke="#555555" points="287.73,-360.21 291.33,-368.21 287.73,-363 287.73,-368.21 287.73,-368.21 287.73,-368.21 287.73,-363 284.13,-368.21 287.73,-360.21"/>
+<text text-anchor="middle" x="267.47" y="-357.35" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
+</g>
+<!-- des&#45;&gt;casa -->
+<g id="edge30" class="edge">
 <title>des:w&#45;&gt;casa:e</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M419.52,-655.2C419.52,-655.2 396.89,-666.6 384.52,-672.84"/>
 <polygon fill="#555555" stroke="#555555" points="377.75,-676.25 383.27,-669.44 380.23,-675 384.89,-672.65 384.89,-672.65 384.89,-672.65 380.23,-675 386.51,-675.87 377.75,-676.25"/>
 <text text-anchor="middle" x="382.9" y="-665.97" font-family="Arial" font-size="9.00" fill="#444444">«extend»</text>
 </g>
-<!-- des&#45;&gt;part -->
-<g id="edge32" class="edge">
-<title>des:w&#45;&gt;part:e</title>
-<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M419.52,-655.2C419.52,-655.2 396.89,-641.9 384.52,-634.62"/>
-<polygon fill="#555555" stroke="#555555" points="377.71,-630.62 386.43,-631.57 380.11,-632.03 384.6,-634.67 384.6,-634.67 384.6,-634.67 380.11,-632.03 382.78,-637.78 377.71,-630.62"/>
-<text text-anchor="middle" x="382.9" y="-646.86" font-family="Arial" font-size="9.00" fill="#444444">«extend»</text>
-</g>
 <!-- exp&#45;&gt;gen -->
-<g id="edge34" class="edge">
+<g id="edge33" class="edge">
 <title>exp:w&#45;&gt;gen:e</title>
-<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M427.84,-532.8C427.84,-532.8 404.83,-562.34 394.04,-576.19"/>
-<polygon fill="#555555" stroke="#555555" points="389.34,-582.24 391.41,-573.71 391.05,-580.04 394.25,-575.93 394.25,-575.93 394.25,-575.93 391.05,-580.04 397.09,-578.14 389.34,-582.24"/>
-<text text-anchor="middle" x="391.82" y="-556.45" font-family="Arial" font-size="9.00" fill="#444444">«extend»</text>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M427.84,-583.2C427.84,-583.2 405.3,-610.08 394.38,-623.09"/>
+<polygon fill="#555555" stroke="#555555" points="389.37,-629.07 391.75,-620.62 391.16,-626.94 394.51,-622.94 394.51,-622.94 394.51,-622.94 391.16,-626.94 397.27,-625.25 389.37,-629.07"/>
+<text text-anchor="middle" x="430.23" y="-605.1" font-family="Arial" font-size="9.00" fill="#444444">«extend»</text>
 </g>
 <!-- exp&#45;&gt;crep -->
-<g id="edge33" class="edge">
+<g id="edge32" class="edge">
 <title>exp:w&#45;&gt;crep:e</title>
-<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M427.84,-532.8C427.84,-532.8 385.7,-500.8 368.58,-487.79"/>
-<polygon fill="#555555" stroke="#555555" points="362.44,-483.14 370.99,-485.11 364.66,-484.82 368.82,-487.98 368.82,-487.98 368.82,-487.98 364.66,-484.82 366.64,-490.84 362.44,-483.14"/>
-<text text-anchor="middle" x="379.08" y="-512.25" font-family="Arial" font-size="9.00" fill="#444444">«extend»</text>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M427.84,-583.2C427.84,-583.2 385.7,-551.2 368.58,-538.19"/>
+<polygon fill="#555555" stroke="#555555" points="362.44,-533.54 370.99,-535.51 364.66,-535.22 368.82,-538.38 368.82,-538.38 368.82,-538.38 364.66,-535.22 366.64,-541.24 362.44,-533.54"/>
+<text text-anchor="middle" x="417.33" y="-552.15" font-family="Arial" font-size="9.00" fill="#444444">«extend»</text>
 </g>
 <!-- pfor&#45;&gt;ins -->
-<g id="edge28" class="edge">
+<g id="edge27" class="edge">
 <title>pfor:e&#45;&gt;ins:w</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M376.66,-190.8C376.66,-190.8 391.57,-190.8 401.6,-190.8"/>
 <polygon fill="#555555" stroke="#555555" points="409.27,-190.8 401.27,-194.4 406.48,-190.8 401.27,-190.8 401.27,-190.8 401.27,-190.8 406.48,-190.8 401.27,-187.2 409.27,-190.8"/>
 <text text-anchor="middle" x="409.38" y="-182.25" font-family="Arial" font-size="9.00" fill="#444444">«include»</text>
 </g>
 <!-- val&#45;&gt;DB -->
-<g id="edge36" class="edge">
+<g id="edge35" class="edge">
 <title>val:e&#45;&gt;DB:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M817.62,-1065.6C817.62,-1065.6 935.38,-910.8 935.38,-910.8"/>
 </g>
 <!-- blq&#45;&gt;val -->
-<g id="edge30" class="edge">
+<g id="edge29" class="edge">
 <title>blq:n&#45;&gt;val:s</title>
 <path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M737.73,-999.99C737.73,-999.99 737.73,-1022.1 737.73,-1034.88"/>
 <polygon fill="#555555" stroke="#555555" points="737.73,-1042.51 734.13,-1034.51 737.73,-1039.73 737.73,-1034.51 737.73,-1034.51 737.73,-1034.51 737.73,-1039.73 741.33,-1034.51 737.73,-1042.51"/>
@@ -418,7 +419,7 @@
 <text text-anchor="middle" x="702.1" y="-1019.39" font-family="Arial" font-size="9.00" fill="#444444">5 intentos fallidos</text>
 </g>
 <!-- bit&#45;&gt;DB -->
-<g id="edge37" class="edge">
+<g id="edge36" class="edge">
 <title>bit:e&#45;&gt;DB:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M820.51,-766.8C820.51,-766.8 935.38,-910.8 935.38,-910.8"/>
 </g>
@@ -467,68 +468,63 @@
 <title>PA:e&#45;&gt;casa:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M88.21,-684C88.21,-684 198.79,-676.8 198.79,-676.8"/>
 </g>
-<!-- PA&#45;&gt;part -->
-<g id="edge10" class="edge">
-<title>PA:e&#45;&gt;part:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M88.21,-684C88.21,-684 198.79,-630 198.79,-630"/>
-</g>
 <!-- PA&#45;&gt;gen -->
-<g id="edge11" class="edge">
+<g id="edge10" class="edge">
 <title>PA:e&#45;&gt;gen:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M88.21,-684C88.21,-684 186.86,-583.2 186.86,-583.2"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M88.21,-684C88.21,-684 186.86,-630 186.86,-630"/>
 </g>
 <!-- SU&#45;&gt;envg -->
-<g id="edge12" class="edge">
+<g id="edge11" class="edge">
 <title>SU:e&#45;&gt;envg:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M79.92,-522C79.92,-522 201.68,-532.8 201.68,-532.8"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M79.92,-522C79.92,-522 201.68,-583.2 201.68,-583.2"/>
 </g>
 <!-- SU&#45;&gt;crep -->
-<g id="edge13" class="edge">
+<g id="edge12" class="edge">
 <title>SU:e&#45;&gt;crep:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M79.92,-522C79.92,-522 213.98,-482.4 213.98,-482.4"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M79.92,-522C79.92,-522 213.98,-532.8 213.98,-532.8"/>
 </g>
 <!-- SU&#45;&gt;ccasa -->
-<g id="edge14" class="edge">
+<g id="edge13" class="edge">
 <title>SU:e&#45;&gt;ccasa:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M79.92,-522C79.92,-522 198.79,-435.6 198.79,-435.6"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M79.92,-522C79.92,-522 198.79,-482.4 198.79,-482.4"/>
 </g>
 <!-- EQ&#45;&gt;crep -->
-<g id="edge15" class="edge">
+<g id="edge14" class="edge">
 <title>EQ:e&#45;&gt;crep:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M86.96,-378C86.96,-378 213.98,-482.4 213.98,-482.4"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M86.96,-378C86.96,-378 213.98,-532.8 213.98,-532.8"/>
 </g>
 <!-- EQ&#45;&gt;ccasa -->
-<g id="edge16" class="edge">
+<g id="edge15" class="edge">
 <title>EQ:e&#45;&gt;ccasa:w</title>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M86.96,-378C86.96,-378 198.79,-482.4 198.79,-482.4"/>
+</g>
+<!-- EQ&#45;&gt;part -->
+<g id="edge16" class="edge">
+<title>EQ:e&#45;&gt;part:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M86.96,-378C86.96,-378 198.79,-435.6 198.79,-435.6"/>
 </g>
 <!-- EQ&#45;&gt;asis -->
 <g id="edge17" class="edge">
 <title>EQ:e&#45;&gt;asis:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M86.96,-378C86.96,-378 207.83,-388.8 207.83,-388.8"/>
-</g>
-<!-- EQ&#45;&gt;envs -->
-<g id="edge18" class="edge">
-<title>EQ:e&#45;&gt;envs:w</title>
-<path fill="none" stroke="#555555" stroke-width="1.1" d="M86.96,-378C86.96,-378 201.68,-342 201.68,-342"/>
+<path fill="none" stroke="#555555" stroke-width="1.1" d="M86.96,-378C86.96,-378 219.04,-388.8 219.04,-388.8"/>
 </g>
 <!-- CO&#45;&gt;proc -->
-<g id="edge19" class="edge">
+<g id="edge18" class="edge">
 <title>CO:e&#45;&gt;proc:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M92.64,-162C92.64,-162 213.98,-244.8 213.98,-244.8"/>
 </g>
 <!-- CO&#45;&gt;pfor -->
-<g id="edge20" class="edge">
+<g id="edge19" class="edge">
 <title>CO:e&#45;&gt;pfor:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M92.64,-162C92.64,-162 198.79,-190.8 198.79,-190.8"/>
 </g>
 <!-- CO&#45;&gt;afor -->
-<g id="edge21" class="edge">
+<g id="edge20" class="edge">
 <title>CO:e&#45;&gt;afor:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M92.64,-162C92.64,-162 207.83,-136.8 207.83,-136.8"/>
 </g>
 <!-- CO&#45;&gt;rfor -->
-<g id="edge22" class="edge">
+<g id="edge21" class="edge">
 <title>CO:e&#45;&gt;rfor:w</title>
 <path fill="none" stroke="#555555" stroke-width="1.1" d="M92.64,-162C92.64,-162 219.04,-75.6 219.04,-75.6"/>
 </g>

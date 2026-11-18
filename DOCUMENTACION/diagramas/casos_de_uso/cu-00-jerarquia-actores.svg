@@ -139,8 +139,8 @@
 <text text-anchor="start" x="233.6" y="-671.15" font-family="Arial" font-weight="bold" font-size="13.00">Administrador (Pastor)</text>
 <text text-anchor="start" x="379.85" y="-671.15" font-family="Arial" font-size="10.00" fill="#4a5a68"> &#160;&#160;rol: PASTOR</text>
 <text text-anchor="start" x="233.6" y="-646.05" font-family="Arial" font-size="11.00">Administra el PVA y las Escuelas de Formación: usuarios, Áreas, Casas de Vida,</text>
-<text text-anchor="start" x="233.6" y="-635.05" font-family="Arial" font-size="11.00">participantes, ofrendas y reportes. </text>
-<text text-anchor="start" x="399.35" y="-635.05" font-family="Arial" font-weight="bold" font-size="11.00">Crea las cuentas de los niveles 3 a 5</text>
+<text text-anchor="start" x="233.6" y="-635.05" font-family="Arial" font-size="11.00">personas nuevas, ofrendas y reportes. </text>
+<text text-anchor="start" x="420.35" y="-635.05" font-family="Arial" font-weight="bold" font-size="11.00">Crea las cuentas de los niveles 3 a 5</text>
 <text text-anchor="start" x="233.6" y="-624.05" font-family="Arial" font-size="11.00">y autoriza al responsable de ofrendas.</text>
 <polygon fill="none" stroke="#2c3e50" points="226.6,-606.5 226.6,-689.5 824.6,-689.5 824.6,-606.5 226.6,-606.5"/>
 </g>
@@ -173,8 +173,8 @@
 <polygon fill="#d5ecef" stroke="none" points="227.6,-283.5 227.6,-310.5 821.6,-310.5 821.6,-283.5 227.6,-283.5"/>
 <text text-anchor="start" x="233.6" y="-293.15" font-family="Arial" font-weight="bold" font-size="13.00">Líder de Casa de Vida y su equipo de trabajo</text>
 <text text-anchor="start" x="520.1" y="-293.15" font-family="Arial" font-size="10.00" fill="#4a5a68"> &#160;&#160;rol: LIDER_CASA_VIDA · APOYO_CASA_VIDA</text>
-<text text-anchor="start" x="233.6" y="-267.05" font-family="Arial" font-size="11.00">Consultan su Casa de Vida, registran la asistencia y envían el reporte semanal</text>
-<text text-anchor="start" x="233.6" y="-253.55" font-family="Arial" font-size="11.00">al Supervisor de Área. Equipo de trabajo: Aprendiz, Anfitrión y Maestro de Niños.</text>
+<text text-anchor="start" x="233.6" y="-267.05" font-family="Arial" font-size="11.00">Consultan su Casa de Vida, registran a las personas nuevas y llenan el reporte de</text>
+<text text-anchor="start" x="233.6" y="-253.55" font-family="Arial" font-size="11.00">asistencia con los totales de la reunión. Equipo: Aprendiz, Anfitrión, Maestro de Niños.</text>
 <polygon fill="none" stroke="#2c3e50" points="226.6,-228.5 226.6,-311.5 824.6,-311.5 824.6,-228.5 226.6,-228.5"/>
 </g>
 <!-- t6 -->
