@@ -220,7 +220,7 @@ class EnviarReporteGeneralView(solo_roles(ROLES_SUPERVISOR), PanelCasasMixin, Fo
         if request.user.is_authenticated and rol_de(request.user) == ROLES_SUPERVISOR:
             self.area = area_del_supervisor(request.user)
             if self.area is None:
-                messages.error(request, "No tienes un Área asignada.")
+                messages.error(request, "Todavía no tienes un Área asignada. Pídele al Pastor que te asigne una.")
                 return redirect("pva:reportes")
         return super().dispatch(request, *args, **kwargs)
 

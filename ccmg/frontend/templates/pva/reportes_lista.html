@@ -29,7 +29,7 @@
 {% endif %}
 
 {% if rol == "SUPERVISOR_AREA" or rol == "PASTOR" %}
-  <h5 class="mt-2 mb-2">{% if es_pastor %}Reportes generales recibidos{% else %}Mis reportes generales al Pastor{% endif %}</h5>
+  <h2 class="h5 mt-2 mb-2">{% if es_pastor %}Reportes generales recibidos{% else %}Mis reportes generales al Pastor{% endif %}</h2>
   <div class="table-responsive bg-white rounded shadow-sm mb-4">
     <table class="table table-hover align-middle mb-0">
       <thead><tr><th>Mes</th><th>Área</th><th>Supervisor</th><th>Enviado</th><th></th></tr></thead>
@@ -50,7 +50,7 @@
   </div>
 {% endif %}
 
-<h5 class="mb-2">{% if es_pastor %}Reportes semanales de las Casas de Vida{% elif area %}Reportes recibidos de las Casas de Vida{% else %}Reportes de mi Casa de Vida{% endif %}</h5>
+<h2 class="h5 mb-2">{% if es_pastor %}Reportes semanales de las Casas de Vida{% elif area %}Reportes recibidos de las Casas de Vida{% else %}Reportes de mi Casa de Vida{% endif %}</h2>
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table table-hover align-middle mb-0">
     <thead><tr><th>Semana</th><th>Casa de Vida</th><th>Envió</th><th>Enviado</th>{% if area or es_pastor %}<th>Reporte general</th>{% endif %}<th></th></tr></thead>

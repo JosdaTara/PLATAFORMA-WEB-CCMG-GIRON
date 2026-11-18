@@ -12,7 +12,7 @@
   {% csrf_token %}
   {% if form.non_field_errors %}<div class="alert alert-danger">{% for e in form.non_field_errors %}{{ e }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
 
-  <h6 class="mb-3">Datos de la cuenta</h6>
+  <h2 class="mb-3">Datos de la cuenta</h2>
   <div class="row g-3">
     {% for campo in form %}
       {% if campo.name in form.CAMPOS_CLAVE %}{# se muestran en la sección «Contraseña» #}
@@ -34,7 +34,7 @@
     {% endfor %}
   </div>
 
-  <h6 class="mt-4 mb-1">Asignación</h6>
+  <h2 class="mt-4 mb-1">Asignación</h2>
   <p class="small text-muted" id="sinAsignacion">Este rol no requiere asignación.</p>
   <div class="row g-3">
     <div class="col-md-6" data-roles="SUPERVISOR_AREA">
@@ -52,7 +52,7 @@
   </div>
 
   {% if not object %}
-  <h6 class="mt-4 mb-1">Contraseña</h6>
+  <h2 class="mt-4 mb-1">Contraseña</h2>
   <p class="small text-muted">Asigna la contraseña con la que el usuario entrará por primera vez. Entrégasela por un medio seguro.</p>
   <div class="row g-3">
     <div class="col-md-6">

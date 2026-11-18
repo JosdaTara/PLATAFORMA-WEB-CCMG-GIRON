@@ -197,16 +197,16 @@ class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
                     if codigo == "SUPERVISOR_AREA":
                         area = form_asig.cleaned_data.get("area")
                         if not area:
-                            messages.error(request, "Debe seleccionar un Área para el Supervisor de Área.")
+                            messages.error(request, "Elige el Área que va a supervisar.")
                             raise Exception("area_required")
                         supervisor_existente = Usuario.objects.filter(rol__nombre="SUPERVISOR_AREA", area_set=area).exclude(pk=user.pk).exists() if False else None
                         # Check: un supervisor solo puede tener UNA área
                         otras_areas = Area.objects.filter(id_supervisor=user).exclude(pk=area.pk)
                         if otras_areas.exists():
-                            messages.error(request, "Este Supervisor ya tiene otra Área asignada. Debe reasignarla primero.")
+                            messages.error(request, "Este Supervisor ya tiene otra Área. Reasígnala primero desde Áreas.")
                             raise Exception("supervisor_otras_areas")
                         if area.id_supervisor and area.id_supervisor_id != user.pk:
-                            messages.error(request, "El Área ya tiene otro Supervisor. Confirme el reemplazo antes de continuar.")
+                            messages.error(request, "El Área ya tiene otro Supervisor. Quítalo primero editando el Área, o elige otra Área.")
                             raise Exception("area_tiene_supervisor")
                         area.id_supervisor = user
                         area.save(update_fields=["id_supervisor"])
@@ -214,10 +214,10 @@ class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
                     elif codigo == "LIDER_CASA_VIDA":
                         casa = form_asig.cleaned_data.get("casa_vida")
                         if not casa:
-                            messages.error(request, "Debe seleccionar una Casa de Vida para el Líder.")
+                            messages.error(request, "Elige la Casa de Vida que va a liderar.")
                             raise Exception("casa_required")
                         if casa.id_lider and casa.id_lider_id != user.pk:
-                            messages.error(request, "La Casa de Vida ya tiene otro Líder. Confirme el reemplazo antes de continuar.")
+                            messages.error(request, "La Casa de Vida ya tiene otro Líder. Quítalo primero editando la Casa de Vida, o elige otra.")
                             raise Exception("casa_tiene_lider")
                         casa.id_lider = user
                         casa.save(update_fields=["id_lider"])
@@ -226,7 +226,7 @@ class UsuarioCreateView(AdminUsuariosMixin, PastorRequiredMixin, CreateView):
                         casa = form_asig.cleaned_data.get("casa_vida")
                         funcion = form_asig.cleaned_data.get("funcion_apoyo")
                         if not casa or not funcion:
-                            messages.error(request, "Debe seleccionar Casa de Vida y función para el usuario de apoyo.")
+                            messages.error(request, "Elige la Casa de Vida y la función del usuario de apoyo.")
                             raise Exception("apoyo_required")
                         CasaVidaEquipo.objects.filter(id_usuario=user, activo=True).update(activo=False)
                         CasaVidaEquipo.objects.create(id_casa_vida=casa, id_usuario=user, funcion=funcion, activo=True)
@@ -293,14 +293,14 @@ class UsuarioUpdateView(AdminUsuariosMixin, PastorRequiredMixin, UpdateView):
                     if codigo == "SUPERVISOR_AREA":
                         area = form_asig.cleaned_data.get("area")
                         if not area:
-                            messages.error(request, "Debe seleccionar un Área para el Supervisor de Área.")
+                            messages.error(request, "Elige el Área que va a supervisar.")
                             raise Exception("area_required")
                         otras_areas = Area.objects.filter(id_supervisor=user).exclude(pk=area.pk)
                         if otras_areas.exists():
-                            messages.error(request, "Este Supervisor ya tiene otra Área asignada. Debe reasignarla primero.")
+                            messages.error(request, "Este Supervisor ya tiene otra Área. Reasígnala primero desde Áreas.")
                             raise Exception("supervisor_otras_areas")
                         if area.id_supervisor and area.id_supervisor_id != user.pk:
-                            messages.error(request, "El Área ya tiene otro Supervisor. Confirme el reemplazo antes de continuar.")
+                            messages.error(request, "El Área ya tiene otro Supervisor. Quítalo primero editando el Área, o elige otra Área.")
                             raise Exception("area_tiene_supervisor")
                         area.id_supervisor = user
                         area.save(update_fields=["id_supervisor"])
@@ -308,10 +308,10 @@ class UsuarioUpdateView(AdminUsuariosMixin, PastorRequiredMixin, UpdateView):
                     elif codigo == "LIDER_CASA_VIDA":
                         casa = form_asig.cleaned_data.get("casa_vida")
                         if not casa:
-                            messages.error(request, "Debe seleccionar una Casa de Vida para el Líder.")
+                            messages.error(request, "Elige la Casa de Vida que va a liderar.")
                             raise Exception("casa_required")
                         if casa.id_lider and casa.id_lider_id != user.pk:
-                            messages.error(request, "La Casa de Vida ya tiene otro Líder. Confirme el reemplazo antes de continuar.")
+                            messages.error(request, "La Casa de Vida ya tiene otro Líder. Quítalo primero editando la Casa de Vida, o elige otra.")
                             raise Exception("casa_tiene_lider")
                         casa.id_lider = user
                         casa.save(update_fields=["id_lider"])
@@ -320,7 +320,7 @@ class UsuarioUpdateView(AdminUsuariosMixin, PastorRequiredMixin, UpdateView):
                         casa = form_asig.cleaned_data.get("casa_vida")
                         funcion = form_asig.cleaned_data.get("funcion_apoyo")
                         if not casa or not funcion:
-                            messages.error(request, "Debe seleccionar Casa de Vida y función para el usuario de apoyo.")
+                            messages.error(request, "Elige la Casa de Vida y la función del usuario de apoyo.")
                             raise Exception("apoyo_required")
                         CasaVidaEquipo.objects.filter(id_usuario=user, activo=True).update(activo=False)
                         CasaVidaEquipo.objects.create(id_casa_vida=casa, id_usuario=user, funcion=funcion, activo=True)

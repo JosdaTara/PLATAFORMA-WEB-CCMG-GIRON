@@ -13,7 +13,7 @@
   <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Presentes</small><div class="num">{{ presentes }} / {{ asistencias|length }}</div></div></div>
   <div class="col-6 col-xl-3"><div class="card stat p-3 h-100"><small class="text-muted">Registró</small><div class="fw-semibold mt-1">{{ actividad.id_responsable.nombre_completo|default:"—" }}</div></div></div>
 </div>
-{% if actividad.descripcion %}<div class="card p-3 border-0 shadow-sm mb-3"><h6>Descripción</h6><p class="mb-0">{{ actividad.descripcion|linebreaksbr }}</p></div>{% endif %}
+{% if actividad.descripcion %}<div class="card p-3 border-0 shadow-sm mb-3"><h2>Descripción</h2><p class="mb-0">{{ actividad.descripcion|linebreaksbr }}</p></div>{% endif %}
 
 <div class="table-responsive bg-white rounded shadow-sm">
   <table class="table align-middle mb-0">

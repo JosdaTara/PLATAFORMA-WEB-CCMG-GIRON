@@ -28,14 +28,14 @@ const VISTAS_CASAS = {
       '</div>' +
       '<div class="row g-3 mt-1">' +
       '<div class="col-lg-7"><div class="card p-3 border-0 shadow-sm h-100">' +
-      '<div class="d-flex justify-content-between align-items-center mb-3"><h6 class="m-0">Últimos reportes de asistencia</h6>' +
+      '<div class="d-flex justify-content-between align-items-center mb-3"><h2 class="m-0">Últimos reportes de asistencia</h2>' +
       (URLS_PVA.asistencia ? '<a class="small text-decoration-none" href="' + URLS_PVA.asistencia + '">Ver asistencia</a>' : '') + '</div>' +
       tabla(['Casa de Vida', 'Fecha', 'Asistentes', 'Nuevos'], RESUMEN.actividades.map(function (a) {
         return [esc(a.casa), fechaCorta(a.fecha), a.asistentes, a.nuevos];
       })) +
       '</div></div>' +
       '<div class="col-lg-5"><div class="card p-3 border-0 shadow-sm h-100">' +
-      '<h6 class="mb-3">Seguimientos recientes</h6>' +
+      '<h2 class="mb-3">Seguimientos recientes</h2>' +
       tabla(['Participante', 'Estado'], RESUMEN.seguimientos.map(function (x) {
         return [esc(x.participante), badge(x.estado, x.cerrado ? 'ok' : 'pendiente')];
       })) +

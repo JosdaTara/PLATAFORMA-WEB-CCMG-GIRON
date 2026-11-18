@@ -21,7 +21,7 @@
 <div class="row g-3">
   <div class="col-lg-5">
     <div class="card p-3 border-0 shadow-sm h-100">
-      <h6 class="mb-3">Datos</h6>
+      <h2 class="mb-3">Datos</h2>
       <dl class="row mb-0 small">
         <dt class="col-5">Teléfono</dt><dd class="col-7">{% if participante.telefono %}<a href="tel:{{ participante.telefono }}" class="text-decoration-none">{{ participante.telefono }}</a>{% else %}—{% endif %}</dd>
         {% if participante.documento_identidad %}<dt class="col-5">Documento</dt><dd class="col-7">{{ participante.documento_identidad }}</dd>{% endif %}
@@ -35,7 +35,7 @@
   </div>
   <div class="col-lg-7">
     <div class="card p-3 border-0 shadow-sm h-100">
-      <h6 class="mb-3">Casas de Vida</h6>
+      <h2 class="mb-3">Casas de Vida</h2>
       <table class="table table-sm align-middle mb-0">
         <thead><tr><th>Casa de Vida</th><th>Llegó</th><th>Estado</th></tr></thead>
         <tbody>
@@ -56,7 +56,7 @@
   <div class="col-12">
     <div class="card p-3 border-0 shadow-sm">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="m-0">Seguimiento</h6>
+        <h2 class="m-0">Seguimiento</h2>
         <span class="d-flex gap-2">
           <a href="{% url 'pva:seguimientos' %}?participante={{ participante.pk }}" class="small text-decoration-none align-self-center">Ver todo</a>
           {% if es_pastor %}<a href="{% url 'pva:seguimiento_crear' %}?participante={{ participante.pk }}" class="btn btn-sm btn-ccmg"><i class="bi bi-plus-lg me-1"></i>Nuevo seguimiento</a>{% endif %}
@@ -74,7 +74,7 @@
               <td>{% include "pva/_estado_seguimiento.html" %}</td>
             </tr>
           {% empty %}
-            <tr><td colspan="5" class="text-center text-muted py-3">Sin seguimientos registrados.</td></tr>
+            <tr><td colspan="5" class="text-center text-muted py-3">Todavía no hay seguimientos.</td></tr>
           {% endfor %}
         </tbody>
       </table>

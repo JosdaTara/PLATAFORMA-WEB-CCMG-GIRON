@@ -106,7 +106,8 @@ class VistaPreviaView(PastorCasasMixin, TemplateView):
         datos.update(resultados=resultados, confirmada=True)
         request.session[CLAVE_SESION] = datos
         conteo = importacion.contar(resultados)
-        messages.success(request, f"Importación completada: {conteo['validas']} registros importados.")
+        n = conteo["validas"]
+        messages.success(request, f"Importación completada: {n} {'registro importado' if n == 1 else 'registros importados'}.")
         return redirect("pva:importar_resultado")
 
 

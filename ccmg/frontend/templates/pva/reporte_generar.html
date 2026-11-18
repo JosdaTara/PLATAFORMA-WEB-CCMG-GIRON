@@ -25,7 +25,7 @@
 
 {% if periodo %}
   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-    <h5 class="mb-1">{{ periodo.nombre }}</h5>
+    <h2 class="h5 mb-1">{{ periodo.nombre }}</h2>
     {% include "pva/_exportar.html" %}
   </div>
   <p class="text-muted small">Del {{ periodo.inicio|date:"d/m/Y" }} al {{ periodo.fin|date:"d/m/Y" }} · Reportes semanales esperados por casa: {{ semanas_esperadas }}</p>
@@ -81,7 +81,7 @@
     </table>
   </div>
 
-  <h6 class="mb-2">Reportes generales de los Supervisores en el periodo</h6>
+  <h2 class="mb-2">Reportes generales de los Supervisores en el periodo</h2>
   <div class="table-responsive bg-white rounded shadow-sm">
     <table class="table align-middle mb-0">
       <thead><tr><th>Mes</th><th>Área</th><th>Supervisor</th><th>Observaciones</th><th></th></tr></thead>

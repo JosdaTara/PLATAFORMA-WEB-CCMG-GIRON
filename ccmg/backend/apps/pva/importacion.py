@@ -72,7 +72,7 @@ def _mapa_encabezados(tipo, encabezados):
             mapa[indice] = clave
     faltantes = [titulo for clave, titulo, obligatoria, _ in COLUMNAS[tipo] if obligatoria and clave not in mapa.values()]
     if faltantes:
-        raise ErrorArchivo("Faltan columnas obligatorias: " + ", ".join(faltantes) + ". Use la plantilla del sistema.")
+        raise ErrorArchivo("Faltan columnas obligatorias: " + ", ".join(faltantes) + ". Descarga y usa la plantilla del sistema.")
     return mapa
 
 
@@ -99,7 +99,7 @@ def leer_archivo(tipo, archivo):
     elif nombre.endswith(".csv"):
         filas = _leer_csv(archivo)
     else:
-        raise ErrorArchivo("Formato no admitido. Use un archivo CSV o Excel (.xlsx).")
+        raise ErrorArchivo("Formato no admitido. Usa un archivo CSV o Excel (.xlsx).")
     if not filas:
         raise ErrorArchivo("El archivo está vacío.")
     mapa = _mapa_encabezados(tipo, filas[0])
@@ -121,7 +121,7 @@ def _leer_xlsx(archivo):
     try:
         libro = load_workbook(archivo, read_only=True, data_only=True)
     except Exception:
-        raise ErrorArchivo("No se pudo leer el archivo de Excel. Verifique que sea un .xlsx válido.")
+        raise ErrorArchivo("No se pudo leer el archivo de Excel. Ábrelo y guárdalo de nuevo como .xlsx.")
     hoja = libro.worksheets[0]
     filas = [list(f) for f in hoja.iter_rows(values_only=True)]
     libro.close()
@@ -290,11 +290,11 @@ def plantilla_xlsx(tipo):
     ayuda = libro.create_sheet("Instrucciones")
     ayuda.append(["Columna", "Obligatoria", "Notas"])
     notas = {
-        "area": "Debe existir en el sistema con ese nombre.",
+        "area": "No existe un Área con ese nombre. Revisa cómo está escrita o créala primero.",
         "lider_correo": "Correo de un usuario con rol Líder de Casa de Vida.",
         "fecha_nacimiento": "Formato dd/mm/aaaa o aaaa-mm-dd.",
         "telefono": "Solo números, de 7 a 15 dígitos.",
-        "casa_vida": "Debe existir en el sistema con ese nombre. Importe primero las Casas de Vida.",
+        "casa_vida": "No existe una Casa de Vida con ese nombre. Revisa cómo está escrita o importa primero las Casas de Vida.",
         "autorizacion_datos": "«Sí» si autorizó el tratamiento de datos. Vacío o «No»: autorización pendiente (RN25).",
         "documento_identidad": "Si ya existe en el sistema, la fila se omite (no se duplica).",
         "nombre": "Si ya existe una Casa de Vida con ese nombre, la fila se omite.",

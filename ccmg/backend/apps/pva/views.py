@@ -462,7 +462,7 @@ class PersonaNuevaCreateView(PanelCasasMixin, CreateView):
                 raise PermissionDenied("Las personas nuevas las registra el Líder o su equipo en la Casa de Vida.")
             self.casa = casa_para_reportar(request.user)
             if self.casa is None:
-                messages.error(request, "No tienes una Casa de Vida activa asignada.")
+                messages.error(request, "Todavía no tienes una Casa de Vida asignada. Pídele al Pastor que te asigne una.")
                 return redirect("pva:participantes")
         return super().dispatch(request, *args, **kwargs)
 
@@ -577,7 +577,7 @@ class RegistrarAsistenciaView(PanelCasasMixin, FormView):
                 raise PermissionDenied("Solo el Líder y los usuarios de apoyo llenan el reporte de asistencia.")
             self.casa = casa_para_reportar(request.user)
             if self.casa is None:
-                messages.error(request, "No tienes una Casa de Vida activa asignada para reportar asistencia.")
+                messages.error(request, "Todavía no tienes una Casa de Vida asignada para reportar asistencia. Pídele al Pastor que te asigne una.")
                 return redirect("pva:asistencia")
         return super().dispatch(request, *args, **kwargs)
 
@@ -602,7 +602,7 @@ class RegistrarAsistenciaView(PanelCasasMixin, FormView):
     def form_valid(self, form):
         supervisor = self.casa.supervisor
         if supervisor is None:
-            form.add_error(None, "La Casa de Vida no tiene Supervisor de Área asignado. Comuníquese con el Pastor.")
+            form.add_error(None, "Tu Casa de Vida todavía no tiene Supervisor de Área, así que el reporte no tiene a quién llegar. Pídele al Pastor que lo asigne.")
             return self.form_invalid(form)
         datos = form.cleaned_data
         semana = periodos.semana(datos["fecha"])

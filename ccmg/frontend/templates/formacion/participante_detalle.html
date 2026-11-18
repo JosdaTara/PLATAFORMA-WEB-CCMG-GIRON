@@ -15,7 +15,7 @@
 <div class="row g-3">
   <div class="col-lg-5">
     <div class="card p-3 border-0 shadow-sm h-100">
-      <h6 class="mb-3">Datos personales</h6>
+      <h2 class="mb-3">Datos personales</h2>
       <dl class="row mb-0 small">
         <dt class="col-5">Documento</dt><dd class="col-7">{{ participante.documento_identidad }}</dd>
         <dt class="col-5">Nacimiento</dt><dd class="col-7">{{ participante.fecha_nacimiento|date:"d/m/Y"|default:"—" }}</dd>
@@ -27,7 +27,7 @@
   </div>
   <div class="col-lg-7">
     <div class="card p-3 border-0 shadow-sm h-100">
-      <h6 class="mb-3">Procesos de formación</h6>
+      <h2 class="mb-3">Procesos de formación</h2>
       <table class="table table-sm align-middle mb-0">
         <thead><tr><th>Proceso</th><th>Escuela</th><th>Inscripción</th><th>Estado</th></tr></thead>
         <tbody>
@@ -46,7 +46,7 @@
   <div class="col-12">
     <div class="card p-3 border-0 shadow-sm">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="m-0">Historial de seguimiento</h6>
+        <h2 class="m-0">Historial de seguimiento</h2>
         <a href="{% url 'formacion:seguimiento_crear' %}?participante={{ participante.pk }}" class="btn btn-sm btn-ccmg"><i class="bi bi-plus-lg me-1"></i>Nuevo seguimiento</a>
       </div>
       <table class="table table-sm align-middle mb-0">
@@ -63,7 +63,7 @@
               <td class="text-end"><a href="{% url 'formacion:seguimiento_editar' s.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i><span class="visually-hidden">Editar</span></a></td>
             </tr>
           {% empty %}
-            <tr><td colspan="7" class="text-center text-muted py-3">Sin seguimientos registrados.</td></tr>
+            <tr><td colspan="7" class="text-center text-muted py-3">Todavía no hay seguimientos.</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -71,7 +71,7 @@
   </div>
   <div class="col-12">
     <div class="card p-3 border-0 shadow-sm">
-      <h6 class="mb-3">Asistencia reciente</h6>
+      <h2 class="mb-3">Asistencia reciente</h2>
       <table class="table table-sm align-middle mb-0">
         <thead><tr><th>Fecha</th><th>Actividad</th><th>Proceso</th><th>Asistió</th></tr></thead>
         <tbody>

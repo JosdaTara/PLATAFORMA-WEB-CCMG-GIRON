@@ -68,7 +68,7 @@
     {% for titulo, filas in grupos %}
       <div class="col-md-6 col-xl-4">
         <div class="card p-3 border-0 shadow-sm h-100">
-          <h6 class="mb-3">{{ titulo }}</h6>
+          <h2 class="mb-3">{{ titulo }}</h2>
           <table class="table table-sm align-middle mb-0">
             <tbody>
               {% for etiqueta, valor in filas %}
@@ -81,7 +81,7 @@
     {% endfor %}
     <div class="col-md-6 col-xl-4">
       <div class="card p-3 border-0 shadow-sm h-100">
-        <h6 class="mb-3">Informe financiero</h6>
+        <h2 class="mb-3">Informe financiero</h2>
         <div class="d-flex justify-content-between align-items-baseline">
           <span>Ofrenda</span><span class="fs-4 fw-bold">{{ asistencia.ofrenda|pesos }}</span>
         </div>

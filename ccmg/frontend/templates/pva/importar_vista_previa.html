@@ -20,7 +20,7 @@
       </form>
       <span class="small text-muted">Las filas omitidas y con error no se guardan.</span>
     {% else %}
-      <span class="text-danger">No hay filas válidas para importar. Corrija el archivo y vuelva a cargarlo.</span>
+      <span class="text-danger">No hay filas válidas para importar. Corrige el archivo con el detalle de errores y vuelve a cargarlo.</span>
     {% endif %}
     {% if conteo.errores or conteo.omitidas %}
       <a href="{% url 'pva:importar_detalle' %}" data-descarga data-no-loader class="btn btn-outline-secondary btn-sm ms-auto"><i class="bi bi-download me-1"></i>Descargar detalle de errores</a>

@@ -32,12 +32,29 @@ class EstiloBootstrapMixin:
             else:
                 clase = "form-control"
             w.attrs["class"] = clase
+        # Teclado y autocompletado adecuados en el celular (los usuarios llenan esto en la reunión)
+        for nombre, attrs in self.ATRIBUTOS_MOVILES.items():
+            if nombre in self.fields:
+                widget = self.fields[nombre].widget
+                attrs = dict(attrs)
+                tipo = attrs.pop("type", None)
+                if tipo and hasattr(widget, "input_type"):
+                    widget.input_type = tipo  # Django toma el type de aquí, no de attrs
+                widget.attrs.update(attrs)
+
+    ATRIBUTOS_MOVILES = {
+        "telefono": {"type": "tel", "inputmode": "tel", "autocomplete": "tel"},
+        "nombres_apellidos": {"autocomplete": "name", "autocapitalize": "words"},
+        "documento_identidad": {"inputmode": "numeric", "autocomplete": "off"},
+        "direccion": {"autocomplete": "street-address"},
+    }
 
     def is_valid(self):
         valido = super().is_valid()
         for nombre in self.errors:
             if nombre in self.fields:
                 self.fields[nombre].widget.attrs["class"] += " is-invalid"
+                self.fields[nombre].widget.attrs["aria-invalid"] = "true"
         return valido
 
 

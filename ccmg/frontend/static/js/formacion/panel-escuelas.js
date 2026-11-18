@@ -28,14 +28,14 @@ const VISTAS_ESCUELAS = {
       '</div>' +
       '<div class="row g-3 mt-1">' +
       '<div class="col-lg-7"><div class="card p-3 border-0 shadow-sm h-100">' +
-      '<div class="d-flex justify-content-between align-items-center mb-3"><h6 class="m-0">Procesos de formación</h6>' +
+      '<div class="d-flex justify-content-between align-items-center mb-3"><h2 class="m-0">Procesos de formación</h2>' +
       (URLS_ESC.procesos ? '<a class="small text-decoration-none" href="' + URLS_ESC.procesos + '">Ver todos</a>' : '') + '</div>' +
       tabla(['Proceso', 'Escuela', 'Estado'], RESUMEN_ESC.procesos.map(function (p) {
         return [esc(p.nombre), esc(p.tipo), badge(p.activo ? 'Activo' : 'Inactivo', p.activo ? 'ok' : 'neutro')];
       })) +
       '</div></div>' +
       '<div class="col-lg-5"><div class="card p-3 border-0 shadow-sm h-100">' +
-      '<h6 class="mb-3">Últimas actividades</h6>' +
+      '<h2 class="mb-3">Últimas actividades</h2>' +
       tabla(['Proceso', 'Fecha', 'Asistentes'], RESUMEN_ESC.actividades.map(function (a) {
         return [esc(a.proceso), fechaCorta(a.fecha), a.asistentes];
       })) +

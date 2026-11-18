@@ -63,7 +63,7 @@ class DatosParticipanteForm(ParticipanteForm):
             return super().clean_documento_identidad()
         except forms.ValidationError:
             raise forms.ValidationError(
-                "Ya existe un participante con ese documento. Use «Inscribir participante existente»."
+                "Ya existe un participante con ese documento. Usa «Inscribir participante existente»."
             )
 
 
