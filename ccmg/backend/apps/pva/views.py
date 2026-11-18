@@ -7,6 +7,7 @@ from django.db.models import Count, Prefetch, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, DetailView, FormView, ListView, RedirectView, UpdateView, View
 
@@ -53,6 +54,30 @@ from .models import (
 
 ROLES_NOMBRE = ROLES_ETIQUETA
 
+
+
+def estado_reporte_semana(casa, hoy=None):
+    """Estado del reporte semanal de una Casa de Vida, para ponerlo primero en el panel y en Asistencia.
+
+    Devuelve la semana actual, el reporte ya enviado (o None), las etiquetas de las semanas recientes
+    ya reportadas y la semana anterior más reciente que falta por reportar (o None).
+    """
+    hoy = hoy or datetime.date.today()
+    recientes = periodos.semanas_recientes(9, hoy)
+    reportes = {
+        r.periodo: r
+        for r in Reporte.objects.filter(
+            tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=casa, periodo__in=[s.etiqueta for s in recientes]
+        ).select_related("id_usuario_envia")
+    }
+    actual = recientes[0]
+    pendiente = next((s for s in recientes[1:] if s.etiqueta not in reportes), None)
+    return {
+        "semana": actual,
+        "enviado": reportes.get(actual.etiqueta),
+        "reportadas": sorted(reportes),
+        "pendiente_anterior": pendiente,
+    }
 
 def menu_casas(user, seccion):
     """Menú lateral del módulo según el rol. Las secciones aún no migradas viven en el panel JS."""
@@ -166,6 +191,20 @@ def panel_casas(request):
             for s in seguimientos[:4]
         ],
     }
+    casa_reporte = casa_para_reportar(user)
+    if casa_reporte is not None:
+        estado = estado_reporte_semana(casa_reporte)
+        enviado = estado["enviado"]
+        resumen["reporteSemana"] = {
+            "casa": casa_reporte.nombre,
+            "semana": estado["semana"].nombre,
+            "enviado": bool(enviado),
+            "enviadoPor": enviado.id_usuario_envia.nombre_completo if enviado else "",
+            "enviadoEl": timezone.localtime(enviado.enviado_en).strftime("%d/%m/%Y") if enviado and enviado.enviado_en else "",
+            "urlVer": reverse("pva:reporte_detalle", args=[enviado.pk]) if enviado else "",
+            "urlLlenar": reverse("pva:asistencia_registrar"),
+            "supervisor": casa_reporte.supervisor.nombre_completo if casa_reporte.supervisor else "",
+        }
     return render(
         request,
         "pva/panel.html",
@@ -551,6 +590,8 @@ class AsistenciaListView(PanelCasasMixin, ListView):
         ctx["casas_filtro"] = casas_visibles(self.request.user)
         ctx["filtros"] = self.request.GET
         ctx["casa_reporte"] = casa_para_reportar(self.request.user)
+        if ctx["casa_reporte"] is not None:
+            ctx["reporte_semana"] = estado_reporte_semana(ctx["casa_reporte"])
         params = self.request.GET.copy()
         params.pop("page", None)
         ctx["query_sin_pagina"] = params.urlencode()
@@ -588,16 +629,30 @@ class RegistrarAsistenciaView(PanelCasasMixin, FormView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        semana = periodos.semana(datetime.date.today())
+        estado = self.estado
         ctx.update(
             casa=self.casa,
             supervisor=self.casa.supervisor,
-            semana=semana,
-            ya_enviado=Reporte.objects.filter(
-                tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=semana.etiqueta
-            ).select_related("id_usuario_envia").first(),
+            semana=estado["semana"],
+            ya_enviado=estado["enviado"],
+            pendiente_anterior=estado["pendiente_anterior"],
+            semanas_reportadas=estado["reportadas"],
+            hoy=datetime.date.today(),
         )
         return ctx
+
+    @property
+    def estado(self):
+        if not hasattr(self, "_estado"):
+            self._estado = estado_reporte_semana(self.casa)
+        return self._estado
+
+    def get_initial(self):
+        inicial = super().get_initial()
+        # Si la semana actual ya está reportada, se propone la semana anterior que falta.
+        if self.estado["enviado"] and self.estado["pendiente_anterior"]:
+            inicial["fecha"] = self.estado["pendiente_anterior"].fin
+        return inicial
 
     def form_valid(self, form):
         supervisor = self.casa.supervisor

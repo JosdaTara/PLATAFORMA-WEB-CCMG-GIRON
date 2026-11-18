@@ -7,10 +7,11 @@
     <h1 class="m-0">Asistencia</h1>
     <span class="text-muted small">Totales de cada reunión de las Casas de Vida.</span>
   </div>
-  {% if casa_reporte %}
-    <a href="{% url 'pva:asistencia_registrar' %}" class="btn btn-ccmg btn-sm"><i class="bi bi-clipboard-plus me-1"></i>Llenar reporte de asistencia · {{ casa_reporte.nombre }}</a>
-  {% endif %}
 </div>
+
+{% if casa_reporte and reporte_semana %}
+  {% include "pva/_estado_reporte_semana.html" with estado=reporte_semana casa=casa_reporte %}
+{% endif %}
 
 <form method="get" class="card p-3 border-0 shadow-sm mb-3" data-filtro-vivo>
   <div class="row g-2 align-items-end">

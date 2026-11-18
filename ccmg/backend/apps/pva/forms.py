@@ -252,6 +252,7 @@ class ReporteAsistenciaForm(EstiloBootstrapMixin, forms.Form):
         self.casa = casa
         super().__init__(*args, **kwargs)
         self.fields["fecha"].initial = datetime.date.today
+        self.fields["fecha"].widget.attrs["max"] = datetime.date.today().isoformat()
         campos = ReporteAsistencia.INDICADORES + ReporteAsistencia.ESCUELAS + ReporteAsistencia.CULTOS
         for campo, etiqueta in campos:
             if campo == "sabado" and not (casa and casa.reporta_sabado):

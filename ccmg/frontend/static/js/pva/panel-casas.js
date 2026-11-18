@@ -13,12 +13,30 @@ function leerJSON(id, porDefecto) {
 const RESUMEN = leerJSON('pva-resumen', { participantes: 0, casas: 0, casasActivas: 0, asistenciaPromedio: 0, actividades: [], seguimientosAbiertos: 0, seguimientos: [] });
 const URLS_PVA = leerJSON('pva-urls', {});
 
+/* Tarea semanal del Líder y su equipo: lo primero que se ve en el panel */
+function tarjetaSemana(r) {
+  if (!r) return '';
+  if (r.enviado) {
+    return '<div class="tarjeta-semana tarjeta-semana--ok mb-3">' +
+      '<i class="bi bi-check2-circle tarjeta-semana__icono" aria-hidden="true"></i>' +
+      '<div class="tarjeta-semana__texto"><strong>El reporte de esta semana ya está enviado.</strong>' +
+      '<span>Lo envió ' + esc(r.enviadoPor) + (r.enviadoEl ? ' el ' + esc(r.enviadoEl) : '') + ' · ' + esc(r.semana) + '</span></div>' +
+      '<a href="' + esc(r.urlVer) + '" class="btn btn-outline-secondary btn-flujo">Ver reporte</a></div>';
+  }
+  return '<div class="tarjeta-semana tarjeta-semana--pendiente mb-3">' +
+    '<i class="bi bi-clipboard-plus tarjeta-semana__icono" aria-hidden="true"></i>' +
+    '<div class="tarjeta-semana__texto"><strong>Falta el reporte de esta semana.</strong>' +
+    '<span>' + esc(r.casa) + ' · ' + esc(r.semana) + (r.supervisor ? ' · Llega a ' + esc(r.supervisor) : '') + '</span></div>' +
+    '<a href="' + esc(r.urlLlenar) + '" class="btn btn-oro btn-flujo">Llenar reporte</a></div>';
+}
+
 /* ----------------------------- Vistas ----------------------------- */
 const VISTAS_CASAS = {
 
   inicio: function (s) {
     return titulo('Hola, ' + esc(s.nombre),
       '<span class="modulo-tag d-lg-none"><i class="bi bi-houses" aria-hidden="true"></i> Módulo Casas de Vida</span>') +
+      tarjetaSemana(RESUMEN.reporteSemana) +
       '<p class="text-muted">Resumen del módulo de Casas de Vida.</p>' +
       '<div class="row g-3">' +
       stat('Personas nuevas', RESUMEN.participantes, 'person-plus') +

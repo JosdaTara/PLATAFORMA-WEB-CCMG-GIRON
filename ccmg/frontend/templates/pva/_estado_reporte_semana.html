@@ -1,0 +1,21 @@
+{% comment %}Tarjeta con el estado del reporte semanal de la Casa de Vida (Líder y equipo de apoyo).
+Recibe: estado (pva.views.estado_reporte_semana) y casa.{% endcomment %}
+{% if estado.enviado %}
+  <div class="tarjeta-semana tarjeta-semana--ok mb-3">
+    <i class="bi bi-check2-circle tarjeta-semana__icono" aria-hidden="true"></i>
+    <div class="tarjeta-semana__texto">
+      <strong>El reporte de esta semana ya está enviado.</strong>
+      <span>Lo envió {{ estado.enviado.id_usuario_envia.nombre_completo }} · {{ estado.semana.nombre }}</span>
+    </div>
+    <a href="{% url 'pva:reporte_detalle' estado.enviado.pk %}" class="btn btn-outline-secondary btn-flujo">Ver reporte</a>
+  </div>
+{% else %}
+  <div class="tarjeta-semana tarjeta-semana--pendiente mb-3">
+    <i class="bi bi-clipboard-plus tarjeta-semana__icono" aria-hidden="true"></i>
+    <div class="tarjeta-semana__texto">
+      <strong>Falta el reporte de esta semana.</strong>
+      <span>{{ casa.nombre }} · {{ estado.semana.nombre }}</span>
+    </div>
+    <a href="{% url 'pva:asistencia_registrar' %}" class="btn btn-oro btn-flujo">Llenar reporte</a>
+  </div>
+{% endif %}

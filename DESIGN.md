@@ -233,6 +233,9 @@ Centrado: ícono oro grande, mensaje en Fraunces y texto suave debajo.
 - **Do** dejar que las tablas de los paneles se apilen en tarjetas «etiqueta: valor» por debajo de 576px (clase `tabla-apilada`, la pone `interaccion.js`); usar `data-sin-apilar` en la envoltura solo cuando la tabla deba seguir siendo tabla.
 - **Do** cuando una tarea semanal ya está hecha (por ejemplo, el reporte enviado), decirlo primero y ofrecer «ver» como acción principal; el formulario queda detrás de una acción secundaria.
 - **Do** usar un solo `<h1>` por vista (el título de la vista), con el estilo de título de vista.
+- **Do** mostrar un resumen («Revisa antes de enviar») antes de toda acción que no se pueda deshacer, como el envío del reporte semanal; el botón principal dice «Revisar y enviar».
+- **Do** en los formularios que llenan los Líderes: botones de 44px (`btn-flujo`), títulos de sección en estilo Title (`titulo-seccion`), los campos principales destacados (`campo-principal`) y el botón de envío fijo abajo en el celular.
+- **Do** poner primero, en el panel y en Asistencia del Líder y su equipo, el estado del reporte de la semana (`tarjeta-semana`: pendiente en oro, enviado en verde).
 
 **The Instant Panel Rule.** En los paneles nada hace esperar al usuario por estética: sin pantallas de carga que tapen la página, sin esperas artificiales en botones y con entradas de vista de 200 ms como máximo. La espera real se muestra en el botón o con skeletons.
 
