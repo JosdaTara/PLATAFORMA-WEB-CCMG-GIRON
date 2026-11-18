@@ -24,6 +24,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }));
 
+  /* ---- Barra inferior del celular: marca la sección que se está viendo ---- */
+  const itemsInferior = document.querySelectorAll(".nav-inferior__item");
+  if (itemsInferior.length && "IntersectionObserver" in window) {
+    const marcar = (id) => itemsInferior.forEach(a => {
+      const activo = a.dataset.seccion === id;
+      a.classList.toggle("activo", activo);
+      if (activo) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+    const visibles = new Map();
+    const espia = new IntersectionObserver((entries) => {
+      entries.forEach(e => visibles.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0));
+      let mejor = null, valor = 0;
+      visibles.forEach((v, id) => { if (v > valor) { valor = v; mejor = id; } });
+      if (mejor) marcar(mejor);
+    }, { threshold: [0, .15, .35, .6], rootMargin: "-20% 0px -35% 0px" });
+    itemsInferior.forEach(a => {
+      const sec = document.getElementById(a.dataset.seccion);
+      if (sec) espia.observe(sec);
+      a.addEventListener("click", () => marcar(a.dataset.seccion));
+    });
+    marcar("inicio");
+  }
+
   /* ---- Aparición progresiva al hacer scroll ---- */
   const animados = document.querySelectorAll(".reveal, .stagger, .fade-up");
   const reducirMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

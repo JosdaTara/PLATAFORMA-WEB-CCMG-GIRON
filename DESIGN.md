@@ -235,6 +235,7 @@ Centrado: ícono oro grande, mensaje en Fraunces y texto suave debajo.
 - **Do** usar un solo `<h1>` por vista (el título de la vista), con el estilo de título de vista.
 - **Do** mostrar un resumen («Revisa antes de enviar») antes de toda acción que no se pueda deshacer, como el envío del reporte semanal; el botón principal dice «Revisar y enviar».
 - **Do** en los formularios que llenan los Líderes: botones de 44px (`btn-flujo`), títulos de sección en estilo Title (`titulo-seccion`), los campos principales destacados (`campo-principal`) y el botón de envío fijo abajo en el celular.
+- **Do** en la página pública del celular: sin menú hamburguesa; arriba solo logo, tema e «Ingresar», y las secciones en una barra fija abajo (`nav-inferior`) con la sección actual marcada.
 - **Do** poner primero, en el panel y en Asistencia del Líder y su equipo, el estado del reporte de la semana (`tarjeta-semana`: pendiente con fondo oro tenue, enviado con borde verde suave; sin bordes laterales gruesos).
 
 **The Instant Panel Rule.** En los paneles nada hace esperar al usuario por estética: sin pantallas de carga que tapen la página, sin esperas artificiales en botones y con entradas de vista de 200 ms como máximo. La espera real se muestra en el botón o con skeletons.

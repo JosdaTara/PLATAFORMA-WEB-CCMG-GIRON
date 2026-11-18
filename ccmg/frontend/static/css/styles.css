@@ -543,3 +543,29 @@ a,button,.btn,input,select,textarea,label{touch-action:manipulation}
 .tarjeta-semana--ok .tarjeta-semana__icono{color:var(--titulo)}
 [data-theme="dark"] .tarjeta-semana--ok{border-color:rgba(92,201,167,.3)}
 @media (max-width:575.98px){.tarjeta-semana .btn{width:100%}}
+
+/* ===================== PÁGINA PÚBLICA EN EL CELULAR =====================
+   Se usa con una mano: arriba solo el logo, el tema e «Ingresar» (sin menú que abrir) y las
+   secciones en una barra fija abajo, al alcance del pulgar, con la sección actual marcada. */
+.btn-tema-movil{width:44px;height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radio-sm)}
+.btn-ingresar-movil{min-height:44px;display:inline-flex;align-items:center;padding:.4rem 1rem}
+.nav-inferior{position:fixed;left:0;right:0;bottom:0;z-index:1030;display:grid;grid-template-columns:repeat(5,1fr);
+ padding:.35rem .25rem calc(.35rem + env(safe-area-inset-bottom));background:var(--superficie);
+ border-top:1px solid var(--borde);box-shadow:0 -6px 20px rgba(15,32,28,.10)}
+.nav-inferior__item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem;min-height:52px;
+ border-radius:12px;color:var(--texto-suave);text-decoration:none;font-size:.72rem;font-weight:600;line-height:1.1;
+ transition:color .2s ease,background-color .2s ease}
+.nav-inferior__item i{font-size:1.3rem;line-height:1}
+.nav-inferior__item:hover{color:var(--titulo)}
+.nav-inferior__item.activo{color:var(--verde);background:rgba(0,103,79,.09)}
+.nav-inferior__item.activo i{color:var(--verde)}
+.nav-inferior__item:focus-visible{outline:2px solid var(--oro);outline-offset:-2px}
+[data-theme="dark"] .nav-inferior{background:#0B1F19;box-shadow:0 -6px 20px rgba(0,0,0,.45)}
+[data-theme="dark"] .nav-inferior__item.activo,[data-theme="dark"] .nav-inferior__item.activo i{color:var(--titulo);background:rgba(92,201,167,.12)}
+@media (max-width:991.98px){
+ body:has(.nav-inferior){padding-bottom:calc(68px + env(safe-area-inset-bottom))}
+ section[id],header[id]{scroll-margin-top:72px}
+ .navbar-ccmg .navbar-brand{font-size:1.15rem}
+}
+@media (max-width:360px){.navbar-ccmg .navbar-brand .logo-nav + *,.navbar-ccmg .navbar-brand{font-size:1rem}.btn-ingresar-movil{padding:.4rem .75rem}}
+@media (prefers-reduced-motion:reduce){.nav-inferior__item{transition:none}}
