@@ -3,7 +3,7 @@
 {% block contenido %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <div>
-    <h3 class="m-0">{{ actividad.titulo }}</h3>
+    <h1 class="m-0">{{ actividad.titulo }}</h1>
     <span class="text-muted">{{ actividad.id_proceso_formacion.nombre }} · {{ actividad.fecha|date:"d/m/Y" }}</span>
   </div>
   <a href="{% url 'formacion:proceso_detalle' actividad.id_proceso_formacion_id %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Volver al proceso</a>

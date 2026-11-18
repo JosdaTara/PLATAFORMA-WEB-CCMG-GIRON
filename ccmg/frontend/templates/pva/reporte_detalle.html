@@ -4,7 +4,7 @@
 {% block contenido %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <div>
-    <h3 class="m-0">{% if reporte.es_general %}Reporte general · {{ reporte.id_area.nombre }}{% else %}Reporte de asistencia · {{ reporte.id_casa_vida.nombre }}{% endif %}</h3>
+    <h1 class="m-0">{% if reporte.es_general %}Reporte general · {{ reporte.id_area.nombre }}{% else %}Reporte de asistencia · {{ reporte.id_casa_vida.nombre }}{% endif %}</h1>
     <span class="text-muted">{% if asistencia %}Reunión del {{ asistencia.fecha|date:"d/m/Y" }} · {% endif %}Semana del {{ reporte.fecha_inicio|date:"d/m/Y" }} al {{ reporte.fecha_fin|date:"d/m/Y" }}</span>
   </div>
   <div class="d-flex gap-2">

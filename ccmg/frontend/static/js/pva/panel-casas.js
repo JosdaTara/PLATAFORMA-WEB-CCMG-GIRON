@@ -18,11 +18,11 @@ const VISTAS_CASAS = {
 
   inicio: function (s) {
     return titulo('Hola, ' + esc(s.nombre),
-      '<span class="modulo-tag"><i class="bi bi-houses"></i> Módulo Casas de Vida</span>') +
+      '<span class="modulo-tag d-lg-none"><i class="bi bi-houses" aria-hidden="true"></i> Módulo Casas de Vida</span>') +
       '<p class="text-muted">Resumen del módulo de Casas de Vida.</p>' +
       '<div class="row g-3">' +
       stat('Personas nuevas', RESUMEN.participantes, 'person-plus') +
-      stat('Casas de Vida', RESUMEN.casas + ' <small class="text-muted fs-6">(' + RESUMEN.casasActivas + ' activas)</small>', 'houses') +
+      stat('Casas de Vida', RESUMEN.casas + (RESUMEN.casasActivas === RESUMEN.casas ? '' : ' <small class="text-muted fs-6">(' + RESUMEN.casasActivas + (RESUMEN.casasActivas === 1 ? ' activa' : ' activas') + ')</small>'), 'houses') +
       stat('Asistentes por reunión', RESUMEN.asistenciaPromedio, 'graph-up') +
       stat('Seguimientos abiertos', RESUMEN.seguimientosAbiertos, 'clipboard-check') +
       '</div>' +

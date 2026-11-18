@@ -126,7 +126,7 @@
     botonCargando(btn, texto);
     var p = promesa && typeof promesa.then === 'function'
       ? promesa
-      : new Promise(function (ok) { setTimeout(ok, REDUCIR_MOVIMIENTO ? 0 : 450); });
+      : Promise.resolve();
     return p.then(function (v) { restaurarBoton(btn); return v; },
       function (e) { restaurarBoton(btn); throw e; });
   };
@@ -389,11 +389,44 @@
     }
   }
 
+  /* ------------------------------------------------------------ Tablas apiladas en el celular
+     Copia el texto del encabezado de cada columna en data-label de sus celdas, para que el CSS
+     muestre cada fila como una tarjeta «etiqueta: valor» por debajo de 576px. Funciona también
+     con las tablas que se dibujan después (panel, filtros en vivo). Excluir: data-sin-apilar. */
+  function etiquetarTabla(tabla) {
+    var envoltura = tabla.closest('.table-responsive');
+    if (!envoltura || envoltura.hasAttribute('data-sin-apilar') || !tabla.closest('.contenido')) return;
+    var titulos = Array.prototype.map.call(tabla.querySelectorAll('thead th'), function (th) {
+      return th.textContent.trim();
+    });
+    if (!titulos.length) return;
+    envoltura.classList.add('tabla-apilada');
+    tabla.querySelectorAll('tbody tr').forEach(function (tr) {
+      Array.prototype.forEach.call(tr.children, function (td, i) {
+        if (titulos[i] && !td.hasAttribute('colspan')) td.setAttribute('data-label', titulos[i]);
+      });
+    });
+  }
+  function etiquetarTablas(raiz) {
+    (raiz || document).querySelectorAll('.table-responsive table').forEach(etiquetarTabla);
+  }
+  CCMG.etiquetarTablas = etiquetarTablas;
+
   /* ------------------------------------------------------------ Arranque */
   function iniciar() {
     document.querySelectorAll('form[data-filtro-vivo]').forEach(iniciarFiltroVivo);
     document.querySelectorAll('input[data-autocompletar]').forEach(iniciarAutocompletar);
     restaurarFoco();
+    etiquetarTablas();
+    var contenido = document.querySelector('.contenido');
+    if (contenido && window.MutationObserver) {
+      var pendiente = false;
+      new MutationObserver(function () {
+        if (pendiente) return;
+        pendiente = true;
+        requestAnimationFrame(function () { pendiente = false; etiquetarTablas(contenido); });
+      }).observe(contenido, { childList: true, subtree: true });
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);

@@ -29,7 +29,7 @@ function tabla(headers, filas, opciones) {
 /* Encabezado de vista */
 function titulo(t, extra) {
   return '<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">' +
-    '<h3 class="m-0">' + t + '</h3>' + (extra || '') + '</div>';
+    '<h1 class="m-0">' + t + '</h1>' + (extra || '') + '</div>';
 }
 
 /* Tarjeta de indicador */

@@ -6,49 +6,20 @@
     }
   }
 
-  // Ocultar cuando el DOM esté listo
+  // Ocultar en cuanto el DOM esté listo: sin espera artificial
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(hideLoader, 300);
-    });
+    document.addEventListener('DOMContentLoaded', hideLoader);
   } else {
-    setTimeout(hideLoader, 300);
+    hideLoader();
   }
+
+  // Al volver con «Atrás» desde la caché del navegador, la página no debe quedar tapada
+  window.addEventListener('pageshow', hideLoader);
 
   // Fallback: ocultar después de 2 segundos máximo
   setTimeout(hideLoader, 2000);
 
-  window.addEventListener('beforeunload', function () {
-    var loader = document.getElementById('loader');
-    if (loader) {
-      loader.classList.remove('hidden');
-    }
-  });
-
-  document.addEventListener('click', function (e) {
-    var link = e.target.closest('a');
-    if (!link) return;
-
-    var href = link.getAttribute('href');
-    if (!href) return;
-
-    if (href.indexOf('#') === 0) return;
-    if (href.indexOf('mailto:') === 0) return;
-    if (href.indexOf('tel:') === 0) return;
-    if (link.target === '_blank') return;
-    if (href.indexOf('javascript:') === 0) return;
-    if (link.hasAttribute('data-no-loader')) return;
-
-    var loader = document.getElementById('loader');
-    if (loader) loader.classList.remove('hidden');
-  });
-
-  document.addEventListener('submit', function (e) {
-    var form = e.target;
-    if (form.tagName !== 'FORM') return;
-    if (form.hasAttribute('data-no-loader')) return;
-
-    var loader = document.getElementById('loader');
-    if (loader) loader.classList.remove('hidden');
-  });
+  /* Ya no se tapa la página al hacer clic en un enlace ni al enviar un formulario:
+     la navegación es rápida y los botones muestran su propio indicador de carga
+     (interaccion.js), así el usuario no pierde de vista lo que estaba haciendo. */
 })();

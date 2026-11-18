@@ -18,7 +18,7 @@ const VISTAS_ESCUELAS = {
 
   inicio: function (s) {
     return titulo('Hola, ' + esc(s.nombre),
-      '<span class="modulo-tag modulo-tag--escuelas"><i class="bi bi-mortarboard"></i> Módulo Escuelas de Formación</span>') +
+      '<span class="modulo-tag modulo-tag--escuelas d-lg-none"><i class="bi bi-mortarboard" aria-hidden="true"></i> Módulo Escuelas de Formación</span>') +
       '<p class="text-muted">Resumen del módulo de Escuelas de Formación.</p>' +
       '<div class="row g-3">' +
       stat('Procesos activos', RESUMEN_ESC.procesosActivos, 'mortarboard') +

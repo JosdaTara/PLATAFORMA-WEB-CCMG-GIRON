@@ -3,7 +3,7 @@
 {% block contenido %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <div>
-    <h3 class="m-0">Vista previa · {{ titulo_tipo }}</h3>
+    <h1 class="m-0">Vista previa · {{ titulo_tipo }}</h1>
     <span class="text-muted">{{ archivo }} · {{ resultados|length }} filas</span>
   </div>
   <a href="{% url 'pva:importar' %}?tipo={{ tipo }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Cambiar archivo</a>
