@@ -1,0 +1,134 @@
+/* Estilo común de los manuales de la plataforma PVA – CCMG Girón.
+   Paleta y tipografía tomadas de ccmg/frontend/static/css/styles.css. */
+:root {
+  --verde: #00674F;
+  --verde-oscuro: #004d3b;
+  --verde-tenue: #E6F0EC;
+  --dorado: #CBB279;
+  --dorado-tenue: #F6F0E2;
+  --arena: #F4F5F2;
+  --carbon: #2B2D2F;
+  --gris: #5D6266;
+  --borde: #DCDFD9;
+  --aviso: #8A5A00;
+}
+
+@page {
+  size: Letter;
+  margin: 20mm 18mm 20mm 18mm;
+  @bottom-left { content: "Plataforma web PVA – CCMG Girón"; font: 8pt Figtree, "Segoe UI", sans-serif; color: #5D6266; }
+  @bottom-right { content: "Página " counter(page); font: 8pt Figtree, "Segoe UI", sans-serif; color: #5D6266; }
+}
+@page portada { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0; background: #fff; color: var(--carbon);
+  font: 10.5pt/1.55 Figtree, "Segoe UI", Arial, sans-serif;
+  text-align: justify; hyphens: auto;
+}
+
+/* ---------- Portada ---------- */
+.portada { page: portada; height: 279.4mm; display: flex; flex-direction: column; break-after: page; }
+.portada .banda {
+  flex: 0 0 62%; background: linear-gradient(160deg, var(--verde) 0%, var(--verde-oscuro) 100%);
+  color: #fff; padding: 26mm 22mm 16mm; display: flex; flex-direction: column; text-align: left;
+}
+.portada .banda img { width: 30mm; margin-bottom: 14mm; }
+.portada .proyecto { font-size: 11pt; letter-spacing: .18em; text-transform: uppercase; color: #E8DAB2; font-weight: 700; margin: 0 0 4mm; }
+.portada h1 { font-family: Fraunces, Georgia, serif; font-weight: 700; font-size: 38pt; line-height: 1.08; margin: 0 0 6mm; color: #fff; border: 0; padding: 0; }
+.portada .sub { font-size: 13pt; color: #E3EFEA; max-width: 150mm; margin: 0; text-align: left; }
+.portada .filete { width: 40mm; height: 3px; background: var(--dorado); margin-top: auto; }
+.portada .datos { flex: 1; background: var(--arena); padding: 14mm 22mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6mm 12mm; align-content: start; text-align: left; }
+.portada .datos div { font-size: 10pt; }
+.portada .datos b { display: block; font-size: 7.5pt; letter-spacing: .14em; text-transform: uppercase; color: var(--verde); margin-bottom: 1mm; }
+
+/* ---------- Títulos ---------- */
+h1, h2, h3, h4 { font-family: Fraunces, Georgia, serif; color: var(--verde); text-align: left; hyphens: none; break-after: avoid; }
+h2 { font-size: 20pt; font-weight: 700; margin: 0 0 5mm; padding-bottom: 2.5mm; border-bottom: 2px solid var(--dorado); break-before: page; }
+h2 .num { color: #9C7F3E; margin-right: 2mm; }
+h3 { font-size: 13.5pt; font-weight: 600; margin: 7mm 0 2.5mm; color: var(--verde-oscuro); }
+h4 { font-size: 11pt; font-weight: 600; margin: 5mm 0 2mm; color: var(--verde-oscuro); }
+p { margin: 0 0 3mm; }
+ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+li { margin-bottom: 1.2mm; }
+a { color: var(--verde); }
+strong { color: var(--carbon); }
+
+/* ---------- Índice ---------- */
+.indice { break-after: page; }
+.indice h2 { break-before: auto; }
+.indice ol { list-style: none; padding: 0; margin: 0; }
+.indice li { display: flex; align-items: baseline; gap: 2mm; margin: 0; padding: 0.85mm 0; font-size: 9.6pt; border-bottom: 1px dotted var(--borde); }
+.indice li.n2 { padding-left: 8mm; font-size: 8.8pt; color: var(--gris); }
+.indice li a { color: inherit; text-decoration: none; flex: 1; }
+.indice li .pg { color: var(--verde); font-weight: 700; min-width: 8mm; text-align: right; }
+.indice li.n1 a { font-weight: 600; }
+
+/* ---------- Bloques ---------- */
+.ficha { background: var(--arena); border-radius: 3mm; padding: 4mm 5mm; margin: 0 0 4mm; break-inside: avoid; }
+.ficha p:last-child, .ficha ul:last-child { margin-bottom: 0; }
+.nota, .cuidado, .pendiente {
+  border-radius: 3mm; padding: 3mm 4.5mm; margin: 3mm 0 4mm; break-inside: avoid; font-size: 9.8pt;
+}
+.nota { background: var(--verde-tenue); }
+.nota::before { content: "Nota. "; font-weight: 700; color: var(--verde); }
+.cuidado { background: var(--dorado-tenue); }
+.cuidado::before { content: "Atención. "; font-weight: 700; color: var(--aviso); }
+.confirmar, .captura-pendiente { background: var(--dorado-tenue); color: var(--aviso); font-weight: 600; padding: 0 1.2mm; border-radius: 1mm; }
+
+/* Pasos numerados */
+.paso { display: grid; grid-template-columns: 9mm 1fr; gap: 0 3mm; margin: 0 0 4.5mm; }
+.paso h4 { break-after: avoid; }
+.paso .n {
+  width: 8mm; height: 8mm; border-radius: 50%; background: var(--verde); color: #fff;
+  font: 700 10pt/8mm Figtree, sans-serif; text-align: center; margin-top: .5mm;
+}
+.paso .cuerpo > :first-child { margin-top: 0; }
+.paso h4 { margin: 0 0 1.5mm; font-size: 11.5pt; }
+
+/* Comandos */
+.cmd { margin: 2mm 0 3mm; break-inside: avoid; border: 1px solid var(--borde); border-radius: 2.5mm; overflow: hidden; }
+.cmd .donde { background: var(--arena); font-size: 8.5pt; color: var(--gris); padding: 1.5mm 3.5mm; text-align: left; }
+.cmd .donde b { color: var(--verde-oscuro); }
+.cmd pre {
+  margin: 0; padding: 3mm 3.5mm; background: #1F2A27; color: #E9F2EE;
+  font: 9pt/1.5 Consolas, "Cascadia Mono", monospace; white-space: pre-wrap; word-break: break-all; text-align: left;
+}
+.cmd .sale { font-size: 8.8pt; padding: 1.8mm 3.5mm; background: var(--verde-tenue); text-align: left; }
+.cmd .sale b { color: var(--verde); }
+.cmd .sale code { background: transparent; padding: 0; }
+code { font: 9pt Consolas, "Cascadia Mono", monospace; background: var(--arena); padding: .3mm 1.2mm; border-radius: 1mm; color: var(--verde-oscuro); }
+
+/* Tablas */
+table { width: 100%; border-collapse: collapse; margin: 2mm 0 5mm; font-size: 9pt; text-align: left; hyphens: none; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th { background: var(--verde); color: #fff; font-weight: 600; padding: 2mm 2.5mm; vertical-align: bottom; }
+td { padding: 2mm 2.5mm; border-bottom: 1px solid var(--borde); vertical-align: top; }
+tbody tr:nth-child(even) td { background: #FAFBF9; }
+td code { font-size: 8.3pt; word-break: normal; overflow-wrap: anywhere; }
+
+/* Capturas */
+figure { margin: 3mm 0 5mm; break-inside: avoid; text-align: center; }
+figure img { max-width: 100%; max-height: 88mm; border: 1px solid var(--borde); border-radius: 2mm; box-shadow: 0 1mm 3mm rgba(0,0,0,.06); }
+figure.alta img { max-height: 190mm; }
+figure.movil { display: inline-block; width: 48%; vertical-align: top; }
+figure.movil img { max-height: 150mm; }
+figcaption { font-size: 8.5pt; color: var(--gris); margin-top: 1.5mm; text-align: center; }
+figcaption b { color: var(--verde); }
+
+/* Etiquetas de interfaz (botones, campos, menús) */
+.btn { font-weight: 700; color: var(--verde-oscuro); background: var(--verde-tenue); padding: 0 1.4mm; border-radius: 1mm; white-space: nowrap; }
+.campo { font-weight: 600; color: var(--carbon); border-bottom: 1px solid var(--dorado); }
+.menu { font-weight: 600; color: var(--verde); }
+
+.cierre { break-before: page; }
+.cierre ~ ul li, .cierre ~ p { font-size: 9.3pt; margin-bottom: 0.8mm; }
+.cierre ~ h3 { margin-top: 4mm; }
+.chip { display: inline-block; font-size: 8pt; font-weight: 700; padding: .4mm 2mm; border-radius: 3mm; margin-right: 1mm; }
+.chip.si { background: var(--verde-tenue); color: var(--verde); }
+.chip.no { background: var(--dorado-tenue); color: var(--aviso); }
+
+h3.pregunta { font-size: 11pt; margin: 5mm 0 2mm; }

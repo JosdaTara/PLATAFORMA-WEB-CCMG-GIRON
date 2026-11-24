@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Manual de usuario – Plataforma web PVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="manual.css">
+</head>
+<body>
+
+<section class="portada">
+  <div class="banda">
+    <img src="logo-blanco.png" alt="Logo CCMG Girón">
+    <p class="proyecto">Plataforma web Plan Vida Abundante · CCMG Girón</p>
+    <h1>Manual de usuario</h1>
+    <p class="sub">Guía para el Super Administrador, el Pastor, los Supervisores de Área, los Líderes y el equipo de apoyo de las Casas de Vida, y los Coordinadores de Formación.</p>
+    <div class="filete"></div>
+  </div>
+  <div class="datos">
+    <div><b>Versión documentada</b>Commit <code>d4b5cf7</code> de la rama <code>main</code> (18/11/2026)</div>
+    <div><b>Fecha del manual</b>24 de noviembre de 2026</div>
+    <div><b>Autores</b>Joshua David Tarazona Gómez<br>Karen Lizeth Arenas Medina</div>
+    <div><b>Institución</b>Unidades Tecnológicas de Santander (UTS)</div>
+    <div><b>Iglesia</b>Comunidad Cristiana Manantial de Gracia (CCMG), Girón</div>
+    <div><b>Datos de las imágenes</b>Entorno de demostración con personas y valores ficticios</div>
+  </div>
+</section>
+
+<nav class="indice">
+  <h2>Contenido</h2>
+  <ol>
+    <li class="n1"><a href="#s1">1. Propósito del manual</a><span class="pg" data-para="s1"></span></li>
+    <li class="n1"><a href="#s2">2. Acceso a la plataforma</a><span class="pg" data-para="s2"></span></li>
+    <li class="n1"><a href="#s3">3. Roles y permisos</a><span class="pg" data-para="s3"></span></li>
+    <li class="n1"><a href="#s4">4. Iniciar sesión y recuperar la contraseña</a><span class="pg" data-para="s4"></span></li>
+    <li class="n1"><a href="#s5">5. Cómo se organiza la pantalla</a><span class="pg" data-para="s5"></span></li>
+    <li class="n1"><a href="#s6">6. Tareas del Super Administrador</a><span class="pg" data-para="s6"></span></li>
+    <li class="n2"><a href="#s6-1">6.1 Crear un usuario</a><span class="pg" data-para="s6-1"></span></li>
+    <li class="n2"><a href="#s6-2">6.2 Editar, desactivar o reactivar un usuario</a><span class="pg" data-para="s6-2"></span></li>
+    <li class="n2"><a href="#s6-3">6.3 Consultar la bitácora de auditoría</a><span class="pg" data-para="s6-3"></span></li>
+    <li class="n1"><a href="#s7">7. Tareas del Pastor</a><span class="pg" data-para="s7"></span></li>
+    <li class="n2"><a href="#s7-1">7.1 Crear un Área</a><span class="pg" data-para="s7-1"></span></li>
+    <li class="n2"><a href="#s7-2">7.2 Crear y consultar Casas de Vida</a><span class="pg" data-para="s7-2"></span></li>
+    <li class="n2"><a href="#s7-3">7.3 Importar datos desde Excel o CSV</a><span class="pg" data-para="s7-3"></span></li>
+    <li class="n2"><a href="#s7-4">7.4 Consultar personas nuevas y asistencia</a><span class="pg" data-para="s7-4"></span></li>
+    <li class="n2"><a href="#s7-5">7.5 Registrar un seguimiento</a><span class="pg" data-para="s7-5"></span></li>
+    <li class="n2"><a href="#s7-6">7.6 Generar y exportar reportes</a><span class="pg" data-para="s7-6"></span></li>
+    <li class="n2"><a href="#s7-7">7.7 Registrar ofrendas</a><span class="pg" data-para="s7-7"></span></li>
+    <li class="n1"><a href="#s8">8. Tareas del Supervisor de Área</a><span class="pg" data-para="s8"></span></li>
+    <li class="n1"><a href="#s9">9. Tareas del Líder y del equipo de apoyo</a><span class="pg" data-para="s9"></span></li>
+    <li class="n2"><a href="#s9-1">9.1 Llenar el reporte semanal de asistencia</a><span class="pg" data-para="s9-1"></span></li>
+    <li class="n2"><a href="#s9-2">9.2 Registrar una persona nueva</a><span class="pg" data-para="s9-2"></span></li>
+    <li class="n2"><a href="#s9-3">9.3 Consultar los reportes de la Casa de Vida</a><span class="pg" data-para="s9-3"></span></li>
+    <li class="n1"><a href="#s10">10. Tareas del Coordinador de Formación</a><span class="pg" data-para="s10"></span></li>
+    <li class="n2"><a href="#s10-1">10.1 Crear un proceso de formación</a><span class="pg" data-para="s10-1"></span></li>
+    <li class="n2"><a href="#s10-2">10.2 Inscribir participantes</a><span class="pg" data-para="s10-2"></span></li>
+    <li class="n2"><a href="#s10-3">10.3 Registrar una actividad y su asistencia</a><span class="pg" data-para="s10-3"></span></li>
+    <li class="n2"><a href="#s10-4">10.4 Seguimiento y reportes de formación</a><span class="pg" data-para="s10-4"></span></li>
+    <li class="n1"><a href="#s11">11. Preguntas frecuentes</a><span class="pg" data-para="s11"></span></li>
+    <li class="n1"><a href="#s12">12. Nota de verificación</a><span class="pg" data-para="s12"></span></li>
+  </ol>
+</nav>
+
+<!-- =============================================================== -->
+<h2 id="s1"><span class="num">1.</span>Propósito del manual</h2>
+<p>La plataforma web del Plan Vida Abundante (PVA) ayuda a la Comunidad Cristiana Manantial de Gracia de Girón a acompañar a las personas que llegan a la iglesia. Reemplaza las planillas en papel y en Excel por un solo lugar donde cada responsable registra y consulta la información que le corresponde.</p>
+<p>Tiene dos módulos independientes:</p>
+<ul>
+  <li><strong>Casas de Vida:</strong> áreas y Casas de Vida, personas nuevas, reporte semanal de asistencia, seguimiento, reportes y ofrendas.</li>
+  <li><strong>Escuelas de Formación:</strong> procesos de formación, participantes e inscripciones, actividades con su asistencia, seguimiento y reportes.</li>
+</ul>
+<p>Este manual explica, rol por rol, cómo hacer las tareas de todos los días: dónde empezar, qué botones pulsar, qué campos llenar y qué confirma la plataforma al terminar. Las imágenes son del entorno de demostración: los nombres, teléfonos y valores son <strong>ficticios</strong>.</p>
+<div class="nota">En el texto, los <span class="btn">botones</span> aparecen resaltados en verde, los <span class="campo">campos</span> subrayados y las opciones del <span class="menu">menú</span> en verde. Los campos marcados con <strong>*</strong> en la plataforma son obligatorios.</div>
+
+<!-- =============================================================== -->
+<h2 id="s2"><span class="num">2.</span>Acceso a la plataforma</h2>
+<p><strong>Dirección:</strong> la plataforma todavía no está publicada en Internet. En la instalación local se abre en <code>http://127.0.0.1:8000</code> <span class="confirmar">[Por confirmar: dirección web definitiva cuando se publique]</span>.</p>
+<p><strong>Dispositivos:</strong> funciona en el navegador de un computador (Edge, Chrome o Firefox) y del celular. No hay que instalar ninguna aplicación.</p>
+<p><strong>Cuenta:</strong> solo se puede entrar con una cuenta creada por el Super Administrador o el Pastor. No existe registro abierto: si usted necesita una cuenta, pídala a uno de ellos.</p>
+<p>Al abrir la dirección aparece la página pública de la iglesia, con información de las Casas de Vida y los horarios. Desde allí se entra con <span class="btn">Iniciar sesión</span>.</p>
+<figure><img src="capturas/01_publico.jpg" alt="Página pública"><figcaption><b>Figura 1.</b> Página pública de la iglesia; el acceso para líderes está arriba a la derecha.</figcaption></figure>
+
+<!-- =============================================================== -->
+<h2 id="s3"><span class="num">3.</span>Roles y permisos</h2>
+<p>Cada cuenta tiene un solo rol. El rol decide qué módulo se abre al entrar, qué opciones aparecen en el menú y qué datos se ven: un Supervisor solo ve las Casas de Vida de su Área, y un Líder solo la suya.</p>
+<table>
+  <thead><tr><th style="width:20%">Rol</th><th style="width:17%">Módulo</th><th>Qué puede hacer</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Super Administrador</strong></td><td>Los dos</td><td>Todo lo del Pastor y además la <span class="menu">Auditoría</span> (quién hizo qué y cuándo). Crea, edita y desactiva cuentas de cualquier rol.</td></tr>
+    <tr><td><strong>Pastor</strong></td><td>Los dos</td><td>Crea Áreas y Casas de Vida, importa datos, consulta personas nuevas y asistencia de toda la iglesia, registra seguimientos, genera reportes, registra ofrendas y gestiona usuarios.</td></tr>
+    <tr><td><strong>Supervisor de Área</strong></td><td>Casas de Vida</td><td>Consulta las Casas de Vida de su Área, sus personas nuevas, asistencia y seguimientos; revisa los reportes semanales y envía al Pastor el reporte general del mes.</td></tr>
+    <tr><td><strong>Líder de Casa de Vida</strong></td><td>Casas de Vida</td><td>Llena el reporte semanal de asistencia, registra personas nuevas y consulta los reportes y seguimientos de su Casa de Vida.</td></tr>
+    <tr><td><strong>Apoyo de Casa de Vida</strong> (aprendiz, anfitrión o maestro de niños)</td><td>Casas de Vida</td><td>Ayuda al Líder: llena el reporte semanal y registra personas nuevas de la Casa de Vida a la que está asignado.</td></tr>
+    <tr><td><strong>Coordinador de Formación</strong></td><td>Escuelas de Formación</td><td>Crea procesos de formación, inscribe participantes, registra actividades con su asistencia, registra seguimientos y genera reportes de formación.</td></tr>
+  </tbody>
+</table>
+<p><strong>Ofrendas:</strong> además del Pastor, puede registrar ofrendas cualquier cuenta que el administrador marque como <span class="campo">Autorizado como responsable de ofrendas</span>.</p>
+<p><strong>Menú de cada rol en Casas de Vida:</strong></p>
+<ul>
+  <li><strong>Pastor:</strong> <span class="menu">Inicio · Personas nuevas · Casas de Vida · Áreas · Importar datos · Asistencia · Seguimiento · Reportes · Usuarios · Ofrendas · Mi perfil</span>. El Super Administrador ve además <span class="menu">Auditoría</span>.</li>
+  <li><strong>Supervisor y Líder:</strong> <span class="menu">Inicio · Personas nuevas · Casas de Vida · Asistencia · Seguimiento · Reportes · Mi perfil</span>.</li>
+  <li><strong>Escuelas de Formación:</strong> <span class="menu">Inicio · Procesos de formación · Participantes · Actividades y asistencia · Seguimiento · Reportes · Mi perfil</span>, más <span class="menu">Usuarios</span>, <span class="menu">Ofrendas</span> y <span class="menu">Auditoría</span> según el rol.</li>
+</ul>
+
+<!-- =============================================================== -->
+<h2 id="s4"><span class="num">4.</span>Iniciar sesión y recuperar la contraseña</h2>
+<h3>Iniciar sesión</h3>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>En la página pública, pulse <span class="btn">Iniciar sesión</span>.</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Escriba su correo (o su nombre de usuario, si tiene uno) en <span class="campo">Usuario o correo</span> y su clave en <span class="campo">Contraseña</span>. Ejemplo ficticio: <code>maria.lider@iglesia.example</code>.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Pulse <span class="btn">Ingresar</span>.</p>
+<p><strong>Resultado:</strong> el Pastor y el Super Administrador llegan a «Selecciona un módulo»; los demás roles entran directo al panel de su módulo.</p></div></div>
+<figure><img src="capturas/02_login.jpg" alt="Inicio de sesión"><figcaption><b>Figura 2.</b> Inicio de sesión.</figcaption></figure>
+<div class="cuidado">Si escribe mal la contraseña 5 veces seguidas, la cuenta se bloquea durante 15 minutos. Durante ese tiempo la plataforma muestra «Usuario o contraseña incorrectos.» aunque la contraseña sea la correcta.</div>
+<p><strong>Primer ingreso:</strong> si el administrador marcó que debe cambiar la contraseña, la plataforma lo lleva a «Cambiar contraseña» y no lo deja seguir hasta cambiarla.</p>
+<p><strong>Inactividad:</strong> la sesión se cierra sola tras 30 minutos sin usar la plataforma. Para salir antes, pulse <span class="btn">Cerrar sesión</span> en el menú lateral.</p>
+
+<h3>Recuperar la contraseña</h3>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>En la pantalla de inicio de sesión, pulse <span class="btn">¿Olvidaste tu contraseña?</span></p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Escriba el correo de su cuenta en <span class="campo">Correo electrónico</span> y pulse <span class="btn">Enviar enlace</span>.</p>
+<p><strong>Resultado:</strong> aparece «Revisa tu correo». Si el correo está registrado, llega un mensaje de CCMG Girón con un enlace que vence en 60 minutos y sirve una sola vez.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Abra el enlace del correo, escriba la nueva contraseña dos veces y pulse <span class="btn">Guardar nueva contraseña</span>.</p>
+<p><strong>Resultado:</strong> «¡Contraseña actualizada!» y llega un correo de confirmación. Pulse <span class="btn">Iniciar sesión</span> para entrar con la nueva.</p></div></div>
+<figure><img src="capturas/03_recuperar.jpg" alt="Recuperar contraseña"><figcaption><b>Figura 3.</b> Solicitud del enlace para recuperar la contraseña.</figcaption></figure>
+<p>Si el correo no llega, revise la carpeta de spam o solicite otro enlace con <span class="btn">¿No llegó? Solicitar otro enlace</span>. Por seguridad, la plataforma responde lo mismo aunque el correo no esté registrado.</p>
+
+<h3>Mi perfil: corregir el nombre y cambiar la contraseña</h3>
+<p>Abra <span class="menu">Mi perfil</span> en el menú lateral. Allí se ven su <span class="campo">Nombre completo</span>, su rol y el módulo.</p>
+<ul>
+  <li><strong>Corregir el nombre:</strong> edite <span class="campo">Nombre completo</span> y pulse <span class="btn">Guardar cambios</span>. <strong>Resultado:</strong> aparece «Nombre actualizado.» y el nombre nuevo se ve de inmediato en la barra superior. El rol y el módulo solo los puede cambiar el administrador.</li>
+  <li><strong>Cambiar la contraseña:</strong> pulse <span class="btn">Cambiar contraseña</span>. Llene <span class="campo">Contraseña antigua</span>, <span class="campo">Contraseña nueva</span> y <span class="campo">Contraseña nueva (confirmación)</span> y pulse <span class="btn">Cambiar contraseña</span>. La plataforma lo devuelve a su panel y le envía un correo de confirmación.</li>
+</ul>
+<p>La contraseña debe tener <strong>al menos 15 caracteres</strong>; una frase fácil de recordar funciona bien, por ejemplo «mi casa de vida se reúne el jueves» (ficticia).</p>
+
+<!-- =============================================================== -->
+<h2 id="s5"><span class="num">5.</span>Cómo se organiza la pantalla</h2>
+<h3>Selector de módulo (Pastor y Super Administrador)</h3>
+<p>Muestra dos tarjetas: <strong>Casas de Vida</strong> y <strong>Escuelas de Formación</strong>. Pulse <span class="btn">Ingresar</span> en la que necesite. Desde aquí también se llega a <span class="btn">Gestión de usuarios</span>. Dentro de un módulo, <span class="menu">Cambiar de módulo</span> en el menú lateral devuelve a esta pantalla.</p>
+<figure><img src="capturas/20_selector_pastor.jpg" alt="Selector de módulo"><figcaption><b>Figura 4.</b> Selector de módulo del Pastor.</figcaption></figure>
+
+<h3>Panel principal</h3>
+<p>Todas las pantallas internas comparten la misma estructura:</p>
+<ul>
+  <li><strong>Menú lateral</strong> (izquierda, verde): las secciones a las que su rol tiene acceso y, abajo, <span class="btn">Cerrar sesión</span>.</li>
+  <li><strong>Barra superior:</strong> el módulo en el que está (por ejemplo, «Módulo Casas de Vida»), el botón de la luna para el <strong>modo oscuro</strong> y su nombre con su rol.</li>
+  <li><strong>Aviso del reporte semanal</strong> (Líder y apoyo): dice si falta o ya se envió el reporte de la semana, con el botón para llenarlo.</li>
+  <li><strong>Tarjetas de resumen:</strong> personas nuevas, Casas de Vida, asistentes por reunión y seguimientos abiertos (en Formación: procesos, inscritos y actividades).</li>
+  <li><strong>Tablas recientes:</strong> últimos reportes de asistencia y seguimientos.</li>
+</ul>
+<figure><img src="capturas/50_panel_lider.jpg" alt="Panel del Líder"><figcaption><b>Figura 5.</b> Panel del Líder de Casa de Vida, con el aviso «Falta el reporte de esta semana».</figcaption></figure>
+<h3>En el celular</h3>
+<p>En pantallas pequeñas el menú lateral se oculta y se abre con el botón de tres líneas de la esquina superior izquierda; la página pública muestra sus secciones en una barra inferior. Los formularios se adaptan al ancho del teléfono.</p>
+<div style="text-align:center">
+<figure class="movil"><img src="capturas/70_movil_panel_lider.jpg" alt="Panel en el celular"><figcaption><b>Figura 6.</b> Panel del Líder en el celular.</figcaption></figure>
+<figure class="movil"><img src="capturas/71_movil_publico.jpg" alt="Página pública en el celular"><figcaption><b>Figura 7.</b> Página pública en el celular.</figcaption></figure>
+</div>
+
+<!-- =============================================================== -->
+<h2 id="s6"><span class="num">6.</span>Tareas del Super Administrador</h2>
+<p><strong>Quién:</strong> Super Administrador (el Pastor también puede gestionar usuarios). <strong>Dónde empezar:</strong> selector de módulo → <span class="btn">Gestión de usuarios</span>, o <span class="menu">Usuarios</span> en el menú lateral.</p>
+
+<h3 id="s6-1">6.1 Crear un usuario</h3>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>En «Gestión de usuarios», pulse <span class="btn">Crear usuario</span>.</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p><strong>Datos de la cuenta:</strong> llene <span class="campo">Nombre completo</span> y <span class="campo">Correo electrónico</span>. El <span class="campo">Nombre de usuario</span> es opcional; si se deja vacío, la persona entra con su correo.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p><strong>Asignación:</strong> elija el <span class="campo">Rol</span>. Según el rol, la plataforma pide un dato más:</p>
+<ul>
+  <li>Supervisor de Área → <span class="campo">Área que supervisa</span>.</li>
+  <li>Líder de Casa de Vida → <span class="campo">Casa de Vida</span>.</li>
+  <li>Apoyo de Casa de Vida → <span class="campo">Casa de Vida</span> y <span class="campo">Función de apoyo</span> (Aprendiz, Anfitrión o Maestro de Niños).</li>
+</ul>
+<p>Marque <span class="campo">Autorizado como responsable de ofrendas</span> solo si esa persona debe registrar ofrendas.</p></div></div>
+<div class="paso"><div class="n">4</div><div class="cuerpo"><p><strong>Contraseña:</strong> escríbala en <span class="campo">Contraseña</span> y <span class="campo">Confirmar contraseña</span> (mínimo 15 caracteres), o pulse <span class="btn">Generar una contraseña segura</span>. Deje marcado <span class="campo">Pedir que la cambie al iniciar sesión por primera vez</span> para que la persona ponga una propia.</p></div></div>
+<div class="paso"><div class="n">5</div><div class="cuerpo"><p>Pulse <span class="btn">Guardar</span>.</p>
+<p><strong>Resultado:</strong> «Usuario creado correctamente.» y la cuenta aparece en la lista. Entregue la contraseña a la persona por un medio privado.</p></div></div>
+<figure class="alta"><img src="capturas/12_usuario_crear.jpg" alt="Crear usuario"><figcaption><b>Figura 8.</b> Formulario «Crear usuario» con sus tres secciones.</figcaption></figure>
+
+<h3 id="s6-2">6.2 Editar, desactivar o reactivar un usuario</h3>
+<p>En la lista (columnas Nombre, Correo, Rol, Último acceso, Estado y Acciones) use <span class="btn">Editar</span> para cambiar sus datos o su rol; al guardar aparece «Usuario actualizado correctamente.».</p>
+<p><span class="btn">Desactivar</span> impide que la persona entre, sin borrar nada de lo que registró; aparece «Usuario desactivado correctamente.». Una cuenta inactiva se puede reactivar desde la misma lista («Usuario reactivado correctamente.»).</p>
+<figure><img src="capturas/11_usuarios.jpg" alt="Gestión de usuarios"><figcaption><b>Figura 9.</b> Gestión de usuarios.</figcaption></figure>
+
+<h3 id="s6-3">6.3 Consultar la bitácora de auditoría</h3>
+<p>Abra <span class="menu">Auditoría</span>. La «Bitácora de auditoría» registra quién creó, modificó, desactivó, importó o envió información, y cuándo. Filtre por <span class="campo">Usuario</span>, <span class="campo">Acción</span>, <span class="campo">Entidad</span>, <span class="campo">Desde</span> y <span class="campo">Hasta</span> y pulse <span class="btn">Filtrar</span>. Con <span class="btn">PDF</span> o <span class="btn">Excel</span> descarga lo que está viendo.</p>
+<figure><img src="capturas/13_auditoria.jpg" alt="Auditoría"><figcaption><b>Figura 10.</b> Bitácora de auditoría.</figcaption></figure>
+
+<!-- =============================================================== -->
+<h2 id="s7"><span class="num">7.</span>Tareas del Pastor</h2>
+<p><strong>Quién:</strong> Pastor (y Super Administrador). <strong>Dónde empezar:</strong> selector de módulo → <strong>Casas de Vida</strong> → <span class="btn">Ingresar</span>. El panel muestra el resumen de toda la iglesia.</p>
+<figure><img src="capturas/21_panel_casas.jpg" alt="Panel del Pastor"><figcaption><b>Figura 11.</b> Panel del Pastor en el módulo Casas de Vida.</figcaption></figure>
+<p>El orden recomendado al empezar a usar la plataforma es: <strong>1)</strong> crear las Áreas, <strong>2)</strong> crear las cuentas de los Supervisores y asignarles su Área, <strong>3)</strong> crear las Casas de Vida, <strong>4)</strong> crear las cuentas de Líderes y apoyo y asignarles su Casa.</p>
+
+<h3 id="s7-1">7.1 Crear un Área</h3>
+<p>Abra <span class="menu">Áreas</span> y pulse <span class="btn">Nueva Área</span>. Escriba el <span class="campo">Nombre del Área</span> (ejemplo ficticio: «Área Norte»), elija el <span class="campo">Supervisor de Área</span> si ya tiene cuenta (es opcional) y pulse <span class="btn">Guardar</span>. <strong>Resultado:</strong> «Área creada correctamente.».</p>
+<p>Cada Área agrupa Casas de Vida y tiene un único Supervisor; las Casas del Área heredan ese Supervisor. Solo las Casas de las Áreas R21 y ZONAR21 reportan la asistencia del culto del sábado.</p>
+<figure><img src="capturas/25_areas.jpg" alt="Áreas"><figcaption><b>Figura 12.</b> Lista de Áreas.</figcaption></figure>
+
+<h3 id="s7-2">7.2 Crear y consultar Casas de Vida</h3>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>Abra <span class="menu">Casas de Vida</span> y pulse <span class="btn">Nueva Casa de Vida</span>.</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Llene <span class="campo">Nombre de la Casa de Vida</span> (ejemplo: «Casa Esperanza»), elija el <span class="campo">Área</span> y, si ya existe su cuenta, el <span class="campo">Líder de Casa de Vida</span>. La <span class="campo">Dirección</span> es opcional.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Pulse <span class="btn">Guardar</span>. <strong>Resultado:</strong> «Casa de Vida creada correctamente.».</p></div></div>
+<figure><img src="capturas/24_casa_nueva.jpg" alt="Nueva Casa de Vida"><figcaption><b>Figura 13.</b> Formulario «Nueva Casa de Vida».</figcaption></figure>
+<p>En la lista, <span class="btn">Ver</span> abre la ficha de la Casa: su información, sus personas nuevas y sus últimos reportes de asistencia. <span class="btn">Editar</span> cambia sus datos y <span class="btn">Desactivar</span> la retira sin borrar su historial. El equipo de apoyo de cada Casa se asigna desde la gestión de usuarios.</p>
+<figure><img src="capturas/23_casa_detalle.jpg" alt="Ficha de la Casa de Vida"><figcaption><b>Figura 14.</b> Ficha de una Casa de Vida.</figcaption></figure>
+
+<h3 id="s7-3">7.3 Importar datos desde Excel o CSV</h3>
+<p>Sirve para cargar de una vez las Casas de Vida o los participantes que la iglesia ya tiene en hojas de cálculo.</p>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>Abra <span class="menu">Importar datos</span> y descargue la plantilla que corresponda: <span class="btn">Plantilla de Casas de Vida</span> o <span class="btn">Plantilla de Participantes</span>. Llénela sin cambiar la primera fila (los encabezados).</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Elija qué va a importar (<span class="campo">Casas de Vida</span> o <span class="campo">Participantes</span>), seleccione el archivo en <span class="campo">Archivo CSV o Excel (.xlsx)</span> y pulse <span class="btn">Revisar archivo</span>.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>La plataforma muestra una vista previa con las filas válidas y las que tienen errores; los errores se pueden descargar con <span class="btn">Descargar detalle de errores</span>. Si todo está bien, pulse <span class="btn">Confirmar e importar</span>; si no, <span class="btn">Cambiar archivo</span>.</p>
+<p><strong>Resultado:</strong> «Importación completada: N registros importados.».</p></div></div>
+<div class="nota">Máximo 5 MB y 2.000 filas por archivo. Lo que ya existe se omite, no se duplica. Los participantes sin autorización de tratamiento de datos quedan con la autorización pendiente.</div>
+<figure><img src="capturas/32_importar.jpg" alt="Importar datos"><figcaption><b>Figura 15.</b> Importar datos.</figcaption></figure>
+
+<h3 id="s7-4">7.4 Consultar personas nuevas y asistencia</h3>
+<p><span class="menu">Personas nuevas</span> lista a quienes llegaron por primera vez a una Casa de Vida (nombre, teléfono, Casa, fecha de llegada y estado). Busque con <span class="campo">Buscar</span>, <span class="campo">Casa de Vida</span> y <span class="campo">Estado</span> y pulse <span class="btn">Filtrar</span>. El Pastor puede <span class="btn">Ver</span>, <span class="btn">Editar</span> o <span class="btn">Desactivar</span> a una persona.</p>
+<p><span class="menu">Asistencia</span> muestra los totales de cada reunión enviada por las Casas de Vida (asistentes, niños, nuevos, dominical y ofrenda), filtrables por <span class="campo">Casa de Vida</span>, <span class="campo">Desde</span> y <span class="campo">Hasta</span>. <span class="btn">Ver</span> abre el reporte completo.</p>
+<figure><img src="capturas/27_asistencia_pastor.jpg" alt="Asistencia"><figcaption><b>Figura 16.</b> Asistencia de las Casas de Vida.</figcaption></figure>
+
+<h3 id="s7-5">7.5 Registrar un seguimiento</h3>
+<p>El seguimiento deja constancia del acompañamiento a una persona: una visita, una llamada o una consejería.</p>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>Abra <span class="menu">Seguimiento</span> y pulse <span class="btn">Nuevo seguimiento</span>.</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Elija el <span class="campo">Participante</span>, la <span class="campo">Fecha</span>, el <span class="campo">Tipo</span> (Visita, Llamada, Consejería u Otro) y el <span class="campo">Estado</span> (Abierto, En proceso o Cerrado), y escriba las <span class="campo">Observaciones</span>. Ejemplo ficticio: Lucía Gómez, Llamada, Abierto, «Se le invitó a la reunión del jueves».</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Pulse <span class="btn">Guardar</span>. <strong>Resultado:</strong> «Seguimiento registrado correctamente.».</p></div></div>
+<figure><img src="capturas/29_seguimiento_nuevo.jpg" alt="Nuevo seguimiento"><figcaption><b>Figura 17.</b> Formulario «Nuevo seguimiento».</figcaption></figure>
+<p>Para actualizar el estado de un seguimiento existente, use <span class="btn">Editar</span> en la lista. En el módulo Casas de Vida solo el Pastor registra y edita seguimientos; el Supervisor y el Líder los consultan.</p>
+
+<h3 id="s7-6">7.6 Generar y exportar reportes</h3>
+<p>En <span class="menu">Reportes</span> el Pastor ve los <strong>reportes generales recibidos</strong> de los Supervisores y los <strong>reportes semanales</strong> de las Casas de Vida.</p>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>Pulse <span class="btn">Generar reporte</span>.</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Elija el <span class="campo">Periodo</span> (Semanal, Mensual o Anual) y una <span class="campo">Fecha de referencia</span>: se toma la semana, el mes o el año que contiene esa fecha. Si quiere, limite por <span class="campo">Área</span> o <span class="campo">Casa de Vida</span>.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Pulse <span class="btn">Generar</span>. <strong>Resultado:</strong> una tabla por Casa de Vida con reuniones, asistentes, niños, nuevos, conversiones, discípulos en escuelas, cultos, ofrenda, personas nuevas registradas, seguimientos y reportes enviados frente a los esperados.</p></div></div>
+<div class="paso"><div class="n">4</div><div class="cuerpo"><p>Descargue el resultado con <span class="btn">PDF</span> o <span class="btn">Excel</span>.</p></div></div>
+<figure class="alta"><img src="capturas/31_reporte_generar.jpg" alt="Generar reporte"><figcaption><b>Figura 18.</b> Reporte mensual generado.</figcaption></figure>
+
+<h3 id="s7-7">7.7 Registrar ofrendas</h3>
+<p><strong>Quién:</strong> el Pastor o una cuenta autorizada como responsable de ofrendas.</p>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>Abra <span class="menu">Ofrendas</span> y pulse <span class="btn">Registrar ofrenda</span>.</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Llene <span class="campo">Fecha</span>, <span class="campo">Concepto</span> y <span class="campo">Valor (COP)</span>; la <span class="campo">Casa de Vida</span> y las <span class="campo">Observaciones</span> son opcionales. Ejemplo ficticio: 17/11/2026, «Ofrenda culto dominical», 450.000.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Pulse <span class="btn">Guardar</span>. <strong>Resultado:</strong> «Ofrenda registrada correctamente.».</p></div></div>
+<p>La ofrenda que un Líder escribe en su reporte semanal se registra sola en este módulo, asociada a su Casa de Vida. La lista se filtra por concepto, fechas y Casa, y se descarga en <span class="btn">PDF</span> o <span class="btn">Excel</span>.</p>
+<figure><img src="capturas/33_ofrendas.jpg" alt="Ofrendas"><figcaption><b>Figura 19.</b> Módulo de Ofrendas.</figcaption></figure>
+
+<!-- =============================================================== -->
+<h2 id="s8"><span class="num">8.</span>Tareas del Supervisor de Área</h2>
+<p><strong>Quién:</strong> Supervisor de Área. <strong>Dónde empezar:</strong> al iniciar sesión entra directo al panel de Casas de Vida, que muestra solo las Casas de su Área.</p>
+<h3>Revisar los reportes semanales</h3>
+<p>Abra <span class="menu">Reportes</span>. En «Reportes recibidos de las Casas de Vida» aparece cada reporte semanal que envían los Líderes, con la semana, la Casa y quién lo envió. <span class="btn">Ver</span> abre el reporte completo (asistencia, escuelas de formación, cultos e informe financiero), que puede descargarse en <span class="btn">PDF</span> o <span class="btn">Excel</span>.</p>
+<figure><img src="capturas/41_reportes_supervisor.jpg" alt="Reportes del Supervisor"><figcaption><b>Figura 20.</b> Reportes del Supervisor, con el aviso de reportes aún no incluidos en un reporte general.</figcaption></figure>
+<h3>Enviar el reporte general del mes al Pastor</h3>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>En <span class="menu">Reportes</span>, pulse <span class="btn">Enviar reporte general al Pastor</span>.</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Elija el <span class="campo">Mes</span>. La plataforma lista los reportes semanales de ese mes que aún no van en otro reporte general. Escriba las <span class="campo">Observaciones generales</span> (ejemplo ficticio: «Dos Casas crecieron en asistencia; Casa Esperanza necesita apoyo con niños»).</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Pulse <span class="btn">Enviar al Pastor</span>. <strong>Resultado:</strong> «Reporte general de noviembre enviado al Pastor con N reportes de Casas de Vida.».</p></div></div>
+<figure><img src="capturas/42_enviar_general.jpg" alt="Reporte general"><figcaption><b>Figura 21.</b> Reporte general al Pastor.</figcaption></figure>
+<p>El Supervisor también consulta <span class="menu">Personas nuevas</span>, <span class="menu">Asistencia</span> y <span class="menu">Seguimiento</span> de su Área, con los mismos filtros descritos para el Pastor.</p>
+
+<!-- =============================================================== -->
+<h2 id="s9"><span class="num">9.</span>Tareas del Líder y del equipo de apoyo</h2>
+<p><strong>Quién:</strong> Líder de Casa de Vida y Apoyo de Casa de Vida. <strong>Dónde empezar:</strong> al iniciar sesión entra al panel de su Casa de Vida. Arriba aparece el estado del reporte de la semana.</p>
+
+<h3 id="s9-1">9.1 Llenar el reporte semanal de asistencia</h3>
+<p>Se llena uno por semana después de la reunión. Llega al Supervisor del Área de inmediato.</p>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>En el panel, pulse <span class="btn">Llenar reporte</span> (también está en <span class="menu">Asistencia</span> y en <span class="menu">Reportes</span> como <span class="btn">Llenar reporte de asistencia</span>).</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p><strong>Reunión:</strong> revise la <span class="campo">Fecha de la reunión</span>. El campo «Se envía a» muestra el Supervisor que lo recibirá.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p><strong>Asistencia:</strong> escriba los totales en <span class="campo">Asistentes</span>, <span class="campo">Asistencia niños</span> y <span class="campo">Asistencia nuevos</span>.</p></div></div>
+<div class="paso"><div class="n">4</div><div class="cuerpo"><p><strong>Más de la reunión:</strong> <span class="campo">Líderes servidores asistentes</span>, <span class="campo">Conversiones</span>, <span class="campo">Reconciliaciones</span> y <span class="campo">Ausentes</span>.</p></div></div>
+<div class="paso"><div class="n">5</div><div class="cuerpo"><p><strong>Escuelas de Formación:</strong> cuántos discípulos de la Casa están en <span class="campo">Pasos de Vida</span>, <span class="campo">Ciclo de Conexión</span>, <span class="campo">Módulo de Liderazgo</span> y <span class="campo">Seminario Bíblico</span>. El total se calcula solo.</p></div></div>
+<div class="paso"><div class="n">6</div><div class="cuerpo"><p><strong>Cultos:</strong> <span class="campo">Asistencia VEA</span> y <span class="campo">Asistencia dominical</span>. El culto del sábado solo aparece para las Casas de las Áreas R21 y ZONAR21.</p></div></div>
+<div class="paso"><div class="n">7</div><div class="cuerpo"><p><strong>Informe financiero:</strong> escriba la <span class="campo">Ofrenda (valor total)</span>; debajo aparece el valor en letras («Son $ …») para comprobarlo. Si quiere, deje <span class="campo">Observaciones para el Supervisor</span>.</p></div></div>
+<div class="paso"><div class="n">8</div><div class="cuerpo"><p>Pulse <span class="btn">Revisar y enviar al Supervisor</span>. Se abre «Revisa antes de enviar» con el resumen; pulse <span class="btn">Sí, enviar</span> o <span class="btn">Corregir algo</span> para volver al formulario.</p>
+<p><strong>Resultado:</strong> «Reporte de asistencia del 17/11/2026 enviado al Supervisor de Área.» y se abre el reporte enviado. El aviso del panel cambia a reporte enviado. La ofrenda queda registrada en el módulo de Ofrendas.</p></div></div>
+<figure class="alta"><img src="capturas/51_reporte_asistencia.jpg" alt="Reporte de asistencia"><figcaption><b>Figura 22.</b> Reporte de asistencia con datos ficticios: 15 asistentes, 5 niños, 2 nuevos y $185.000 de ofrenda.</figcaption></figure>
+<figure><img src="capturas/51b_revisar_reporte.jpg" alt="Revisar antes de enviar"><figcaption><b>Figura 23.</b> Ventana «Revisa antes de enviar».</figcaption></figure>
+<div class="cuidado">Para salir sin enviar, use <span class="btn">Cancelar y volver sin enviar</span>. El reporte no se guarda como borrador: si sale, lo escrito se pierde.</div>
+
+<h3 id="s9-2">9.2 Registrar una persona nueva</h3>
+<p>Cuando alguien llega por primera vez a la Casa de Vida se toman solo su nombre y su teléfono.</p>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>Abra <span class="menu">Personas nuevas</span> y pulse <span class="btn">Registrar persona nueva · Casa Esperanza</span> (aparece el nombre de su Casa).</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Escriba el <span class="campo">Nombre</span> y el <span class="campo">Número de teléfono</span>. Ejemplo ficticio: Laura Gómez, 300 123 4567.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Pregunte a la persona si autoriza el uso de sus datos y, si dice que sí, marque <span class="campo">Autorizó el tratamiento de sus datos personales (Ley 1581 de 2012)</span>.</p></div></div>
+<div class="paso"><div class="n">4</div><div class="cuerpo"><p>Pulse <span class="btn">Guardar</span>. <strong>Resultado:</strong> «Se registró a Laura Gómez como persona nueva de Casa Esperanza.» y la persona aparece en la lista.</p></div></div>
+<figure><img src="capturas/52_persona_nueva.jpg" alt="Persona nueva"><figcaption><b>Figura 24.</b> Registro de una persona nueva.</figcaption></figure>
+
+<h3 id="s9-3">9.3 Consultar los reportes de la Casa de Vida</h3>
+<p>En <span class="menu">Reportes</span> («Reportes de mi Casa de Vida») están todos los reportes semanales enviados, con la semana, quién lo envió y cuándo. <span class="btn">Ver</span> abre cada uno. En <span class="menu">Asistencia</span> se ven los mismos datos como tabla de totales y en <span class="menu">Seguimiento</span> los seguimientos de las personas de su Casa.</p>
+<figure><img src="capturas/54_reportes_lider.jpg" alt="Reportes del Líder"><figcaption><b>Figura 25.</b> Reportes de la Casa de Vida.</figcaption></figure>
+
+<!-- =============================================================== -->
+<h2 id="s10"><span class="num">10.</span>Tareas del Coordinador de Formación</h2>
+<p><strong>Quién:</strong> Coordinador de Formación (el Pastor y el Super Administrador también entran a este módulo desde el selector). <strong>Dónde empezar:</strong> al iniciar sesión entra al panel de Escuelas de Formación, con los procesos y las últimas actividades.</p>
+<figure><img src="capturas/60_panel_coordinador.jpg" alt="Panel de Formación"><figcaption><b>Figura 26.</b> Panel del Coordinador de Formación.</figcaption></figure>
+
+<h3 id="s10-1">10.1 Crear un proceso de formación</h3>
+<p>Abra <span class="menu">Procesos de formación</span> y pulse <span class="btn">Nuevo proceso</span>. Llene <span class="campo">Nombre del proceso</span> (ejemplo ficticio: «Escuela Vida Nivel 1 – 2026»), elija la <span class="campo">Escuela</span> y el <span class="campo">Coordinador</span>, escriba si quiere una <span class="campo">Descripción</span> y pulse <span class="btn">Guardar</span>. <strong>Resultado:</strong> «Proceso de formación creado correctamente.». La lista muestra cada proceso con su escuela, coordinador, inscritos, actividades y estado.</p>
+<figure><img src="capturas/61_procesos.jpg" alt="Procesos de formación"><figcaption><b>Figura 27.</b> Procesos de formación.</figcaption></figure>
+
+<h3 id="s10-2">10.2 Inscribir participantes</h3>
+<p>Desde la ficha del proceso (<span class="btn">Ver</span>) o desde <span class="menu">Participantes</span> hay dos caminos:</p>
+<ul>
+  <li><span class="btn">Inscribir existente</span>: para alguien que ya está registrado. Se elige la persona y el proceso. <strong>Resultado:</strong> «Ana María Pérez inscrito en Escuela Vida Nivel 1 – 2026.».</li>
+  <li><span class="btn">Nuevo participante</span>: para alguien que no está en la plataforma. Se llenan <span class="campo">Nombres y apellidos</span>, <span class="campo">Documento de identidad</span>, <span class="campo">Fecha de nacimiento</span>, <span class="campo">Teléfono de contacto</span>, <span class="campo">Dirección</span>, la autorización de datos (Ley 1581 de 2012) y el <span class="campo">Proceso de formación</span>. Si es menor de edad, autoriza su representante legal. <strong>Resultado:</strong> «… registrado e inscrito en …».</li>
+</ul>
+<p>Para sacar a alguien de un proceso, use <span class="btn">Retirar</span> en la lista de inscritos de la ficha del proceso.</p>
+<figure><img src="capturas/65_participante_nuevo.jpg" alt="Nuevo participante"><figcaption><b>Figura 28.</b> Formulario «Nuevo participante».</figcaption></figure>
+
+<h3 id="s10-3">10.3 Registrar una actividad y su asistencia</h3>
+<div class="paso"><div class="n">1</div><div class="cuerpo"><p>Abra la ficha del proceso (<span class="menu">Procesos de formación</span> → <span class="btn">Ver</span>) y pulse <span class="btn">Registrar actividad</span>.</p></div></div>
+<div class="paso"><div class="n">2</div><div class="cuerpo"><p>Escriba el <span class="campo">Nombre de la actividad</span> y la <span class="campo">Fecha</span>; la <span class="campo">Descripción</span> es opcional. Ejemplo ficticio: «Clase 3: La oración», 20/11/2026.</p></div></div>
+<div class="paso"><div class="n">3</div><div class="cuerpo"><p>Marque los inscritos que asistieron. <span class="btn">Marcar todos</span> y <span class="btn">Desmarcar todos</span> agilizan grupos grandes.</p></div></div>
+<div class="paso"><div class="n">4</div><div class="cuerpo"><p>Pulse <span class="btn">Guardar</span>. <strong>Resultado:</strong> «Actividad registrada: 2 de 3 presentes.».</p></div></div>
+<figure><img src="capturas/63_actividad_registrar.jpg" alt="Registrar actividad"><figcaption><b>Figura 29.</b> Registro de una actividad y su asistencia.</figcaption></figure>
+<p><span class="menu">Actividades y asistencia</span> lista todas las actividades registradas, filtrables por escuela, proceso y fechas. Las actividades nuevas se registran siempre desde su proceso.</p>
+
+<h3 id="s10-4">10.4 Seguimiento y reportes de formación</h3>
+<p><strong>Seguimiento:</strong> en <span class="menu">Seguimiento</span> o en la ficha del proceso, pulse <span class="btn">Nuevo seguimiento</span>, elija el participante y llene fecha, tipo, estado y observaciones, como en la sección 7.5. <strong>Resultado:</strong> «Seguimiento registrado correctamente.».</p>
+<p><strong>Reportes:</strong> en <span class="menu">Reportes</span> elija <span class="campo">Periodo</span>, <span class="campo">Fecha de referencia</span> y, si quiere, <span class="campo">Escuela</span> y <span class="campo">Proceso</span>; pulse <span class="btn">Generar</span>. La tabla muestra por proceso las actividades, presentes, porcentaje de asistencia, inscritos, nuevos y seguimientos. Se descarga con <span class="btn">PDF</span> o <span class="btn">Excel</span>.</p>
+<figure><img src="capturas/68_reportes_formacion.jpg" alt="Reportes de formación"><figcaption><b>Figura 30.</b> Reportes de formación.</figcaption></figure>
+
+<!-- =============================================================== -->
+<h2 id="s11"><span class="num">11.</span>Preguntas frecuentes</h2>
+<h3 class="pregunta">Olvidé mi contraseña. ¿Qué hago?</h3>
+<p>Use <span class="btn">¿Olvidaste tu contraseña?</span> en la pantalla de inicio de sesión (sección 4). Si no le llega el correo, pida al administrador que le asigne una nueva desde <span class="menu">Usuarios</span> → <span class="btn">Editar</span>.</p>
+<h3 class="pregunta">Escribo bien la contraseña y no me deja entrar.</h3>
+<p>Tras 5 intentos fallidos la cuenta se bloquea 15 minutos. Espere y vuelva a intentar. Si sigue igual, su cuenta puede estar desactivada: consulte al administrador.</p>
+<h3 class="pregunta">Me equivoqué en un reporte de asistencia ya enviado. ¿Lo puedo corregir?</h3>
+<p>La plataforma no permite editar un reporte después de enviarlo. Avise a su Supervisor y escriba la aclaración en las observaciones del reporte siguiente <span class="confirmar">[Por confirmar: procedimiento acordado con la iglesia para corregir reportes enviados]</span>.</p>
+<h3 class="pregunta">No veo una opción que sí ve otra persona.</h3>
+<p>El menú depende del rol. Por ejemplo, solo el Pastor ve <span class="menu">Áreas</span> e <span class="menu">Importar datos</span>, y solo el Super Administrador ve <span class="menu">Auditoría</span>.</p>
+<h3 class="pregunta">¿Por qué el Supervisor solo ve algunas Casas de Vida?</h3>
+<p>Cada Supervisor ve únicamente las Casas de su Área, y cada Líder solo la suya. Así cada responsable trabaja con la información que le corresponde.</p>
+<h3 class="pregunta">¿Se pueden borrar personas, Casas o usuarios?</h3>
+<p>No se borran: se desactivan. Así se conserva el historial de reportes y seguimientos.</p>
+<h3 class="pregunta">¿Puedo usar la plataforma desde el celular?</h3>
+<p>Sí, desde el navegador del teléfono. El reporte semanal y el registro de personas nuevas están pensados para llenarse ahí mismo, al terminar la reunión.</p>
+<h3 class="pregunta">¿Cómo activo el modo oscuro?</h3>
+<p>Con el botón de la luna en la barra superior. La plataforma recuerda la elección en ese navegador.</p>
+<h3 class="pregunta">Se me cerró la sesión mientras llenaba un formulario.</h3>
+<p>La sesión se cierra tras 30 minutos sin actividad. Vuelva a entrar y llene de nuevo el formulario; para reportes largos, tenga los datos a la mano antes de empezar.</p>
+
+<!-- =============================================================== -->
+<h2 id="s12" class="cierre"><span class="num">12.</span>Nota de verificación</h2>
+<h3>Verificado usando el sistema</h3>
+<ul>
+  <li>Entre el 23 y el 24/11/2026 se recorrió el entorno de demostración (puerto 8001) con una cuenta de cada rol: Super Administrador, Pastor, Supervisor de Área, Líder de Casa de Vida y Coordinador de Formación. Se capturaron 46 pantallas y se copiaron de ellas los nombres exactos de menús, botones, campos y columnas que aparecen en este manual.</li>
+  <li>Se llenó el reporte de asistencia con datos ficticios hasta la ventana «Revisa antes de enviar» y el formulario de persona nueva (Laura Gómez); ninguno de los dos se envió.</li>
+  <li>Inicio de sesión, selector de módulo, panel de cada rol, pantallas en el celular y la solicitud de recuperación de contraseña.</li>
+  <li>«Mi perfil» corregido: se guardó un nombre, se comprobó que seguía guardado al recargar y en las páginas generadas por el servidor, se probó el error con el nombre vacío y se abrió «Cambiar contraseña» desde el botón.</li>
+</ul>
+<h3>Verificado revisando el código</h3>
+<ul>
+  <li>Mensajes de confirmación tras guardar (por ejemplo, «Usuario creado correctamente.» o «Reporte de asistencia del … enviado al Supervisor de Área.»).</li>
+  <li>Permisos de cada rol: quién registra seguimientos (Pastor en Casas de Vida), quién llena el reporte y registra personas nuevas (Líder y apoyo) y quién accede a Ofrendas.</li>
+  <li>Bloqueo tras 5 intentos durante 15 minutos, cierre de sesión tras 30 minutos de inactividad, vencimiento del enlace de recuperación en 60 minutos, mínimo de 15 caracteres en la contraseña y límites de la importación.</li>
+  <li>La cuenta de Apoyo de Casa de Vida no se recorrió en pantalla; sus permisos se tomaron del código.</li>
+</ul>
+<h3>Pendiente o no verificado</h3>
+<ul>
+  <li>Dirección web definitiva y recepción real de los correos de recuperación (en la demostración los correos se muestran en la terminal del servidor).</li>
+  <li>Envío real de un reporte general del Supervisor y de una importación completa en esta revisión (sí están cubiertos por las pruebas automáticas del proyecto).</li>
+  <li>Procedimiento acordado con la iglesia para corregir un reporte ya enviado.</li>
+</ul>
+<h3>Diferencias entre lo implementado y los requisitos</h3>
+<ul>
+  <li>Durante la revisión se encontró que <span class="menu">Mi perfil</span> no guardaba el nombre en la base de datos y que no había un enlace a «Cambiar contraseña». Ambas cosas se corrigieron el 24/11/2026: este manual ya describe el comportamiento corregido, que se probó en la demostración con los módulos Casas de Vida y Escuelas de Formación y se cubrió con 10 pruebas automáticas nuevas. La corrección todavía no tiene commit, así que no forma parte del commit <code>d4b5cf7</code>.</li>
+  <li>El reporte de asistencia se registra por totales y las personas nuevas solo con nombre y teléfono, como se acordó con la iglesia y se actualizó en la ERS; las Escuelas de Formación sí registran a cada participante con sus datos completos.</li>
+</ul>
+
+</body>
+</html>

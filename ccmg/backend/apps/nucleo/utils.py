@@ -66,6 +66,9 @@ def sesion_js(user):
         "rolNombre": ROLES_ETIQUETA.get(getattr(rol, "nombre", None), ""),
         "superadmin": es_superadmin(user),
         "auditoria": reverse("cuentas:auditoria") if es_superadmin(user) else None,
+        # «Mi perfil»: guardar el nombre y enlace a cambiar la contraseña.
+        "urlPerfil": reverse("cuentas:perfil"),
+        "urlCambiarPassword": reverse("cuentas:cambiar_password"),
         # Enlace al módulo de ofrendas si el usuario está autorizado (RN14).
         "ofrendas": reverse("ofrendas:index") if puede_gestionar_ofrendas(user) else None,
     }

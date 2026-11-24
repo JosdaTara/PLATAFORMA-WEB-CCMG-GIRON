@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Manual de instalación – Plataforma web PVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="manual.css">
+</head>
+<body>
+
+<section class="portada">
+  <div class="banda">
+    <img src="logo-blanco.png" alt="Logo CCMG Girón">
+    <p class="proyecto">Plataforma web Plan Vida Abundante · CCMG Girón</p>
+    <h1>Manual de instalación</h1>
+    <p class="sub">Cómo dejar la plataforma funcionando en un equipo con Windows, desde el código fuente hasta la primera cuenta de administración.</p>
+    <div class="filete"></div>
+  </div>
+  <div class="datos">
+    <div><b>Versión documentada</b>Commit <code>d4b5cf7</code> de la rama <code>main</code> (18/11/2026)</div>
+    <div><b>Fecha del manual</b>24 de noviembre de 2026</div>
+    <div><b>Autores</b>Joshua David Tarazona Gómez<br>Karen Lizeth Arenas Medina</div>
+    <div><b>Institución</b>Unidades Tecnológicas de Santander (UTS)</div>
+    <div><b>Iglesia</b>Comunidad Cristiana Manantial de Gracia (CCMG), Girón</div>
+    <div><b>Repositorio</b>github.com/JosdaTara/PLATAFORMA-WEB-CCMG-GIRON</div>
+  </div>
+</section>
+
+<nav class="indice">
+  <h2>Contenido</h2>
+  <ol>
+    <li class="n1"><a href="#s1">1. Propósito y alcance</a><span class="pg" data-para="s1"></span></li>
+    <li class="n1"><a href="#s2">2. Componentes del sistema</a><span class="pg" data-para="s2"></span></li>
+    <li class="n1"><a href="#s3">3. Requisitos previos y versiones</a><span class="pg" data-para="s3"></span></li>
+    <li class="n1"><a href="#s4">4. Instalación paso a paso</a><span class="pg" data-para="s4"></span></li>
+    <li class="n2"><a href="#s4-1">4.1 Obtener el código</a><span class="pg" data-para="s4-1"></span></li>
+    <li class="n2"><a href="#s4-2">4.2 Entorno virtual y dependencias</a><span class="pg" data-para="s4-2"></span></li>
+    <li class="n2"><a href="#s4-3">4.3 Variables de entorno</a><span class="pg" data-para="s4-3"></span></li>
+    <li class="n2"><a href="#s4-4">4.4 Base de datos y datos iniciales</a><span class="pg" data-para="s4-4"></span></li>
+    <li class="n2"><a href="#s4-5">4.5 Comprobar la configuración y registrar migraciones</a><span class="pg" data-para="s4-5"></span></li>
+    <li class="n2"><a href="#s4-6">4.6 Crear la primera cuenta de administración</a><span class="pg" data-para="s4-6"></span></li>
+    <li class="n2"><a href="#s4-7">4.7 Iniciar la plataforma</a><span class="pg" data-para="s4-7"></span></li>
+    <li class="n1"><a href="#s5">5. Tabla de variables de entorno</a><span class="pg" data-para="s5"></span></li>
+    <li class="n1"><a href="#s6">6. Prueba rápida de funcionamiento</a><span class="pg" data-para="s6"></span></li>
+    <li class="n1"><a href="#s7">7. Qué se hace una vez y qué en cada arranque</a><span class="pg" data-para="s7"></span></li>
+    <li class="n1"><a href="#s8">8. Entorno de demostración (opcional)</a><span class="pg" data-para="s8"></span></li>
+    <li class="n1"><a href="#s9">9. Solución de problemas</a><span class="pg" data-para="s9"></span></li>
+    <li class="n1"><a href="#s10">10. Nota de verificación</a><span class="pg" data-para="s10"></span></li>
+  </ol>
+</nav>
+
+<!-- =============================================================== -->
+<h2 id="s1"><span class="num">1.</span>Propósito y alcance</h2>
+<p>Este manual explica cómo instalar y poner en marcha la plataforma web del Plan Vida Abundante (PVA) de la Comunidad Cristiana Manantial de Gracia de Girón. La plataforma reúne dos módulos independientes: <strong>Casas de Vida</strong> (personas nuevas, reportes de asistencia, seguimiento, ofrendas y reportes) y <strong>Escuelas de Formación</strong> (procesos de formación, inscripciones, actividades, asistencia y seguimiento).</p>
+<p>Está dirigido a quien instale o mantenga la plataforma: el equipo de desarrollo o la persona de la iglesia que se encargue de la parte técnica. Se supone que sabe abrir una terminal y copiar comandos; no hace falta saber programar.</p>
+<div class="ficha">
+  <p><strong>Qué cubre:</strong> instalación en un equipo con Windows 10 u 11 para uso local o de pruebas, con la configuración de desarrollo (<code>config.settings.development</code>), que es la que se verificó al escribir este manual.</p>
+  <p><strong>Qué no cubre:</strong> la publicación en un servidor de Internet. El proyecto incluye una configuración de producción (<code>config.settings.production</code>), pero la plataforma no se ha desplegado todavía, así que no se documentan servidor, dominio ni certificado: <span class="confirmar">[Por confirmar: servidor, dominio y procedimiento de despliegue en producción]</span>.</p>
+</div>
+
+<!-- =============================================================== -->
+<h2 id="s2"><span class="num">2.</span>Componentes del sistema</h2>
+<p>La plataforma es una aplicación web monolítica: un solo programa en Django sirve las páginas y se conecta a una base de datos PostgreSQL. Las personas la usan desde el navegador del computador o del celular.</p>
+<table>
+  <thead><tr><th style="width:24%">Componente</th><th style="width:30%">Qué es</th><th>Dónde está en el proyecto</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Aplicación web</strong></td><td>Django 5.2 sobre Python 3.11</td><td><code>ccmg/backend</code> (apps <code>cuentas</code>, <code>pva</code>, <code>formacion</code>, <code>ofrendas</code>, <code>nucleo</code>, <code>publico</code>; configuración en <code>config/settings</code>)</td></tr>
+    <tr><td><strong>Interfaz</strong></td><td>Plantillas HTML, Bootstrap 5, CSS y JavaScript propios</td><td><code>ccmg/frontend/templates</code> y <code>ccmg/frontend/static</code></td></tr>
+    <tr><td><strong>Base de datos</strong></td><td>PostgreSQL 16; el esquema se crea con un script SQL, no con migraciones</td><td><code>ccmg/backend/base_datos/esquema.sql</code> y <code>datos_iniciales.sql</code></td></tr>
+    <tr><td><strong>Configuración</strong></td><td>Archivo <code>.env</code> con las credenciales (no se sube al repositorio)</td><td>Raíz del proyecto; plantilla en <code>.env.example</code></td></tr>
+    <tr><td><strong>Correo</strong> (opcional)</td><td>Servidor SMTP para recuperar contraseñas</td><td>Variables <code>EMAIL_*</code> del <code>.env</code></td></tr>
+    <tr><td><strong>Dependencias de Python</strong></td><td>Django, psycopg, python-dotenv, openpyxl (Excel), reportlab (PDF), pillow</td><td><code>ccmg/backend/requirements.txt</code></td></tr>
+  </tbody>
+</table>
+<div class="nota">Las tablas de la base de datos las define <code>esquema.sql</code>, incluidas las que Django necesita para sesiones y permisos. Por eso los modelos están marcados como no administrados (<code>managed = False</code>) y <strong>no</strong> se usa <code>migrate</code> para crear tablas (ver paso 4.5).</div>
+
+<!-- =============================================================== -->
+<h2 id="s3"><span class="num">3.</span>Requisitos previos y versiones</h2>
+<table>
+  <thead><tr><th style="width:22%">Programa</th><th style="width:22%">Versión probada</th><th>Observaciones</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Windows</strong></td><td>Windows 11 Home</td><td>Windows 10 debería funcionar igual <span class="confirmar">[Por confirmar: no se probó en Windows 10, Linux ni macOS]</span>.</td></tr>
+    <tr><td><strong>Python</strong></td><td>3.11.9</td><td>Django 5.2 exige Python 3.10 o superior. Al instalarlo, marque <em>Add python.exe to PATH</em>.</td></tr>
+    <tr><td><strong>PostgreSQL</strong></td><td>16</td><td>Instale también las herramientas de línea de comandos (<code>psql</code>, <code>createdb</code>), que vienen con el instalador oficial. Anote la contraseña del usuario <code>postgres</code>.</td></tr>
+    <tr><td><strong>Git</strong></td><td>Cualquier versión reciente</td><td>Solo para descargar el código. También se puede descargar como ZIP desde GitHub.</td></tr>
+    <tr><td><strong>Navegador</strong></td><td>Microsoft Edge (Chromium)</td><td>Cualquier navegador actual: Edge, Chrome, Firefox o Safari en el celular.</td></tr>
+    <tr><td><strong>Conexión a Internet</strong></td><td>—</td><td>Para instalar las dependencias. Las páginas cargan las fuentes y los íconos desde Internet; sin conexión funcionan, pero con otra tipografía.</td></tr>
+  </tbody>
+</table>
+<p><strong>Equipo:</strong> no se midieron requisitos mínimos de hardware <span class="confirmar">[Por confirmar: memoria y disco mínimos]</span>. La instalación completa (código, entorno virtual y base de datos vacía) ocupa unos pocos cientos de megabytes.</p>
+<p><strong>Terminal:</strong> todos los comandos se escriben en <strong>PowerShell</strong> (menú Inicio → «Windows PowerShell» o «Terminal»). Cada comando indica en qué carpeta debe estar la terminal; para cambiar de carpeta se usa <code>cd</code>.</p>
+<div class="cuidado">Si <code>psql</code> o <code>createdb</code> «no se reconocen como comando», PostgreSQL no está en el PATH. En ese caso escriba la ruta completa, por ejemplo <code>&amp; "C:\Program Files\PostgreSQL\16\bin\psql.exe"</code> en lugar de <code>psql</code> (ver la sección 9).</div>
+
+<!-- =============================================================== -->
+<h2 id="s4"><span class="num">4.</span>Instalación paso a paso</h2>
+<p>Siga los pasos en orden. En cada comando se indica la <strong>carpeta</strong> donde debe estar la terminal, la <strong>terminal</strong> que se usa y el <strong>resultado esperado</strong>. Los ejemplos usan la carpeta <code>C:\Proyectos</code>; puede usar otra.</p>
+
+<h3 id="s4-1">4.1 Obtener el código</h3>
+<div class="paso"><div class="n">1</div><div class="cuerpo">
+  <h4>Clonar el repositorio</h4>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> C:\Proyectos · <b>Terminal:</b> PowerShell</div>
+<pre>git clone https://github.com/JosdaTara/PLATAFORMA-WEB-CCMG-GIRON.git
+cd PLATAFORMA-WEB-CCMG-GIRON</pre>
+  <div class="sale"><b>Resultado esperado:</b> «Cloning into 'PLATAFORMA-WEB-CCMG-GIRON'… done.» y la terminal queda dentro de la carpeta del proyecto, que contiene <code>ccmg</code>, <code>DOCUMENTACION</code>, <code>.env.example</code> y <code>README.md</code>.</div></div>
+  <p>A esta carpeta se le llama en adelante <strong>raíz del proyecto</strong>.</p>
+</div></div>
+
+<h3 id="s4-2">4.2 Entorno virtual y dependencias</h3>
+<div class="paso"><div class="n">2</div><div class="cuerpo">
+  <h4>Crear el entorno virtual</h4>
+  <p>El entorno virtual guarda las librerías del proyecto aparte de las del sistema. Se crea una sola vez, en la carpeta <code>ccmg</code>.</p>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> raíz del proyecto · <b>Terminal:</b> PowerShell</div>
+<pre>cd ccmg
+python -m venv venv</pre>
+  <div class="sale"><b>Resultado esperado:</b> no muestra mensajes; aparece la carpeta <code>ccmg\venv</code>.</div></div>
+</div></div>
+
+<div class="paso"><div class="n">3</div><div class="cuerpo">
+  <h4>Activar el entorno virtual</h4>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg · <b>Terminal:</b> PowerShell</div>
+<pre>.\venv\Scripts\Activate.ps1</pre>
+  <div class="sale"><b>Resultado esperado:</b> el inicio de la línea de la terminal cambia a <code>(venv) PS …\ccmg&gt;</code>.</div></div>
+  <p>Si PowerShell responde que «la ejecución de scripts está deshabilitada», ejecute una vez <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code>, confirme con <code>S</code> y vuelva a activar.</p>
+</div></div>
+
+<div class="paso"><div class="n">4</div><div class="cuerpo">
+  <h4>Instalar las dependencias</h4>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg (con el entorno activado) · <b>Terminal:</b> PowerShell</div>
+<pre>pip install -r backend\requirements.txt</pre>
+  <div class="sale"><b>Resultado esperado:</b> termina con «Successfully installed Django-5.2.18 openpyxl-3.1.5 psycopg-3.3.6 … reportlab-5.1.0» (el orden puede variar) y sin líneas <code>ERROR</code>.</div></div>
+</div></div>
+
+<h3 id="s4-3">4.3 Variables de entorno</h3>
+<div class="paso"><div class="n">5</div><div class="cuerpo">
+  <h4>Crear el archivo <code>.env</code></h4>
+  <p>La plataforma lee la conexión a la base de datos y el correo de un archivo <code>.env</code> en la <strong>raíz del proyecto</strong>. Se crea copiando la plantilla:</p>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> raíz del proyecto · <b>Terminal:</b> PowerShell</div>
+<pre>Copy-Item .env.example .env
+notepad .env</pre>
+  <div class="sale"><b>Resultado esperado:</b> se abre el Bloc de notas con el archivo <code>.env</code>.</div></div>
+  <p>Cambie como mínimo <code>DB_PASSWORD</code> por la contraseña del usuario <code>postgres</code> que definió al instalar PostgreSQL. Si todavía no va a configurar el correo, ponga <code>#</code> al comienzo de las líneas <code>EMAIL_HOST</code>, <code>EMAIL_HOST_USER</code> y <code>EMAIL_HOST_PASSWORD</code>: así los correos se muestran en la terminal del servidor en lugar de intentar enviarse con datos de ejemplo. Guarde y cierre.</p>
+  <p>La sección 5 explica cada variable.</p>
+  <div class="cuidado">El archivo <code>.env</code> contiene contraseñas: no lo comparta ni lo suba al repositorio (ya está excluido en <code>.gitignore</code>). Escriba cada línea como <code>NOMBRE=valor</code>, sin espacios antes del nombre ni comillas.</div>
+</div></div>
+
+<h3 id="s4-4">4.4 Base de datos y datos iniciales</h3>
+<div class="paso"><div class="n">6</div><div class="cuerpo">
+  <h4>Crear la base de datos vacía</h4>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> cualquiera · <b>Terminal:</b> PowerShell</div>
+<pre>createdb -U postgres CCMG_GIRON</pre>
+  <div class="sale"><b>Resultado esperado:</b> pide «Contraseña:» (la de <code>postgres</code>; no se ve al escribirla) y vuelve a la línea de comandos sin mensajes.</div></div>
+  <p>El nombre <code>CCMG_GIRON</code> debe coincidir con <code>DB_NAME</code> del <code>.env</code>.</p>
+</div></div>
+
+<div class="paso"><div class="n">7</div><div class="cuerpo">
+  <h4>Crear las tablas</h4>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg\backend · <b>Terminal:</b> PowerShell</div>
+<pre>$env:PGCLIENTENCODING = "UTF8"
+psql -U postgres -d CCMG_GIRON -v ON_ERROR_STOP=1 -f base_datos\esquema.sql</pre>
+  <div class="sale"><b>Resultado esperado:</b> tras pedir la contraseña, una lista de líneas <code>CREATE TABLE</code>, <code>CREATE INDEX</code>, <code>ALTER TABLE</code>… que termina sin ninguna línea <code>ERROR</code>.</div></div>
+  <p>La primera línea hace que las tildes y la ñ se lean bien; vale para esa ventana de PowerShell.</p>
+</div></div>
+
+<div class="paso"><div class="n">8</div><div class="cuerpo">
+  <h4>Cargar los datos iniciales (roles)</h4>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg\backend · <b>Terminal:</b> PowerShell (la misma ventana del paso 7)</div>
+<pre>psql -U postgres -d CCMG_GIRON -v ON_ERROR_STOP=1 -f base_datos\datos_iniciales.sql</pre>
+  <div class="sale"><b>Resultado esperado:</b> <code>INSERT 0 6</code>. Son los seis roles: Super Administrador, Pastor, Supervisor de Área, Líder de Casa de Vida, Apoyo de Casa de Vida y Coordinador de Formación.</div></div>
+  <p>La base queda sin personas, Casas de Vida ni áreas: esos datos los registra la iglesia desde la plataforma o con <span class="menu">Importar datos</span> (ver el Manual de usuario).</p>
+</div></div>
+
+<h3 id="s4-5">4.5 Comprobar la configuración y registrar migraciones</h3>
+<div class="paso"><div class="n">9</div><div class="cuerpo">
+  <h4>Revisar que Django se conecta</h4>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg\backend (entorno activado) · <b>Terminal:</b> PowerShell</div>
+<pre>python manage.py check</pre>
+  <div class="sale"><b>Resultado esperado:</b> <code>System check identified no issues (0 silenced).</code></div></div>
+</div></div>
+
+<div class="paso"><div class="n">10</div><div class="cuerpo">
+  <h4>Registrar las migraciones de Django (recomendado)</h4>
+  <p>Como las tablas ya las creó <code>esquema.sql</code>, Django cree que tiene 15 migraciones pendientes y lo avisa cada vez que arranca. Este comando las marca como aplicadas <strong>sin tocar las tablas</strong>:</p>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg\backend (entorno activado) · <b>Terminal:</b> PowerShell</div>
+<pre>python manage.py migrate --fake</pre>
+  <div class="sale"><b>Resultado esperado:</b> una lista de líneas <code>Applying … FAKED</code>. Desde ese momento desaparece el aviso «You have 15 unapplied migration(s)».</div></div>
+  <div class="cuidado">Use siempre <code>--fake</code>. Un <code>migrate</code> normal intentaría crear tablas que ya existen y fallaría.</div>
+</div></div>
+
+<h3 id="s4-6">4.6 Crear la primera cuenta de administración</h3>
+<div class="paso"><div class="n">11</div><div class="cuerpo">
+  <h4>Crear el Super Administrador</h4>
+  <p>La plataforma no trae cuentas. La primera se crea desde la terminal; las demás las crea esa cuenta desde <span class="menu">Gestión de usuarios</span>.</p>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg\backend (entorno activado) · <b>Terminal:</b> PowerShell <strong>interactiva</strong></div>
+<pre>python manage.py crear_superadmin</pre>
+  <div class="sale"><b>Resultado esperado:</b> el comando pregunta, uno por uno, <code>Correo:</code>, <code>Username (opcional, Enter para omitir):</code>, <code>Nombre completo:</code>, <code>Contraseña:</code> y <code>Confirmar contraseña:</code>, y termina con <code>Cuenta Super Administrador creada: admin@iglesia.example (id=1)</code>.</div></div>
+  <p>Ejemplo ficticio de respuestas: correo <code>admin@iglesia.example</code>, usuario vacío (Enter), nombre «Administrador CCMG». La contraseña debe tener <strong>al menos 15 caracteres</strong> y no se ve al escribirla; si no cumple las reglas, el comando lo dice y no crea la cuenta.</p>
+  <ul>
+    <li>Para crear una cuenta de Pastor desde la terminal existe <code>python manage.py crear_pastor</code>, que hace las mismas preguntas.</li>
+    <li>Para convertir en Super Administrador una cuenta que ya existe: <code>python manage.py crear_superadmin --promover correo@iglesia.example</code>.</li>
+  </ul>
+  <div class="nota">Estos comandos leen la contraseña sin mostrarla y necesitan que alguien la escriba en la ventana. No funcionan si se les pasa la contraseña con una tubería o un script.</div>
+</div></div>
+
+<h3 id="s4-7">4.7 Iniciar la plataforma</h3>
+<div class="paso"><div class="n">12</div><div class="cuerpo">
+  <h4>Arrancar el servidor</h4>
+  <div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg\backend (entorno activado) · <b>Terminal:</b> PowerShell</div>
+<pre>python manage.py runserver</pre>
+  <div class="sale"><b>Resultado esperado:</b> «Starting development server at <code>http://127.0.0.1:8000/</code>» y «Quit the server with CTRL-BREAK.» La terminal queda ocupada mientras el servidor esté encendido.</div></div>
+  <p>Abra el navegador en <strong>http://127.0.0.1:8000</strong>. Para apagar el servidor, vuelva a la terminal y pulse <kbd>Ctrl</kbd>+<kbd>C</kbd>.</p>
+  <p>Para usar otro puerto, añádalo al final: <code>python manage.py runserver 8080</code>. Para abrir la plataforma desde un celular de la misma red Wi-Fi se necesita <code>runserver 0.0.0.0:8000</code> y agregar la IP del equipo a <code>ALLOWED_HOSTS</code> en la configuración de desarrollo <span class="confirmar">[Por confirmar: no se probó el acceso desde otros equipos de la red]</span>.</p>
+</div></div>
+
+<!-- =============================================================== -->
+<h2 id="s5"><span class="num">5.</span>Tabla de variables de entorno</h2>
+<p>Todas van en el archivo <code>.env</code> de la raíz del proyecto. Los ejemplos son ficticios.</p>
+<table>
+  <thead><tr><th style="width:23%">Variable</th><th>Para qué sirve</th><th style="width:20%">¿Obligatoria?</th><th style="width:24%">Ejemplo ficticio</th></tr></thead>
+  <tbody>
+    <tr><td><code>DB_HOST</code></td><td>Equipo donde está PostgreSQL.</td><td><span class="chip no">No</span> por defecto: <code>localhost</code></td><td><code>localhost</code></td></tr>
+    <tr><td><code>DB_PORT</code></td><td>Puerto de PostgreSQL.</td><td><span class="chip no">No</span> por defecto: <code>5432</code></td><td><code>5432</code></td></tr>
+    <tr><td><code>DB_NAME</code></td><td>Nombre de la base de datos de la plataforma.</td><td><span class="chip si">Sí</span></td><td><code>CCMG_GIRON</code></td></tr>
+    <tr><td><code>DB_USER</code></td><td>Usuario de PostgreSQL.</td><td><span class="chip si">Sí</span></td><td><code>postgres</code></td></tr>
+    <tr><td><code>DB_PASSWORD</code></td><td>Contraseña de ese usuario.</td><td><span class="chip si">Sí</span></td><td><code>Clave-Ejemplo-2026</code></td></tr>
+    <tr><td><code>DB_NAME_DEMO</code></td><td>Base de la demostración (solo con <code>config.settings.demo</code>).</td><td><span class="chip no">No</span> por defecto: <code>CCMG_GIRON_demo</code></td><td><code>CCMG_GIRON_demo</code></td></tr>
+    <tr><td><code>EMAIL_HOST</code></td><td>Servidor SMTP. Si falta, los correos solo se muestran en la terminal del servidor.</td><td><span class="chip no">No</span> (necesaria para recuperar contraseñas por correo)</td><td><code>smtp.gmail.com</code></td></tr>
+    <tr><td><code>EMAIL_PORT</code></td><td>Puerto del servidor SMTP.</td><td><span class="chip no">No</span> por defecto: <code>587</code></td><td><code>587</code></td></tr>
+    <tr><td><code>EMAIL_USE_TLS</code></td><td>Cifrar la conexión con el servidor de correo.</td><td><span class="chip no">No</span> por defecto: <code>true</code></td><td><code>true</code></td></tr>
+    <tr><td><code>EMAIL_HOST_USER</code></td><td>Cuenta que envía los correos.</td><td>Solo con <code>EMAIL_HOST</code></td><td><code>pva@iglesia.example</code></td></tr>
+    <tr><td><code>EMAIL_HOST_PASSWORD</code></td><td>Contraseña de esa cuenta. En Gmail, una «contraseña de aplicación» de 16 letras.</td><td>Solo con <code>EMAIL_HOST</code></td><td><code>abcd efgh ijkl mnop</code></td></tr>
+    <tr><td><code>DEFAULT_FROM_EMAIL</code></td><td>Remitente que ven las personas.</td><td><span class="chip no">No</span></td><td><code>CCMG Girón &lt;pva@iglesia.example&gt;</code></td></tr>
+    <tr><td><code>DJANGO_SECRET_KEY</code></td><td>Clave secreta de Django en producción.</td><td>Solo en producción</td><td><code>clave-larga-aleatoria</code></td></tr>
+    <tr><td><code>ALLOWED_HOSTS</code></td><td>Dominios desde los que se sirve la plataforma en producción, separados por comas.</td><td>Solo en producción</td><td><code>pva.iglesia.example</code></td></tr>
+  </tbody>
+</table>
+<div class="nota">Con la configuración de desarrollo, Django usa una clave secreta fija de desarrollo y acepta <code>localhost</code> y <code>127.0.0.1</code>; por eso <code>DJANGO_SECRET_KEY</code> y <code>ALLOWED_HOSTS</code> no hacen falta para la instalación de este manual.</div>
+
+<!-- =============================================================== -->
+<h2 id="s6"><span class="num">6.</span>Prueba rápida de funcionamiento</h2>
+<p>Con el servidor encendido (paso 12), compruebe en el navegador:</p>
+<table>
+  <thead><tr><th style="width:6%">#</th><th style="width:44%">Acción</th><th>Resultado esperado</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Abrir <code>http://127.0.0.1:8000</code></td><td>Carga la página pública de la iglesia; la pestaña dice «CCMG Girón | Plan Vida Abundante».</td></tr>
+    <tr><td>2</td><td>Pulsar <span class="btn">Iniciar sesión</span> o abrir <code>http://127.0.0.1:8000/cuentas/login/</code></td><td>Aparece el formulario con <span class="campo">Usuario o correo</span> y <span class="campo">Contraseña</span>.</td></tr>
+    <tr><td>3</td><td>Ingresar con la cuenta creada en el paso 11 y pulsar <span class="btn">Ingresar</span></td><td>Se abre «Selecciona un módulo», con el nombre de la cuenta y el rol «Super Administrador».</td></tr>
+    <tr><td>4</td><td>Pulsar <span class="btn">Gestión de usuarios</span></td><td>Aparece la lista de usuarios con la cuenta recién creada y el botón <span class="btn">Crear usuario</span>.</td></tr>
+    <tr><td>5</td><td>Mirar la terminal del servidor</td><td>Las peticiones aparecen con código <code>200</code> o <code>302</code> y no hay líneas <code>Traceback</code>.</td></tr>
+  </tbody>
+</table>
+<figure><img src="capturas/02_login.jpg" alt="Página de inicio de sesión"><figcaption><b>Figura 1.</b> Inicio de sesión: la plataforma quedó instalada y responde.</figcaption></figure>
+<p>Prueba adicional para el equipo de desarrollo: <code>python manage.py test --noinput</code> en <code>ccmg\backend</code> ejecuta las pruebas automáticas (233 al cierre de este manual). Crean una base temporal y la borran al terminar.</p>
+
+<!-- =============================================================== -->
+<h2 id="s7"><span class="num">7.</span>Qué se hace una vez y qué en cada arranque</h2>
+<table>
+  <thead><tr><th style="width:40%">Paso</th><th style="width:20%">Frecuencia</th><th>Comentario</th></tr></thead>
+  <tbody>
+    <tr><td>1. Clonar el repositorio</td><td><span class="chip no">Una vez</span></td><td>Para actualizar el código después: <code>git pull</code> en la raíz.</td></tr>
+    <tr><td>2. Crear el entorno virtual</td><td><span class="chip no">Una vez</span></td><td></td></tr>
+    <tr><td>3. Activar el entorno virtual</td><td><span class="chip si">Cada arranque</span></td><td>En cada ventana nueva de PowerShell.</td></tr>
+    <tr><td>4. Instalar dependencias</td><td><span class="chip no">Una vez</span></td><td>Repetir si cambia <code>requirements.txt</code>.</td></tr>
+    <tr><td>5. Crear el <code>.env</code></td><td><span class="chip no">Una vez</span></td><td>Editarlo si cambia una contraseña o el correo; reiniciar el servidor después.</td></tr>
+    <tr><td>6–8. Crear la base, las tablas y los roles</td><td><span class="chip no">Una vez</span></td><td>Repetirlos sobre una base con datos los borraría o fallaría: no lo haga.</td></tr>
+    <tr><td>9. <code>check</code></td><td>Cuando haya dudas</td><td>Útil después de cambiar el <code>.env</code>.</td></tr>
+    <tr><td>10. <code>migrate --fake</code></td><td><span class="chip no">Una vez</span></td><td></td></tr>
+    <tr><td>11. Crear el Super Administrador</td><td><span class="chip no">Una vez</span></td><td>Las demás cuentas se crean desde la plataforma.</td></tr>
+    <tr><td>12. <code>runserver</code></td><td><span class="chip si">Cada arranque</span></td><td>Mantener abierta la terminal mientras se use.</td></tr>
+  </tbody>
+</table>
+<p><strong>Arranque diario</strong>, en una ventana nueva de PowerShell:</p>
+<div class="cmd"><div class="donde"><b>Carpeta:</b> raíz del proyecto · <b>Terminal:</b> PowerShell</div>
+<pre>cd ccmg
+.\venv\Scripts\Activate.ps1
+cd backend
+python manage.py runserver</pre>
+<div class="sale"><b>Resultado esperado:</b> «Starting development server at http://127.0.0.1:8000/».</div></div>
+
+<!-- =============================================================== -->
+<h2 id="s8"><span class="num">8.</span>Entorno de demostración (opcional)</h2>
+<p>El proyecto trae una demostración con datos ficticios (áreas, una Casa de Vida, personas, reportes y un usuario por rol) para revisar la plataforma sin tocar la base real. Usa su propia base de datos y el puerto 8001, así que puede correr a la vez que la plataforma real.</p>
+<div class="cmd"><div class="donde"><b>Carpeta:</b> ccmg\backend (entorno activado) · <b>Terminal:</b> PowerShell</div>
+<pre>$env:PGCLIENTENCODING = "UTF8"
+createdb -U postgres CCMG_GIRON_demo
+psql -U postgres -d CCMG_GIRON_demo -v ON_ERROR_STOP=1 -f base_datos\esquema.sql
+psql -U postgres -d CCMG_GIRON_demo -v ON_ERROR_STOP=1 -f base_datos\datos_iniciales.sql
+python manage.py sembrar_demo --settings=config.settings.demo
+python manage.py runserver 8001 --settings=config.settings.demo</pre>
+<div class="sale"><b>Resultado esperado:</b> el servidor de la demostración queda en <code>http://127.0.0.1:8001</code>.</div></div>
+<p>Las cuentas de la demostración usan el dominio <code>demo.test</code>: <code>superadmin@</code>, <code>pastor@</code>, <code>supervisor@</code>, <code>lider@</code>, <code>apoyo@</code> y <code>coordinador@demo.test</code>. Todas tienen la misma contraseña, definida en la constante <code>CLAVE_DEMO</code> de <code>apps/nucleo/management/commands/sembrar_demo.py</code>.</p>
+<div class="nota"><code>sembrar_demo</code> se niega a ejecutarse si el nombre de la base no contiene «demo», para no mezclar datos de ejemplo con los reales. Las cuentas de la demostración no sirven en la plataforma real (puerto 8000), ni al revés.</div>
+
+<!-- =============================================================== -->
+<h2 id="s9"><span class="num">9.</span>Solución de problemas</h2>
+<table>
+  <thead><tr><th style="width:29%">Síntoma</th><th style="width:31%">Causa probable</th><th>Solución</th></tr></thead>
+  <tbody>
+    <tr><td>«psql», «createdb» o «python» no se reconoce como comando.</td><td>El programa no está en el PATH de Windows.</td><td>Use la ruta completa: <code>&amp; "C:\Program Files\PostgreSQL\16\bin\psql.exe" …</code>. Para Python, reinstálelo marcando <em>Add python.exe to PATH</em> o use <code>py</code> en lugar de <code>python</code>.</td></tr>
+    <tr><td>Al activar el entorno: «la ejecución de scripts está deshabilitada en este sistema».</td><td>Política de ejecución de PowerShell.</td><td><code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code>, confirmar con <code>S</code> y activar de nuevo.</td></tr>
+    <tr><td><code>ModuleNotFoundError: No module named 'django'</code></td><td>El entorno virtual no está activado.</td><td>Activar con <code>.\venv\Scripts\Activate.ps1</code> desde <code>ccmg</code> (debe verse <code>(venv)</code>).</td></tr>
+    <tr><td><code>password authentication failed for user "postgres"</code></td><td><code>DB_PASSWORD</code> o <code>DB_USER</code> no coinciden con PostgreSQL.</td><td>Corregir el <code>.env</code>, guardar y volver a ejecutar <code>python manage.py check</code>.</td></tr>
+    <tr><td><code>database "CCMG_GIRON" does not exist</code></td><td>No se creó la base o <code>DB_NAME</code> tiene otro nombre.</td><td>Hacer el paso 6 o corregir <code>DB_NAME</code>.</td></tr>
+    <tr><td><code>relation "usuario" does not exist</code> u otra tabla inexistente.</td><td>No se ejecutó <code>esquema.sql</code> sobre esa base.</td><td>Hacer el paso 7 sobre la base indicada en <code>DB_NAME</code>.</td></tr>
+    <tr><td><code>crear_superadmin</code> dice «No existe el rol SUPERADMIN en la tabla rol».</td><td>Faltan los datos iniciales.</td><td>Hacer el paso 8.</td></tr>
+    <tr><td><code>crear_superadmin</code> se queda quieto y no pide la contraseña.</td><td>Se ejecutó sin una ventana interactiva (desde un script o con una tubería).</td><td>Ejecutarlo en una ventana de PowerShell normal y escribir las respuestas a mano.</td></tr>
+    <tr><td>Al arrancar: «You have 15 unapplied migration(s)».</td><td>Las tablas se crearon con <code>esquema.sql</code> y Django no lo sabe.</td><td>Es solo un aviso. Para quitarlo: <code>python manage.py migrate --fake</code> (paso 10). No ejecute <code>migrate</code> sin <code>--fake</code>.</td></tr>
+    <tr><td><code>Error: That port is already in use.</code></td><td>Otro servidor usa el puerto 8000.</td><td>Cerrar la otra terminal con <kbd>Ctrl</kbd>+<kbd>C</kbd> o usar otro puerto: <code>python manage.py runserver 8080</code>.</td></tr>
+    <tr><td>La cuenta funciona en la demostración pero no en la plataforma real (o al revés).</td><td>Cada entorno tiene su propia base de datos.</td><td>Revisar el puerto: 8000 es la plataforma real y 8001 la demostración.</td></tr>
+    <tr><td>Tildes y eñes salen como «Ã³» después de cargar el SQL.</td><td><code>psql</code> leyó el archivo con la codificación de Windows.</td><td>Ejecutar <code>$env:PGCLIENTENCODING = "UTF8"</code> antes de <code>psql</code>. Si ya se cargó mal, borrar la base (<code>dropdb</code>) y repetir los pasos 6 a 8.</td></tr>
+    <tr><td>El correo de recuperación no llega.</td><td>No hay <code>EMAIL_HOST</code>, o la cuenta SMTP rechaza el acceso.</td><td>Sin <code>EMAIL_HOST</code>, el enlace se imprime en la terminal del servidor. Con Gmail use una contraseña de aplicación; el error queda en el registro del servidor.</td></tr>
+    <tr><td>Una variable del <code>.env</code> parece no tener efecto.</td><td>Espacios antes del nombre, comillas o el servidor no se reinició.</td><td>Dejar cada línea como <code>NOMBRE=valor</code> y reiniciar <code>runserver</code>.</td></tr>
+    <tr><td>«Usuario o contraseña incorrectos» con la contraseña correcta.</td><td>La cuenta quedó bloqueada 15 minutos tras 5 intentos fallidos, o está inactiva.</td><td>Esperar 15 minutos o pedir a un administrador que revise la cuenta en <span class="menu">Gestión de usuarios</span>.</td></tr>
+    <tr><td><code>pg_dump: server version mismatch</code> al sacar una copia.</td><td>El <code>pg_dump</code> del PATH es de otra versión (por ejemplo, 18) que el servidor (16).</td><td>Usar el de la versión del servidor: <code>&amp; "C:\Program Files\PostgreSQL\16\bin\pg_dump.exe" …</code>.</td></tr>
+  </tbody>
+</table>
+
+<!-- =============================================================== -->
+<h2 id="s10" class="cierre"><span class="num">10.</span>Nota de verificación</h2>
+<h3>Verificado ejecutando el sistema</h3>
+<p>El 24/11/2026 se hizo una instalación limpia en Windows 11 con Python 3.11.9 y PostgreSQL 16, en una carpeta y una base de datos aparte (<code>CCMG_GIRON_manual</code>), siguiendo los pasos de este manual:</p>
+<ul>
+  <li><code>git clone</code>, creación del entorno virtual e instalación de <code>requirements.txt</code>, sin errores.</li>
+  <li>Creación de la base, <code>esquema.sql</code> sin errores y <code>datos_iniciales.sql</code> con el resultado <code>INSERT 0 6</code>.</li>
+  <li><code>.env</code> creado a partir de <code>.env.example</code>; <code>manage.py check</code> respondió «System check identified no issues».</li>
+  <li>Creación del primer Super Administrador («Cuenta Super Administrador creada: … (id=1)») y <code>migrate --fake</code> sin errores.</li>
+  <li><code>runserver</code>: la página pública y el inicio de sesión respondieron con código 200; el inicio de sesión llevó a «Selecciona un módulo» con el rol Super Administrador.</li>
+  <li>Al terminar se apagó el servidor de prueba y se borró la base <code>CCMG_GIRON_manual</code>.</li>
+</ul>
+<h3>Verificado revisando el código</h3>
+<ul>
+  <li>Variables de entorno, valores por defecto y su uso: <code>config/settings/base.py</code>, <code>development.py</code>, <code>demo.py</code>, <code>production.py</code> y <code>.env.example</code>.</li>
+  <li>Preguntas y mensajes de <code>crear_superadmin</code> y <code>crear_pastor</code>; reglas de contraseña (mínimo 15 caracteres); bloqueo tras 5 intentos durante 15 minutos.</li>
+  <li>Comportamiento de los correos sin <code>EMAIL_HOST</code> (se muestran en la terminal) y del comando <code>sembrar_demo</code>.</li>
+  <li>Los comandos de la demostración se tomaron del <code>README.md</code> y del código; la demostración se usó en funcionamiento (puerto 8001) para las capturas del Manual de usuario.</li>
+</ul>
+<h3>Pendiente o no verificado</h3>
+<ul>
+  <li>Despliegue en un servidor de producción (<code>config.settings.production</code>), dominio, HTTPS y copias de seguridad automáticas.</li>
+  <li>Envío real de correos por SMTP en la instalación limpia (se probó con los correos impresos en la terminal).</li>
+  <li>Instalación en Windows 10, Linux o macOS, y acceso desde otros equipos de la red local.</li>
+  <li>Requisitos mínimos de hardware.</li>
+</ul>
+<h3>Diferencias con la documentación existente</h3>
+<ul>
+  <li>El <code>README.md</code> menciona 187 pruebas automáticas; al cierre de este manual hay 233.</li>
+  <li>El <code>README.md</code> habla de una «contraseña temporal» al crear usuarios; en la versión documentada el administrador asigna la contraseña al crear la cuenta y puede marcar que la persona la cambie al primer ingreso.</li>
+</ul>
+
+</body>
+</html>

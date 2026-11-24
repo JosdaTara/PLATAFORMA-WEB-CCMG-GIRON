@@ -68,6 +68,71 @@ function avisar(mensaje) {
   el._temporizador = setTimeout(function () { el.classList.remove('show'); }, 2800);
 }
 
+/* ------------------------------ Mi perfil ------------------------------
+   Común a los dos módulos. El nombre se guarda en el servidor (cuentas:perfil);
+   la contraseña se cambia en su propia página (cuentas:cambiar_password). */
+function vistaPerfil(s, modulo) {
+  const info = (typeof ROLES_INFO !== 'undefined') ? ROLES_INFO[s.rol] : null;
+  return titulo('Mi perfil') +
+    '<div class="card p-4 border-0 shadow-sm" style="max-width:560px">' +
+    '<form id="formPerfil" novalidate onsubmit="guardarPerfilComun(event)">' +
+    '<div class="mb-3"><label class="form-label" for="perfilNombre">Nombre completo</label>' +
+    '<input class="form-control" id="perfilNombre" name="nombre" maxlength="150" required autocomplete="name" value="' + esc(s.nombre) + '">' +
+    '<div class="invalid-feedback" id="perfilError"></div></div>' +
+    '<div class="mb-3"><label class="form-label" for="perfilRol">Rol</label><input class="form-control" id="perfilRol" value="' + esc(info ? info.nombre : (s.rolNombre || s.rol)) + '" disabled></div>' +
+    '<div class="mb-4"><label class="form-label" for="perfilModulo">Módulo</label><input class="form-control" id="perfilModulo" value="' + esc(modulo) + '" disabled></div>' +
+    '<div class="d-flex flex-wrap gap-2">' +
+    '<button type="submit" class="btn btn-ccmg" id="perfilGuardar">Guardar cambios</button>' +
+    (s.urlCambiarPassword ? '<a class="btn btn-outline-secondary" href="' + esc(s.urlCambiarPassword) + '"><i class="bi bi-key me-1" aria-hidden="true"></i>Cambiar contraseña</a>' : '') +
+    '</div></form></div>';
+}
+
+function guardarPerfilComun(evento) {
+  if (evento) evento.preventDefault();
+  const sesion = sesionActual();
+  const input = document.getElementById('perfilNombre');
+  const error = document.getElementById('perfilError');
+  const btn = document.getElementById('perfilGuardar');
+  const token = document.querySelector('#logoutForm input[name="csrfmiddlewaretoken"]');
+  if (!sesion || !input || !sesion.urlPerfil || !token) return;
+
+  const mostrarError = function (texto) {
+    input.classList.add('is-invalid');
+    if (error) error.textContent = texto;
+    input.focus();
+  };
+  input.classList.remove('is-invalid');
+  const nombre = input.value.trim();
+  if (!nombre) { mostrarError('Escribe tu nombre completo.'); return; }
+
+  const datos = new URLSearchParams({ nombre: nombre });
+  const peticion = fetch(sesion.urlPerfil, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': token.value, 'X-Requested-With': 'XMLHttpRequest' },
+    body: datos,
+    credentials: 'same-origin'
+  }).then(function (r) {
+    return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, datos: j }; });
+  });
+  const listo = (btn && window.CCMG) ? CCMG.botonCargando(btn, peticion, 'Guardando…') : peticion;
+  listo.then(function (res) {
+    if (!res.ok || !res.datos.nombre) {
+      mostrarError(res.datos.error || 'No se pudo guardar. Intenta de nuevo.');
+      return;
+    }
+    // Refleja el nombre guardado en la barra superior y en los datos de sesión de la página.
+    sesion.nombre = res.datos.nombre;
+    const el = document.getElementById('ccmg-sesion');
+    if (el) el.textContent = JSON.stringify(sesion);
+    const barra = document.getElementById('nombre');
+    if (barra) barra.textContent = sesion.nombre;
+    input.value = sesion.nombre;
+    avisar('Nombre actualizado.');
+  }).catch(function () {
+    mostrarError('No se pudo guardar. Revisa tu conexión e intenta de nuevo.');
+  });
+}
+
 /* Vuelve a renderizar la vista actual (tras guardar datos) */
 function refrescar() {
   window.dispatchEvent(new Event('hashchange'));

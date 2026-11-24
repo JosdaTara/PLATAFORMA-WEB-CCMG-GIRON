@@ -10,6 +10,8 @@ from django.views.generic import ListView, CreateView, UpdateView, View
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Q
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 from nucleo import exportar
 from nucleo.exportar import ExportableMixin
@@ -80,6 +82,24 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, "cuentas/login.html", {"form": form, "error": error})
+
+
+@login_required
+@require_POST
+def actualizar_perfil(request):
+    """«Mi perfil»: cada persona corrige su propio nombre completo. Responde en JSON al panel."""
+    nombre = " ".join(request.POST.get("nombre", "").split())
+    if not nombre:
+        return JsonResponse({"error": "Escribe tu nombre completo."}, status=400)
+    limite = Usuario._meta.get_field("nombre_completo").max_length
+    if len(nombre) > limite:
+        return JsonResponse({"error": f"El nombre puede tener como máximo {limite} caracteres."}, status=400)
+    user = request.user
+    if nombre != user.nombre_completo:
+        user.nombre_completo = nombre
+        user.save(update_fields=["nombre_completo"])
+        registrar_auditoria(request, "ACTUALIZAR_PERFIL", user)
+    return JsonResponse({"nombre": user.nombre_completo})
 
 
 def logout_view(request):

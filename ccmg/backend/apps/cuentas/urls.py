@@ -11,6 +11,7 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
     path("panel/", views.panel_por_rol, name="panel_por_rol"),
     path("selector-modulo/", views.selector_modulo, name="selector_modulo"),
+    path("perfil/", views.actualizar_perfil, name="perfil"),
     path("cambiar-password/", views.CambiarPasswordView.as_view(), name="cambiar_password"),
     path(
         "recuperar/",
