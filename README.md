@@ -8,7 +8,7 @@
 ![Django](https://img.shields.io/badge/Django-5.2-092E20?logo=django&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white)
-![Pruebas](https://img.shields.io/badge/pruebas-187%20pasando-00674F)
+![Pruebas](https://img.shields.io/badge/pruebas-233%20pasando-00674F)
 ![Requisitos](https://img.shields.io/badge/requisitos%20funcionales-28%2F28-CBB279)
 
 Proyecto de grado · Tecnología en Desarrollo de Sistemas Informáticos · Unidades Tecnológicas de Santander (UTS)
@@ -48,7 +48,8 @@ Están implementados los **28 requisitos funcionales** de la [Especificación de
 
 **Acceso y usuarios**
 - Inicio de sesión por correo o usuario, bloqueo tras 5 intentos fallidos y sesión que expira por inactividad (RF01, RF02).
-- Gestión de usuarios con contraseña temporal que se debe cambiar en el primer ingreso (RF03, RF04).
+- Gestión de usuarios: el administrador asigna la contraseña al crear la cuenta (o genera una segura) y puede exigir que se cambie en el primer ingreso (RF03, RF04).
+- «Mi perfil»: cada persona corrige su nombre completo y cambia su contraseña.
 - Recuperación de contraseña por correo (RF25).
 - Panel por rol (RF23).
 
@@ -137,6 +138,8 @@ PLATAFORMA-WEB-CCMG-GIRON/
 - PostgreSQL 16 (con `psql`, o pgAdmin)
 - Git
 
+El [Manual de instalación](DOCUMENTACION/manuales/Manual_de_instalacion.pdf) explica cada paso con más detalle, el resultado esperado de cada comando y la solución de problemas frecuentes.
+
 ### 1. Clonar e instalar dependencias
 ```bash
 git clone https://github.com/JosdaTara/PLATAFORMA-WEB-CCMG-GIRON.git
@@ -184,7 +187,7 @@ Los usuarios de demostración usan el dominio `demo.test` (`superadmin@`, `pasto
 cd ccmg/backend
 python manage.py test --noinput
 ```
-Son **187 pruebas automatizadas** sobre PostgreSQL. Cubren:
+Son **233 pruebas automatizadas** sobre PostgreSQL. Cubren:
 - los permisos y el alcance de cada rol;
 - las reglas de negocio del ERS;
 - los flujos de reportes;
@@ -197,6 +200,8 @@ Son **187 pruebas automatizadas** sobre PostgreSQL. Cubren:
 |---|---|
 | [ERS_PVA.md](DOCUMENTACION/ERS_PVA.md) | Especificación de requisitos (IEEE / ISO 29148): 28 RF, 21 RNF, 25 reglas de negocio, 44 historias de usuario, casos de uso y diagramas. |
 | [IEEE_PLATAFORMA_WEB_CCMG.pdf](DOCUMENTACION/IEEE_PLATAFORMA_WEB_CCMG.pdf) | La misma especificación en el formato IEEE, en PDF. |
+| [Manual_de_instalacion.pdf](DOCUMENTACION/manuales/Manual_de_instalacion.pdf) | Instalación paso a paso en Windows: requisitos, variables de entorno, base de datos, primera cuenta, prueba rápida y solución de problemas. |
+| [Manual_de_usuario.pdf](DOCUMENTACION/manuales/Manual_de_usuario.pdf) | Uso de la plataforma por rol, con capturas de la demostración y preguntas frecuentes. |
 | [diagramas/](DOCUMENTACION/diagramas) | Diagrama general y por módulo de casos de uso, jerarquía de usuarios y modelo entidad-relación (PNG y SVG). |
 | [esquema.sql](ccmg/backend/base_datos/esquema.sql) | Modelo relacional completo de PostgreSQL. |
 | [cambios/](ccmg/backend/base_datos/cambios) | Scripts de cambio de esquema aplicados durante el desarrollo, con su motivo. |
@@ -205,7 +210,7 @@ Son **187 pruebas automatizadas** sobre PostgreSQL. Cubren:
 - **Contraseñas:**
   - con hash, de mínimo 15 caracteres;
   - bloqueo tras 5 intentos fallidos;
-  - cambio obligatorio de la contraseña temporal (RNF05, RNF19, RNF20).
+  - cambio obligatorio en el primer ingreso cuando el administrador lo marca (RNF05, RNF19, RNF20).
 - **Control de acceso** por rol y por alcance, siempre en el servidor (RNF04, RNF06).
 - **Auditoría:** quién inició sesión, creó, modificó, desactivó o importó cada registro, y cuándo, consultable y exportable por el Super Administrador (RNF18).
 - **Ley 1581 de 2012:**
