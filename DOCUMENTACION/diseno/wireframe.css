@@ -1,0 +1,125 @@
+/* Piel de baja fidelidad: solo escala de grises, sin fotos ni tipografía de marca. */
+:root { --g0: #FFFFFF; --g1: #F3F3F3; --g2: #E6E6E6; --g3: #D2D2D2; --g4: #B5B5B5; --g5: #8C8C8C; --g6: #5E5E5E; --g7: #333333; }
+.oscuro { --g0: #3A3A3A; --g1: #2A2A2A; --g2: #444; --g3: #555; --g4: #6E6E6E; --g5: #9A9A9A; --g6: #C8C8C8; --g7: #EEEEEE; }
+
+body { font-family: "Segoe UI", Arial, sans-serif; color: var(--g7); background: #CFCFCF; }
+.bi { display: inline-block; width: 1em; height: 1em; border-radius: 3px; background: var(--g4); vertical-align: -.15em; flex: 0 0 1em; }
+
+/* ---------- Documento ---------- */
+.hoja { background: #fff; }
+.portada .p-banda { background: #4A4A4A; color: #fff; }
+.portada .p-kicker { color: #DDD; }
+.portada h1 { color: #fff; }
+.portada .p-sub { color: #E5E5E5; }
+.portada .p-datos { background: #EFEFEF; color: #333; }
+.portada .p-datos b { color: #555; }
+.doc-h2 { color: #222; }
+.doc-intro { color: #444; }
+.doc-pie { color: #777; }
+.inv th { background: #4A4A4A; color: #fff; }
+.inv td { border-bottom: 1px solid #DDD; }
+.inv tr.flujo td { background: #EAEAEA; }
+.lam-cab { border-bottom: 2px solid #4A4A4A; }
+.lam-id { color: #222; }
+.lam-meta { color: #444; } .lam-meta b { color: #222; }
+.lam-var { background: #E6E6E6; color: #333; border: 1px dashed #888; }
+.marco-cap { color: #666; }
+.escritorio, .movil, .pieza { background: var(--g1); box-shadow: 0 0 0 1.5px #9A9A9A; }
+.movil { box-shadow: 0 0 0 8px #6A6A6A; }
+.nota-lam { color: #444; }
+
+/* ---------- Pantalla ---------- */
+.pantalla { background: var(--g1); color: var(--g7); }
+.logo { background: var(--g4); border-radius: 50%; position: relative; }
+.logo.blanco { background: var(--g2); }
+.side { background: var(--g3); color: var(--g7); border-right: 1.5px solid var(--g4); }
+.side .marca { border-bottom: 1.5px solid var(--g4); }
+.side .marca .mod { color: var(--g6); font-weight: 700; }
+.side nav a { color: var(--g7); }
+.side nav a .bi { background: var(--g5); }
+.side nav a.act { background: var(--g0); font-weight: 700; outline: 1.5px solid var(--g5); }
+.side .salir { border-top: 1.5px solid var(--g4); background: var(--g4); }
+.top { background: var(--g0); border-bottom: 1.5px solid var(--g3); }
+.top .tag { background: var(--g2); border: 1px dashed var(--g5); }
+.top .tema, .top .hamb { border: 1.5px solid var(--g4); }
+.top .quien small { color: var(--g5); }
+.cab { border-bottom: 1.5px solid var(--g3); }
+.cab p, .sec-desc, .ayuda, .vacio p { color: var(--g5); }
+
+.btn.pri { background: var(--g6); color: #fff; }
+.btn.oro { background: var(--g4); color: var(--g7); }
+.btn.sec, .btn.out { background: var(--g0); color: var(--g7); border: 1.5px solid var(--g5); }
+.btn.dan { background: var(--g0); color: var(--g7); border: 1.5px dashed var(--g6); }
+.btn.ghost { background: transparent; color: var(--g6); text-decoration: underline; }
+.btn .bi { background: currentColor; opacity: .55; }
+
+.card, .stat, .filtros, .apilada .reg, .modal, .login .tarj, .selector .mod { background: var(--g0); border: 1.5px solid var(--g3); }
+.card h2, .sec-tit, .card h3.sec { color: var(--g6); }
+.stat .et { color: var(--g5); }
+.stat .ico { background: var(--g2); }
+.stat .ico .bi { background: var(--g5); }
+
+.tbl { background: var(--g0); border: 1.5px solid var(--g3); }
+.tbl th { background: var(--g2); color: var(--g6); border-bottom: 1.5px solid var(--g3); }
+.tbl td { border-bottom: 1px solid var(--g2); }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl tr.total td { font-weight: 700; background: var(--g1); }
+
+.inp { background: var(--g0); border: 1.5px solid var(--g4); }
+.inp.foco { border: 2.5px solid var(--g6); }
+.inp.mal { border: 2.5px dashed var(--g7); }
+.inp.dis { background: var(--g2); color: var(--g5); }
+.err-txt { color: var(--g7); font-weight: 700; }
+.check .cb { border: 1.5px solid var(--g5); background: var(--g0); }
+.check .cb.si { background: var(--g6); color: #fff; }
+
+.badge { border: 1px solid var(--g5); background: var(--g1); color: var(--g7); }
+.badge.pend, .badge.err { border-style: dashed; }
+.alerta { background: var(--g0); border: 1.5px solid var(--g5); }
+.alerta.err { border-style: dashed; border-width: 2px; }
+.aviso-sem { background: var(--g0); border: 1.5px dashed var(--g5); }
+.aviso-sem .ico { background: var(--g2); }
+.aviso-sem.ok { border-style: solid; }
+.vacio .ico { background: var(--g3); }
+.datos dt { color: var(--g5); }
+
+.velo { background: rgba(60,60,60,.5); }
+.modal { border: 2px solid var(--g6); }
+.modal .lista div { border-bottom: 1px solid var(--g2); }
+
+/* Pública y acceso: las fotos se representan como cajas cruzadas */
+.foto { background:
+    linear-gradient(to top right, transparent calc(50% - 1px), var(--g4) 50%, transparent calc(50% + 1px)),
+    linear-gradient(to top left, transparent calc(50% - 1px), var(--g4) 50%, transparent calc(50% + 1px)), var(--g2); }
+.pub-nav { background: var(--g3); border-bottom: 1.5px solid var(--g4); }
+.pub-nav a { color: var(--g7); }
+.hero .velo-h { background: linear-gradient(90deg, rgba(243,243,243,.95) 0%, rgba(243,243,243,.85) 45%, rgba(243,243,243,0) 75%); }
+.hero h1 { color: var(--g7); }
+.hero p { color: var(--g6); }
+.franja { background: var(--g1); }
+.login .lado { background: var(--g1); }
+.login .tarj .sub { color: var(--g5); font-weight: 700; }
+.login .tarj .links a { color: var(--g6); }
+.selector { background: var(--g3); }
+.selector .caja { background: var(--g0); border: 1.5px solid var(--g5); }
+.selector .cab-s { background: var(--g2); border-bottom: 1.5px solid var(--g4); }
+.selector .chip-u { background: var(--g0); border: 1px dashed var(--g5); }
+.selector .mod .et { background: var(--g2); border: 1px dashed var(--g5); }
+.selector .mod .ico { background: var(--g2); }
+
+/* Móvil */
+.m-top, .m-pub-top { background: var(--g0); border-bottom: 1.5px solid var(--g3); }
+.m-pub-top { background: var(--g3); font-weight: 700; }
+.apilada .reg .par { border-top: 1px dashed var(--g3); }
+.apilada .reg .par span:first-child { color: var(--g5); }
+.cajon .resto { background: rgba(60,60,60,.45); }
+.barra-inf { background: var(--g0); border-top: 1.5px solid var(--g4); }
+.barra-inf .act { font-weight: 700; text-decoration: underline; }
+.m-hero { background: var(--g2); }
+.m-hero p { color: var(--g6); }
+
+/* Convenciones */
+.conv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; }
+.conv > div { border: 1px solid #CCC; border-radius: 3mm; padding: 3mm; font-size: 8pt; }
+.conv .ej { margin-bottom: 2mm; min-height: 12mm; display: flex; align-items: center; gap: 2mm; flex-wrap: wrap; }
+.nota-lam { background: #F0F0F0; border: 1px dashed #AAA; }
