@@ -2,11 +2,11 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, UpdateView
 
+from nucleo.busqueda import filtrar_texto
 from nucleo.utils import ROLES_LIDER, ROLES_PASTOR, ROLES_SUPERVISOR, registrar_auditoria
 
 from .alcance import rol_de, seguimientos_visibles
@@ -33,7 +33,7 @@ class SeguimientoListView(PanelCasasMixin, ListView):
         g = self.request.GET
         q = g.get("q", "").strip()
         if q:
-            qs = qs.filter(Q(id_participante__nombres_apellidos__icontains=q) | Q(observacion__icontains=q))
+            qs = filtrar_texto(qs, q, ("id_participante__nombres_apellidos", "observacion"))
         if g.get("estado") in dict(Seguimiento.ESTADOS):
             qs = qs.filter(estado=g["estado"])
         if g.get("tipo") in dict(Seguimiento.TIPOS):

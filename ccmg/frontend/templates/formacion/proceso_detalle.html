@@ -79,7 +79,7 @@
           {% if proceso.activo %}<a href="{% url 'formacion:actividad_registrar' proceso.pk %}" class="btn btn-sm btn-ccmg"><i class="bi bi-check2-square me-1"></i>Registrar actividad</a>{% endif %}
         </span>
       </div>
-      <table class="table table-sm align-middle mb-0">
+      <div class="table-responsive"><table class="table table-sm align-middle mb-0">
         <thead><tr><th>Fecha</th><th>Actividad</th><th>Presentes</th><th>Registró</th></tr></thead>
         <tbody>
           {% for a in actividades %}
@@ -93,7 +93,7 @@
             <tr><td colspan="4" class="text-center text-muted py-3">Aún no hay actividades.</td></tr>
           {% endfor %}
         </tbody>
-      </table>
+      </table></div>
     </div>
   </div>
 </div>

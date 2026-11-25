@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from django import forms
 
-from pva.forms import EstiloBootstrapMixin
+from nucleo.utils import FECHA_MINIMA_REGISTRO, MAX_VALOR_COP
+from pva.forms import EstiloBootstrapMixin, validar_fecha_registro
 from pva.models import ACTIVO, CasaVida
 
 from .models import Ofrenda
@@ -21,8 +22,8 @@ class OfrendaForm(EstiloBootstrapMixin, forms.ModelForm):
         fields = ["fecha", "concepto", "valor", "id_casa_vida", "observacion"]
         labels = {"valor": "Valor (COP)", "observacion": "Observaciones"}
         widgets = {
-            "fecha": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
-            "valor": forms.NumberInput(attrs={"min": "1", "step": "1"}),
+            "fecha": forms.DateInput(attrs={"type": "date", "min": FECHA_MINIMA_REGISTRO.isoformat()}, format="%Y-%m-%d"),
+            "valor": forms.NumberInput(attrs={"min": "1", "max": str(MAX_VALOR_COP), "step": "1"}),
             "observacion": forms.Textarea(attrs={"rows": 2}),
         }
 
@@ -37,7 +38,7 @@ class OfrendaForm(EstiloBootstrapMixin, forms.ModelForm):
         fecha = self.cleaned_data["fecha"]
         if fecha > datetime.date.today():
             raise forms.ValidationError("La fecha de la ofrenda no puede ser futura.")
-        return fecha
+        return validar_fecha_registro(fecha, "la fecha de la ofrenda")
 
     def clean_concepto(self):
         return " ".join(self.cleaned_data["concepto"].split())
@@ -46,6 +47,8 @@ class OfrendaForm(EstiloBootstrapMixin, forms.ModelForm):
         valor = self.cleaned_data["valor"]
         if valor is None or valor <= Decimal("0"):
             raise forms.ValidationError("El valor debe ser mayor que cero.")
+        if valor > MAX_VALOR_COP:
+            raise forms.ValidationError(f"El valor no puede superar {MAX_VALOR_COP:,} pesos.".replace(",", "."))
         return valor
 
 

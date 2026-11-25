@@ -3,8 +3,8 @@ import datetime
 from django import forms
 
 from cuentas.models import Usuario
-from nucleo.utils import ROLES_COORD, ROLES_PASTOR
-from pva.forms import EstiloBootstrapMixin, ParticipanteForm, UsuarioChoiceField
+from nucleo.utils import FECHA_MINIMA_REGISTRO, ROLES_COORD, ROLES_PASTOR
+from pva.forms import EstiloBootstrapMixin, ParticipanteForm, UsuarioChoiceField, validar_fecha_registro
 from pva.models import ACTIVO, Actividad, Participante, Seguimiento
 
 from .alcance import TIPO_MODULO, procesos_visibles
@@ -130,7 +130,10 @@ class ActividadFormacionForm(EstiloBootstrapMixin, forms.Form):
     """
 
     titulo = forms.CharField(max_length=150, label="Nombre de la actividad")
-    fecha = forms.DateField(label="Fecha", widget=forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"))
+    fecha = forms.DateField(
+        label="Fecha",
+        widget=forms.DateInput(attrs={"type": "date", "min": FECHA_MINIMA_REGISTRO.isoformat()}, format="%Y-%m-%d"),
+    )
     descripcion = forms.CharField(label="Descripción", required=False, widget=forms.Textarea(attrs={"rows": 2}))
 
     def __init__(self, *args, proceso=None, **kwargs):
@@ -145,7 +148,7 @@ class ActividadFormacionForm(EstiloBootstrapMixin, forms.Form):
         fecha = self.cleaned_data["fecha"]
         if fecha > datetime.date.today():
             raise forms.ValidationError("No se puede registrar una actividad con fecha futura.")
-        return fecha
+        return validar_fecha_registro(fecha, "la fecha de la actividad")
 
     def clean(self):
         datos = super().clean()
@@ -167,7 +170,7 @@ class SeguimientoFormacionForm(EstiloBootstrapMixin, forms.ModelForm):
         fields = ["id_proceso_formacion", "id_participante", "fecha", "tipo", "estado", "observacion"]
         labels = {"id_participante": "Participante", "observacion": "Observaciones"}
         widgets = {
-            "fecha": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "fecha": forms.DateInput(attrs={"type": "date", "min": FECHA_MINIMA_REGISTRO.isoformat()}, format="%Y-%m-%d"),
             "observacion": forms.Textarea(attrs={"rows": 4}),
         }
 
@@ -183,7 +186,7 @@ class SeguimientoFormacionForm(EstiloBootstrapMixin, forms.ModelForm):
         fecha = self.cleaned_data["fecha"]
         if fecha > datetime.date.today():
             raise forms.ValidationError("La fecha del seguimiento no puede ser futura.")
-        return fecha
+        return validar_fecha_registro(fecha, "la fecha del seguimiento")
 
     def clean_observacion(self):
         return self.cleaned_data["observacion"].strip()

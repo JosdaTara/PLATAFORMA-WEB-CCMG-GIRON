@@ -200,6 +200,8 @@
       if (confirmado || !window.bootstrap) return;           // sin JS de Bootstrap se envía directo
       e.preventDefault(); e.stopImmediatePropagation();
       if (fecha && !revisarFecha()) { fecha.focus(); return; }
+      /* Campos vacíos, negativos o fuera de rango: se señalan y no se abre el resumen */
+      if (!form.checkValidity()) { form.reportValidity(); return; }
       var html = fecha && fecha.value ? fila('Reunión', semanaDe(fecha.value).texto) : '';
       var algunoMayor = false;
       numeros.forEach(function (c) {

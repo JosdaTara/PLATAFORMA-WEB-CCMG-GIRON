@@ -1,4 +1,14 @@
 """Constantes y helpers para roles y módulos (ERS)."""
+import datetime
+
+# Límites de validación de los formularios. Evitan fechas absurdas (año 1800) y números que desbordan
+# el integer de PostgreSQL (error 500). La plataforma no tiene datos anteriores a 2020, así que ninguna
+# reunión, ofrenda, actividad o seguimiento puede ser más antiguo; sí se permite reportar con retraso.
+FECHA_MINIMA_REGISTRO = datetime.date(2020, 1, 1)
+FECHA_MINIMA_NACIMIENTO = datetime.date(1900, 1, 1)
+MAX_CONTEO = 100000  # personas por reunión, escuelas y cultos
+MAX_VALOR_COP = 999_999_999  # una ofrenda de más de mil millones de pesos es un error de digitación
+
 ROLES_PASTOR = "PASTOR"
 ROLES_SUPERVISOR = "SUPERVISOR_AREA"
 ROLES_LIDER = "LIDER_CASA_VIDA"

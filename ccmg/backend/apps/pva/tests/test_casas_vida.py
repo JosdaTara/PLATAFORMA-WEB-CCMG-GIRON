@@ -303,12 +303,14 @@ class PersonasNuevasTests(BaseCasasVida):
         self.registrar(self.lider, nombres_apellidos="Persona Dos")
         self.assertEqual(Participante.objects.filter(documento_identidad__isnull=True).count(), 2)
 
-    def test_sin_autorizacion_queda_pendiente(self):
+    def test_sin_autorizacion_no_se_registra(self):
+        """RN23: la autorización de datos es obligatoria también en el formulario corto de persona nueva."""
         datos = {"nombres_apellidos": "Fabio Ríos", "telefono": "3001112233"}
         self.entrar(self.lider)
-        self.client.post(reverse("pva:participante_crear"), datos)
-        self.assertFalse(Participante.objects.get(nombres_apellidos="Fabio Ríos").autorizacion_datos)
-        self.assertContains(self.client.get(reverse("pva:participantes")), "Autorización pendiente")
+        resp = self.client.post(reverse("pva:participante_crear"), datos)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("autorizacion_datos", resp.context["form"].errors)
+        self.assertFalse(Participante.objects.filter(nombres_apellidos="Fabio Ríos").exists())
 
     def test_nombre_y_telefono_obligatorios(self):
         resp = self.registrar(self.lider, nombres_apellidos="", telefono="")

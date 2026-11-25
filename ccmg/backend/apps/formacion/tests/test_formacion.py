@@ -99,6 +99,32 @@ class ParticipantesFormacionTests(BaseFormacion):
         resp = self.client.post(reverse("formacion:participante_crear"), datos)
         self.assertEqual(set(resp.context["form"].errors), {"telefono", "autorizacion_datos"})
 
+    def test_mismo_nombre_y_telefono_no_se_duplica(self):
+        self.entrar(self.coord)
+        resp = self.client.post(
+            reverse("formacion:participante_crear"),
+            self.datos_persona(nombres_apellidos=" ANA  perez", telefono="300 123 4567"),
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Ya existe una persona registrada con ese nombre y teléfono.", resp.context["form"].non_field_errors())
+        # Ana está inscrita en un proceso del coordinador: se ofrece el enlace a su ficha.
+        self.assertContains(resp, reverse("formacion:participante_detalle", args=[self.ana.pk]))
+        self.assertFalse(Participante.objects.filter(documento_identidad="5001").exists())
+
+    def test_fechas_absurdas_de_actividad_y_seguimiento_rechazadas(self):
+        from formacion.forms import ActividadFormacionForm, SeguimientoFormacionForm
+
+        form = ActividadFormacionForm({"titulo": "Clase", "fecha": "1800-01-01"}, proceso=self.pasos)
+        self.assertFalse(form.is_valid())
+        self.assertIn("anterior al 01/01/2020", form.errors["fecha"][0])
+        form = SeguimientoFormacionForm(
+            {"id_proceso_formacion": self.pasos.pk, "id_participante": self.ana.pk, "fecha": "1800-01-01",
+             "tipo": "VISITA", "estado": "ABIERTO", "observacion": "x"},
+            user=self.coord,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("anterior al 01/01/2020", form.errors["fecha"][0])
+
     def test_documento_existente_sugiere_inscribir(self):
         self.entrar(self.coord)
         resp = self.client.post(reverse("formacion:participante_crear"), self.datos_persona(documento_identidad="2001"))

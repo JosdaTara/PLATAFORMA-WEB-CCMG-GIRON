@@ -28,7 +28,7 @@
   <div class="col-lg-7">
     <div class="card p-3 border-0 shadow-sm h-100">
       <h2 class="mb-3">Procesos de formación</h2>
-      <table class="table table-sm align-middle mb-0">
+      <div class="table-responsive"><table class="table table-sm align-middle mb-0">
         <thead><tr><th>Proceso</th><th>Escuela</th><th>Inscripción</th><th>Estado</th></tr></thead>
         <tbody>
           {% for i in inscripciones %}
@@ -40,7 +40,7 @@
             </tr>
           {% endfor %}
         </tbody>
-      </table>
+      </table></div>
     </div>
   </div>
   <div class="col-12">
@@ -49,7 +49,7 @@
         <h2 class="m-0">Historial de seguimiento</h2>
         <a href="{% url 'formacion:seguimiento_crear' %}?participante={{ participante.pk }}" class="btn btn-sm btn-ccmg"><i class="bi bi-plus-lg me-1"></i>Nuevo seguimiento</a>
       </div>
-      <table class="table table-sm align-middle mb-0">
+      <div class="table-responsive"><table class="table table-sm align-middle mb-0">
         <thead><tr><th>Fecha</th><th>Proceso</th><th>Tipo</th><th>Observaciones</th><th>Responsable</th><th>Estado</th><th></th></tr></thead>
         <tbody>
           {% for s in seguimientos %}
@@ -66,13 +66,13 @@
             <tr><td colspan="7" class="text-center text-muted py-3">Todavía no hay seguimientos.</td></tr>
           {% endfor %}
         </tbody>
-      </table>
+      </table></div>
     </div>
   </div>
   <div class="col-12">
     <div class="card p-3 border-0 shadow-sm">
       <h2 class="mb-3">Asistencia reciente</h2>
-      <table class="table table-sm align-middle mb-0">
+      <div class="table-responsive"><table class="table table-sm align-middle mb-0">
         <thead><tr><th>Fecha</th><th>Actividad</th><th>Proceso</th><th>Asistió</th></tr></thead>
         <tbody>
           {% for a in asistencias %}
@@ -86,7 +86,7 @@
             <tr><td colspan="4" class="text-center text-muted py-3">Sin registros de asistencia.</td></tr>
           {% endfor %}
         </tbody>
-      </table>
+      </table></div>
     </div>
   </div>
 </div>

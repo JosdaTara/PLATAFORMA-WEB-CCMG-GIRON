@@ -9,6 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
 
 from nucleo import exportar
+from nucleo.busqueda import filtrar_texto
 from nucleo.permissions import puede_gestionar_ofrendas
 from nucleo.utils import registrar_auditoria, rol_real
 from pva.alcance import es_pastor, rol_de
@@ -59,7 +60,7 @@ class OfrendaListView(exportar.ExportableMixin, OfrendasMixin, ListView):
             if d["casa"]:
                 qs = qs.filter(id_casa_vida=d["casa"])
             if d["q"]:
-                qs = qs.filter(concepto__icontains=d["q"].strip())
+                qs = filtrar_texto(qs, d["q"], ("concepto",))
         return qs.order_by("-fecha", "-id_ofrenda")
 
     def get_context_data(self, **kwargs):

@@ -47,6 +47,22 @@ class OfrendasTests(BaseCasasVida):
             self.assertIn("mayor que cero", resp.context["form"].errors["valor"][0])
         self.assertFalse(Ofrenda.objects.exists())
 
+    def test_valor_enorme_y_fecha_absurda_rechazados(self):
+        self.entrar(self.pastor)
+        resp = self.client.post(reverse("ofrendas:crear"), self.datos(valor="99999999999999999999"))
+        self.assertIn("valor", resp.context["form"].errors)
+        resp = self.client.post(reverse("ofrendas:crear"), self.datos(valor="1000000000"))
+        self.assertIn("no puede superar", resp.context["form"].errors["valor"][0])
+        resp = self.client.post(reverse("ofrendas:crear"), self.datos(fecha="1800-01-01"))
+        self.assertIn("anterior al 01/01/2020", resp.context["form"].errors["fecha"][0])
+        self.assertFalse(Ofrenda.objects.exists())
+
+    def test_busqueda_por_concepto_ignora_tildes(self):
+        self.ofrenda(HOY, "1000", concepto="Ofrenda de Navidad Misión")
+        self.entrar(self.pastor)
+        resp = self.client.get(reverse("ofrendas:index"), {"q": "mision navidad"})
+        self.assertEqual(len(resp.context["ofrendas"]), 1)
+
     def test_fecha_futura_rechazada(self):
         self.entrar(self.pastor)
         resp = self.client.post(reverse("ofrendas:crear"), self.datos(fecha=(HOY + datetime.timedelta(days=1)).isoformat()))

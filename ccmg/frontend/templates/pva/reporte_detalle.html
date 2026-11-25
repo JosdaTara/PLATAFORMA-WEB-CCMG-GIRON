@@ -69,13 +69,13 @@
       <div class="col-md-6 col-xl-4">
         <div class="card p-3 border-0 shadow-sm h-100">
           <h2 class="mb-3">{{ titulo }}</h2>
-          <table class="table table-sm align-middle mb-0">
+          <div class="table-responsive"><table class="table table-sm align-middle mb-0">
             <tbody>
               {% for etiqueta, valor in filas %}
                 <tr{% if forloop.last and titulo == "Asistencia Escuelas de Formación" %} class="fw-semibold"{% endif %}><td>{{ etiqueta }}</td><td class="text-end">{{ valor }}</td></tr>
               {% endfor %}
             </tbody>
-          </table>
+          </table></div>
         </div>
       </div>
     {% endfor %}

@@ -30,6 +30,24 @@ function tarjetaSemana(r) {
     '<a href="' + esc(r.urlLlenar) + '" class="btn btn-oro btn-flujo">Llenar reporte</a></div>';
 }
 
+/* Pastor y Supervisor: qué Casas de Vida no han enviado el reporte de la semana actual */
+function bloqueSinReporte(r) {
+  if (!r || !r.totalActivas) return '';
+  if (!r.casas.length) {
+    return '<div class="tarjeta-semana tarjeta-semana--ok mb-3">' +
+      '<i class="bi bi-check2-circle tarjeta-semana__icono" aria-hidden="true"></i>' +
+      '<div class="tarjeta-semana__texto"><strong>Todas las casas enviaron el reporte.</strong>' +
+      '<span>' + esc(r.semana) + '</span></div></div>';
+  }
+  return '<div class="card p-3 border-0 shadow-sm mb-3">' +
+    '<h2 class="mb-1">Casas sin reporte esta semana <span class="badge rounded-pill text-bg-warning ms-1">' + r.casas.length + '</span></h2>' +
+    '<p class="small text-muted mb-3">' + esc(r.semana) + '</p>' +
+    tabla(['Casa de Vida', 'Líder'], r.casas.map(function (c) {
+      return ['<a href="' + esc(c.url) + '" class="text-decoration-none">' + esc(c.casa) + '</a>', esc(c.lider)];
+    })) +
+    '</div>';
+}
+
 /* ----------------------------- Vistas ----------------------------- */
 const VISTAS_CASAS = {
 
@@ -37,6 +55,7 @@ const VISTAS_CASAS = {
     return titulo('Hola, ' + esc(s.nombre),
       '<span class="modulo-tag d-lg-none"><i class="bi bi-houses" aria-hidden="true"></i> Módulo Casas de Vida</span>') +
       tarjetaSemana(RESUMEN.reporteSemana) +
+      bloqueSinReporte(RESUMEN.sinReporte) +
       '<p class="text-muted">Resumen del módulo de Casas de Vida.</p>' +
       '<div class="row g-3">' +
       stat('Personas nuevas', RESUMEN.participantes, 'person-plus') +

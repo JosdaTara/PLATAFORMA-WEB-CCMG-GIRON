@@ -466,6 +466,8 @@ a,button,.btn,input,select,textarea,label{touch-action:manipulation}
 .topbar{padding-top:env(safe-area-inset-top)}
 .contenido main{padding-bottom:calc(2rem + env(safe-area-inset-bottom)) !important}
 .table td{overflow-wrap:break-word}
+/* Datos escritos por el usuario (un nombre largo sin espacios) no deben ensanchar la página */
+h1,h2,h3,.table th,.table td,dd,.form-text,.alert,.card-title{overflow-wrap:anywhere}
 #id_toggle,#toggle{min-width:44px;min-height:44px}
 .btn-tema{min-width:40px;min-height:40px}
 

@@ -12,6 +12,7 @@ from django.views.generic import CreateView, DetailView, FormView, ListView, Tem
 
 from nucleo import exportar
 from nucleo.autocompletar import sugerencias
+from nucleo.busqueda import filtrar_texto
 from nucleo.mixins import ModuleRequiredMixin
 from nucleo.permissions import module_required, puede_gestionar_ofrendas
 from nucleo.utils import ROLES_COORD, ROLES_ETIQUETA, ROLES_PASTOR, es_superadmin, registrar_auditoria, rol_real, sesion_js
@@ -253,7 +254,7 @@ class ParticipanteListView(PanelFormacionMixin, ListView):
         qs = participantes_formacion(user)
         q = self.request.GET.get("q", "").strip()
         if q:
-            qs = qs.filter(Q(nombres_apellidos__icontains=q) | Q(documento_identidad__icontains=q))
+            qs = filtrar_texto(qs, q, ("nombres_apellidos", "documento_identidad"))
         proceso = self.request.GET.get("proceso")
         if proceso and proceso.isdigit():
             qs = qs.filter(inscripcionformacion__id_proceso_formacion=proceso)
@@ -314,6 +315,12 @@ class NuevoParticipanteView(PanelFormacionMixin, FormView):
     def get_initial(self):
         proceso = self.request.GET.get("proceso")
         return {"proceso": proceso} if proceso and proceso.isdigit() else {}
+
+    def form_invalid(self, form):
+        ctx = self.get_context_data(form=form)
+        if form.duplicado and participantes_formacion(self.request.user).filter(pk=form.duplicado.pk).exists():
+            ctx["enlace_duplicado"] = reverse("formacion:participante_detalle", args=[form.duplicado.pk])
+        return self.render_to_response(ctx)
 
     def form_valid(self, form):
         with transaction.atomic():
@@ -545,7 +552,7 @@ class SeguimientoListView(PanelFormacionMixin, ListView):
         g = self.request.GET
         q = g.get("q", "").strip()
         if q:
-            qs = qs.filter(Q(id_participante__nombres_apellidos__icontains=q) | Q(observacion__icontains=q))
+            qs = filtrar_texto(qs, q, ("id_participante__nombres_apellidos", "observacion"))
         if g.get("proceso", "").isdigit():
             qs = qs.filter(id_proceso_formacion=g["proceso"])
         if g.get("participante", "").isdigit():

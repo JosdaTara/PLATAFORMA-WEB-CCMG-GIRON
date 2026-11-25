@@ -5,4 +5,5 @@ app_name = "publico"
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("privacidad/", views.privacidad, name="privacidad"),
 ]

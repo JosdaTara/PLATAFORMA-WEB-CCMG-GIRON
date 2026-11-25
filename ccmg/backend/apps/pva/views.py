@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models import Count, Prefetch, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -12,6 +12,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, DetailView, FormView, ListView, RedirectView, UpdateView, View
 
 from nucleo.autocompletar import sugerencias
+from nucleo.busqueda import filtrar_texto
 from nucleo.mixins import ModuleRequiredMixin, PastorRequiredMixin
 from nucleo.permissions import module_required, puede_gestionar_ofrendas
 from nucleo.utils import (
@@ -78,6 +79,18 @@ def estado_reporte_semana(casa, hoy=None):
         "reportadas": sorted(reportes),
         "pendiente_anterior": pendiente,
     }
+
+def casas_sin_reporte_semana(user, hoy=None):
+    """Casas de Vida activas al alcance del Pastor o del Supervisor que aún no enviaron el reporte de esta semana.
+
+    Usa la misma semana (lunes a domingo) y el mismo periodo que guarda el reporte semanal.
+    """
+    semana = periodos.semana(hoy or datetime.date.today())
+    enviadas = Reporte.objects.filter(tipo_reporte=Reporte.CASA_VIDA, periodo=semana.etiqueta).values("id_casa_vida")
+    activas = casas_visibles(user).filter(estado=ACTIVO)
+    faltan = activas.exclude(pk__in=enviadas).order_by("nombre")
+    return semana, activas.count(), faltan
+
 
 def menu_casas(user, seccion):
     """Menú lateral del módulo según el rol. Las secciones aún no migradas viven en el panel JS."""
@@ -191,6 +204,21 @@ def panel_casas(request):
             for s in seguimientos[:4]
         ],
     }
+    if rol_de(user) in (ROLES_PASTOR, ROLES_SUPERVISOR):
+        semana, total_activas, faltan = casas_sin_reporte_semana(user)
+        resumen["sinReporte"] = {
+            "semana": semana.nombre,
+            "totalActivas": total_activas,
+            "casas": [
+                {
+                    "casa": c.nombre,
+                    "lider": c.id_lider.nombre_completo if c.id_lider else "Sin líder asignado",
+                    "area": c.id_area.nombre if c.id_area else "",
+                    "url": reverse("pva:casa_detalle", args=[c.pk]),
+                }
+                for c in faltan
+            ],
+        }
     casa_reporte = casa_para_reportar(user)
     if casa_reporte is not None:
         estado = estado_reporte_semana(casa_reporte)
@@ -404,7 +432,7 @@ class ParticipanteListView(PanelCasasMixin, ListView):
         g = self.request.GET
         q = g.get("q", "").strip()
         if q:
-            qs = qs.filter(Q(nombres_apellidos__icontains=q) | Q(telefono__icontains=q))
+            qs = filtrar_texto(qs, q, ("nombres_apellidos", "telefono"))
         casa = g.get("casa")
         if casa and casa.isdigit():
             qs = qs.filter(casavidamiembro__id_casa_vida=casa, casavidamiembro__estado=ACTIVO)
@@ -516,6 +544,12 @@ class PersonaNuevaCreateView(PanelCasasMixin, CreateView):
             self.request, f"Se registró a {persona.nombres_apellidos} como persona nueva de {self.casa.nombre}."
         )
         return redirect("pva:participantes")
+
+    def form_invalid(self, form):
+        ctx = self.get_context_data(form=form)
+        if form.duplicado and participantes_visibles(self.request.user).filter(pk=form.duplicado.pk).exists():
+            ctx["enlace_duplicado"] = reverse("pva:participante_detalle", args=[form.duplicado.pk])
+        return self.render_to_response(ctx)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -662,6 +696,21 @@ class RegistrarAsistenciaView(PanelCasasMixin, FormView):
         datos = form.cleaned_data
         semana = periodos.semana(datos["fecha"])
         user = self.request.user
+        try:
+            reporte = self.guardar_reporte(datos, semana, supervisor, user)
+        except IntegrityError:
+            # Otro integrante envió el reporte de esta semana al mismo tiempo (índice uq_reporte_casa_periodo).
+            ya = form.reporte_de_la_semana(semana)
+            if ya is None:
+                raise
+            form.add_error("fecha", form.mensaje_ya_enviado(semana, ya))
+            return self.form_invalid(form)
+        messages.success(
+            self.request, f"Reporte de asistencia del {datos['fecha']:%d/%m/%Y} enviado al Supervisor de Área."
+        )
+        return redirect("pva:reporte_detalle", pk=reporte.pk)
+
+    def guardar_reporte(self, datos, semana, supervisor, user):
         with transaction.atomic():
             reporte = Reporte.objects.create(
                 tipo_modulo=Actividad.TIPO_CASA_VIDA,
@@ -695,7 +744,4 @@ class RegistrarAsistenciaView(PanelCasasMixin, FormView):
                 **{c: datos[c] for c in campos if c in datos},
             )
             registrar_auditoria(self.request, "ENVIAR_REPORTE", reporte)
-        messages.success(
-            self.request, f"Reporte de asistencia del {datos['fecha']:%d/%m/%Y} enviado al Supervisor de Área."
-        )
-        return redirect("pva:reporte_detalle", pk=reporte.pk)
+        return reporte

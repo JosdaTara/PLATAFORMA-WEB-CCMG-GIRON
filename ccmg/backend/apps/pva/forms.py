@@ -3,7 +3,15 @@ import datetime
 from django import forms
 
 from cuentas.models import Usuario
-from nucleo.utils import ROLES_LIDER, ROLES_SUPERVISOR
+from nucleo.busqueda import normalizar
+from nucleo.utils import (
+    FECHA_MINIMA_NACIMIENTO,
+    FECHA_MINIMA_REGISTRO,
+    MAX_CONTEO,
+    MAX_VALOR_COP,
+    ROLES_LIDER,
+    ROLES_SUPERVISOR,
+)
 
 from . import periodos
 from .models import ACTIVO, Area, CasaVida, Participante, Reporte, ReporteAsistencia, Seguimiento
@@ -11,6 +19,41 @@ from .models import ACTIVO, Area, CasaVida, Participante, Reporte, ReporteAsiste
 
 def _usuarios_con_rol(rol):
     return Usuario.objects.filter(rol__nombre=rol, activo=True).order_by("nombre_completo")
+
+
+def validar_fecha_registro(fecha, que="la fecha"):
+    """Fecha de un registro: no anterior al inicio de la plataforma (la futura se valida aparte)."""
+    if fecha and fecha < FECHA_MINIMA_REGISTRO:
+        raise forms.ValidationError(f"{que.capitalize()} no puede ser anterior al {FECHA_MINIMA_REGISTRO:%d/%m/%Y}.")
+    return fecha
+
+
+def _digitos(telefono):
+    return "".join(c for c in telefono or "" if c.isdigit())
+
+
+def persona_duplicada(nombre, telefono):
+    """Persona activa con el mismo nombre (sin tildes, mayúsculas ni espacios extra) y el mismo teléfono."""
+    candidatas = Participante.objects.filter(estado=ACTIVO, nombres_apellidos__sin_tildes=normalizar(nombre))
+    return next((p for p in candidatas if _digitos(p.telefono) == _digitos(telefono)), None)
+
+
+class RechazarDuplicadoMixin:
+    """Al crear (no al editar), no permite repetir a una persona activa con el mismo nombre y teléfono.
+
+    Evita duplicados al guardar, volver Atrás y guardar de nuevo, o desde dos pestañas. La vista usa
+    `form.duplicado` para ofrecer el enlace a la persona que ya existe.
+    """
+
+    duplicado = None
+
+    def clean(self):
+        datos = super().clean()
+        if not self.instance.pk and datos.get("nombres_apellidos") and datos.get("telefono"):
+            self.duplicado = persona_duplicada(datos["nombres_apellidos"], datos["telefono"])
+            if self.duplicado:
+                raise forms.ValidationError("Ya existe una persona registrada con ese nombre y teléfono.")
+        return datos
 
 
 class UsuarioChoiceField(forms.ModelChoiceField):
@@ -128,7 +171,7 @@ class CasaVidaForm(EstiloBootstrapMixin, forms.ModelForm):
                 raise forms.ValidationError(f"Este Líder ya está asignado a la Casa de Vida «{otra}».")
         return lider
 
-class ParticipanteForm(EstiloBootstrapMixin, forms.ModelForm):
+class ParticipanteForm(RechazarDuplicadoMixin, EstiloBootstrapMixin, forms.ModelForm):
     """Datos mínimos del participante (RN09) y autorización de datos (RN23)."""
 
     casa_vida = forms.ModelChoiceField(queryset=CasaVida.objects.none(), label="Casa de Vida")
@@ -155,7 +198,9 @@ class ParticipanteForm(EstiloBootstrapMixin, forms.ModelForm):
             "autorizacion_datos": "Si es menor de edad, la autorización la otorga su representante legal.",
         }
         widgets = {
-            "fecha_nacimiento": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "fecha_nacimiento": forms.DateInput(
+                attrs={"type": "date", "min": FECHA_MINIMA_NACIMIENTO.isoformat()}, format="%Y-%m-%d"
+            ),
             "direccion": forms.TextInput(),
         }
 
@@ -190,6 +235,8 @@ class ParticipanteForm(EstiloBootstrapMixin, forms.ModelForm):
         fecha = self.cleaned_data.get("fecha_nacimiento")
         if fecha and fecha > datetime.date.today():
             raise forms.ValidationError("La fecha de nacimiento no puede ser futura.")
+        if fecha and fecha < FECHA_MINIMA_NACIMIENTO:
+            raise forms.ValidationError(f"La fecha de nacimiento no puede ser anterior al {FECHA_MINIMA_NACIMIENTO:%d/%m/%Y}.")
         return fecha
 
     def clean_telefono(self):
@@ -204,10 +251,10 @@ def validar_telefono(telefono):
     return telefono
 
 
-class PersonaNuevaForm(EstiloBootstrapMixin, forms.ModelForm):
+class PersonaNuevaForm(RechazarDuplicadoMixin, EstiloBootstrapMixin, forms.ModelForm):
     """Persona nueva que llega a una Casa de Vida: solo nombre y teléfono (RF05, RN09).
 
-    La autorización de datos (Ley 1581) se marca si la persona la dio; si no, queda pendiente (RN23).
+    La autorización de datos (Ley 1581) es obligatoria, igual que en el formulario completo (RN23).
     """
 
     class Meta:
@@ -218,11 +265,14 @@ class PersonaNuevaForm(EstiloBootstrapMixin, forms.ModelForm):
             "telefono": "Número de teléfono",
             "autorizacion_datos": "Autorizó el tratamiento de sus datos personales (Ley 1581 de 2012)",
         }
-        help_texts = {"autorizacion_datos": "Si no la dio todavía, el registro queda con autorización pendiente."}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["telefono"].required = True
+        self.fields["autorizacion_datos"].required = True
+        self.fields["autorizacion_datos"].error_messages["required"] = (
+            "Sin la autorización de tratamiento de datos no se puede registrar al participante."
+        )
 
     def clean_nombres_apellidos(self):
         return " ".join(self.cleaned_data["nombres_apellidos"].split())
@@ -238,9 +288,13 @@ class ReporteAsistenciaForm(EstiloBootstrapMixin, forms.Form):
     ya envió el de esa semana, aparece como enviado para todos (RN06).
     """
 
-    fecha = forms.DateField(label="Fecha", widget=forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"))
+    fecha = forms.DateField(
+        label="Fecha",
+        widget=forms.DateInput(attrs={"type": "date", "min": FECHA_MINIMA_REGISTRO.isoformat()}, format="%Y-%m-%d"),
+    )
     ofrenda = forms.DecimalField(
-        label="Ofrenda (valor total)", min_value=0, max_digits=12, decimal_places=2, initial=0,
+        label="Ofrenda (valor total)", min_value=0, max_value=MAX_VALOR_COP, max_digits=12, decimal_places=2, initial=0,
+        error_messages={"max_value": f"La ofrenda no puede superar {MAX_VALOR_COP:,} pesos.".replace(",", ".")},
         widget=forms.NumberInput(attrs={"step": "50", "inputmode": "numeric"}),
         help_text="Se registra también en el módulo de Ofrendas a nombre de la Casa de Vida.",
     )
@@ -258,7 +312,9 @@ class ReporteAsistenciaForm(EstiloBootstrapMixin, forms.Form):
             if campo == "sabado" and not (casa and casa.reporta_sabado):
                 continue  # Solo las Áreas R21 y ZONAR21 reportan el sábado
             self.fields[campo] = forms.IntegerField(
-                label=etiqueta, min_value=0, initial=0, widget=forms.NumberInput(attrs={"inputmode": "numeric"})
+                label=etiqueta, min_value=0, max_value=MAX_CONTEO, initial=0,
+                error_messages={"max_value": f"El valor no puede superar {MAX_CONTEO:,}.".replace(",", ".")},
+                widget=forms.NumberInput(attrs={"inputmode": "numeric"}),
             )
         # El estilo de Bootstrap se aplica a los campos que se agregaron después del mixin.
         for nombre, _ in campos:
@@ -284,17 +340,23 @@ class ReporteAsistenciaForm(EstiloBootstrapMixin, forms.Form):
         fecha = self.cleaned_data["fecha"]
         if fecha > datetime.date.today():
             raise forms.ValidationError("No se puede reportar una reunión de una fecha futura.")
+        validar_fecha_registro(fecha, "la fecha de la reunión")
         semana = periodos.semana(fecha)
-        ya = (
+        ya = self.reporte_de_la_semana(semana)
+        if ya:
+            raise forms.ValidationError(self.mensaje_ya_enviado(semana, ya))
+        return fecha
+
+    def reporte_de_la_semana(self, semana):
+        return (
             Reporte.objects.filter(tipo_reporte=Reporte.CASA_VIDA, id_casa_vida=self.casa, periodo=semana.etiqueta)
             .select_related("id_usuario_envia")
             .first()
         )
-        if ya:
-            raise forms.ValidationError(
-                f"El reporte de la {semana.nombre.lower()} ya fue enviado por {ya.id_usuario_envia.nombre_completo}."
-            )
-        return fecha
+
+    @staticmethod
+    def mensaje_ya_enviado(semana, reporte):
+        return f"El reporte de la {semana.nombre.lower()} ya fue enviado por {reporte.id_usuario_envia.nombre_completo}."
 
 
 class SeguimientoForm(EstiloBootstrapMixin, forms.ModelForm):
@@ -305,7 +367,7 @@ class SeguimientoForm(EstiloBootstrapMixin, forms.ModelForm):
         fields = ["id_participante", "fecha", "tipo", "estado", "observacion"]
         labels = {"id_participante": "Participante", "observacion": "Observaciones"}
         widgets = {
-            "fecha": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "fecha": forms.DateInput(attrs={"type": "date", "min": FECHA_MINIMA_REGISTRO.isoformat()}, format="%Y-%m-%d"),
             "observacion": forms.Textarea(attrs={"rows": 4}),
         }
 
@@ -320,7 +382,7 @@ class SeguimientoForm(EstiloBootstrapMixin, forms.ModelForm):
         fecha = self.cleaned_data["fecha"]
         if fecha > datetime.date.today():
             raise forms.ValidationError("La fecha del seguimiento no puede ser futura.")
-        return fecha
+        return validar_fecha_registro(fecha, "la fecha del seguimiento")
 
     def clean_observacion(self):
         return self.cleaned_data["observacion"].strip()
